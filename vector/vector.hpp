@@ -23,15 +23,15 @@ namespace ft
 
 	private:
 		Alloc _myAlloc;
-		size_type _sizeTab;
+		size_type _capacity;
 		size_type _countTab;
 		T *_tab;
 	public:
-		vector(void):_sizeTab(0),  _countTab(0), _tab(0){}
+		vector(void):_capacity(0),  _countTab(0), _tab(0){}
 
-		vector(size_type size, T elem):_sizeTab(size), _countTab(size)
+		vector(size_type size, T elem):_capacity(size), _countTab(size)
 		{
-			_tab = _myAlloc.allocate(_sizeTab);
+			_tab = _myAlloc.allocate(_capacity);
 			for (size_type i = 0; i < _countTab; i++)
 			{
 				_tab[i] = elem;
@@ -41,52 +41,24 @@ namespace ft
 		{
 			this->clear();
 		}
-/************************************************************************ Capacity ************************************************************************/
-
-		size_type size() const {return (_countTab);}
-
-		size_type capacity() const {return (_sizeTab);}
-
-		size_type max_size() const {return (_myAlloc.max_size());}
-
-		void resize (size_type n, value_type val = value_type())
-		{
-			(void)vald;
-			if (n < _countTab || n > _countTab)
-			{
-				pointer newTab = this->tubTab(_countTab);
-				this->clear();
-				_countTab = n;
-				_sizeTab = n;
-				_tab = newTab;
-				for (size_t i = _countTab ; i < n; i++)
-				{
-					_tab[i] = val;
-				}
-			}
-		}
-
-	bool empty() const{return (_sizeTab == 0);}
-
 /************************************************************************ utile ************************************************************************/
 
 		void clear()
 		{
-			for (size_type i = 0; i < _sizeTab; i++)
+			for (size_type i = 0; i < _capacity; i++)
 			{
 				_myAlloc.destroy(_tab + i);
 			}
-			_myAlloc.deallocate(_tab, _sizeTab);
+			_myAlloc.deallocate(_tab, _capacity);
 			_tab = 0;
 		}
 
-		size_type	sizeCompute(void)
+		void	sizeCompute(void)
 		{
-			if (!_sizeTab)
-			{
-				return (1);
-			}
-			return (_sizeTab * 2);
+			if (_capacity == 0)
+				_capacity++;
+			else
+				this->_capacity = _countTab * 2;
 		}
 
 		pointer	tubTab(size_type size)
@@ -94,26 +66,76 @@ namespace ft
 			pointer newTab = _myAlloc.allocate(size);
 			for (size_type i = 0; i < _countTab; i++)
 			{
-				newTab[i] = _tab[i];
+				_myAlloc.construct(newTab + i, _tab[i]);
 			}
 			return (newTab);
 		}
+/************************************************************************ Capacity ************************************************************************/
 
-/************************************************************************ Push BACK ************************************************************************/
-		void push_back(T elem)
+		size_type size() const {return (_countTab);}
+
+		size_type capacity() const {return (_capacity);}
+
+		size_type max_size() const {return (_myAlloc.max_size());}
+
+		void resize (size_type n, value_type val = value_type())
 		{
-			if (_countTab < _sizeTab)
-				_tab[_countTab++] = elem;
-			else
+			if (n > _countTab)
 			{
-				size_type newSize = this->sizeCompute();
-				pointer newTab = tubTab(newSize);
+				this->_capacity *= 2 ;
+				pointer newTab = this->tubTab(_capacity);
 				this->clear();
+				while (_countTab < n)
+				{
+					_myAlloc.construct(newTab + _countTab, val);
+					_countTab++;
+				}
 				_tab = newTab;
-				_tab[_countTab++] = elem;
-				_sizeTab = newSize;
 			}
 		}
+
+		bool empty() const{return (_capacity == 0);}
+		// void reserve (size_type n)
+		// {
+		// 	if (n > _capacity)
+		// 	{
+		// 		pointer newTab = this->tubTab(n * 2);
+		// 		for (size_type i = 0; i < n; i++)
+		// 		{
+		// 			newTab[i] = 0;
+		// 		}
+		// 		this->clear();
+		// 		_tab = newTab;
+		// 		_capacity = n;
+		// 	}
+		// }
+
+/************************************************************************ Modifier ************************************************************************/
+		void push_back(T elem)
+		{
+			if (_countTab < _capacity)
+			{
+				_tab[_countTab++] = elem;
+			}
+			else
+			{
+				sizeCompute();
+				pointer newTab = tubTab(this->_capacity);
+				_myAlloc.construct(newTab + _countTab, elem);
+				_countTab++;
+				this->clear();
+				_tab = newTab;
+			}
+		}
+
+	void pop_back()
+	{
+		if (this->empty())
+		{
+			_countTab -= 1;
+		}
+	}
+
 /************************************************************************ OPERATOR ************************************************************************/
 		T & operator[](size_type index)
 		{
