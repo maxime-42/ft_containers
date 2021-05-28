@@ -13,15 +13,17 @@ namespace ft
 	
 	public:
 /************************************************************************ Typedef ************************************************************************/
-    	typedef T				value_type;
-   		typedef T& 				reference;            
-		typedef Alloc const &	const_reference;
-    	typedef T* 				pointer;
-		typedef T* const 		const_pointer;
-    	typedef std::ptrdiff_t	difference_type;
-		typedef size_t			size_type;		
+    	typedef T							value_type;
+   		typedef T& 							reference;            
+		typedef Alloc const &				const_reference;
+    	typedef T* 							pointer;
+		typedef T* const 					const_pointer;
+    	typedef std::ptrdiff_t				difference_type;
+		typedef size_t						size_type;
+		typedef std::forward_iterator_tag	iterator_category;
+		
 
-	private:
+	protected:
 		Alloc _myAlloc;
 		size_type _capacity;
 		size_type _countTab;
@@ -41,6 +43,35 @@ namespace ft
 		{
 			this->clear();
 		}
+/************************************************************************  iterator ************************************************************************/
+		class  iterator 
+		{
+		public:
+			iterator(){}
+			iterator(pointer ptr) : m_ptr(ptr) {}
+			reference operator*() const { return *m_ptr; }
+			pointer operator->() { return m_ptr; }
+			// Prefix increment
+			iterator& operator++() { m_ptr++; std::cout << "QUEL BY 1" << std::endl; return *this; }  
+			// Postfix increment
+			iterator	operator++(int) {iterator tmp = *this; ++(*this); std::cout << "QUEL BY 2 " << std::endl; return tmp;  }
+
+			iterator	operator+(const difference_type& movement)
+			{
+				std::cout << "salut" << std::endl;
+				// pointer oldPtr = m_ptr ;
+				m_ptr+= movement;
+				// iterator temp = (*this);
+				// m_ptr = oldPtr;
+				return (*this);
+			}
+			friend bool operator== (const   iterator& a, const   iterator& b) { return a.m_ptr == b.m_ptr; };
+			friend bool operator!= (const   iterator& a, const   iterator& b) { return a.m_ptr != b.m_ptr; };     
+		private:
+			pointer m_ptr;
+		};
+   	  	iterator begin() {return   iterator(&_tab[0]); }
+   	  	iterator end()   { return  iterator(&_tab[_countTab]); }
 /************************************************************************ utile ************************************************************************/
 
 		void clear()
@@ -95,20 +126,17 @@ namespace ft
 		}
 
 		bool empty() const{return (_capacity == 0);}
-		// void reserve (size_type n)
-		// {
-		// 	if (n > _capacity)
-		// 	{
-		// 		pointer newTab = this->tubTab(n * 2);
-		// 		for (size_type i = 0; i < n; i++)
-		// 		{
-		// 			newTab[i] = 0;
-		// 		}
-		// 		this->clear();
-		// 		_tab = newTab;
-		// 		_capacity = n;
-		// 	}
-		// }
+
+		void reserve (size_type n)
+		{
+			if (n > _capacity)
+			{
+				_capacity = n;
+				pointer newTab = this->tubTab(n * 2);
+				this->clear();
+				_tab = newTab;
+			}
+		}
 
 /************************************************************************ Modifier ************************************************************************/
 		void push_back(T elem)
