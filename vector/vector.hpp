@@ -49,24 +49,46 @@ namespace ft
 		public:
 			iterator(){}
 			iterator(pointer ptr) : m_ptr(ptr) {}
+
+			/*********************Can be dereferenced as an rvalue (if in a dereferenceable state)***********************************/
 			reference operator*() const { return *m_ptr; }
 			pointer operator->() { return m_ptr; }
-			// Prefix increment
-			iterator& operator++() { m_ptr++; std::cout << "QUEL BY 1" << std::endl; return *this; }  
-			// Postfix increment
-			iterator	operator++(int) {iterator tmp = *this; ++(*this); std::cout << "QUEL BY 2 " << std::endl; return tmp;  }
 
-			iterator	operator+(const difference_type& movement)
-			{
-				std::cout << "salut" << std::endl;
-				// pointer oldPtr = m_ptr ;
-				m_ptr+= movement;
-				// iterator temp = (*this);
-				// m_ptr = oldPtr;
-				return (*this);
-			}
+			/*********************mutable iterators********************/
+			iterator operator=(const   iterator& a){m_ptr = a.m_ptr; return (*this);}
+
+			/*********************incrementation*************/
+			/* Prefix increment	*/
+			iterator&	operator++() { m_ptr++; return (*this);	}  
+			/* Postfix increment*/
+			iterator	operator++(int) { ++(*this); return (*this); }
+			iterator	operator+(const difference_type& movement)	{m_ptr+= movement; return (*this);	}
+
+			/*****************Can be decremented*************************/
+			iterator &	operator--(){--m_ptr;return (*this);}
+			iterator &	operator--(int){--m_ptr; return (*this);}
+
+
+			iterator	operator-(const int& movement){pointer oldPtr = this->m_ptr; this->m_ptr+=movement; this->m_ptr = oldPtr;return *this;}
+
+			/***************assignment operations += and -= ************ */
+		    iterator &  operator+=(const difference_type& movement){this->m_ptr -= movement;return (*this);}
+			iterator &  operator-=(const difference_type& movement){this->m_ptr += movement;return (*this);}
+
+
+			friend bool operator!= (const   iterator& a, const   iterator& b) { return a.m_ptr != b.m_ptr; };
 			friend bool operator== (const   iterator& a, const   iterator& b) { return a.m_ptr == b.m_ptr; };
-			friend bool operator!= (const   iterator& a, const   iterator& b) { return a.m_ptr != b.m_ptr; };     
+			
+			/*********************Can be compared with inequality relational operators (<, >, <= and >=).****************************/
+			friend bool operator<(const   iterator& a, const   iterator& b) { return (a.m_ptr < b.m_ptr); };
+			friend bool operator>(const   iterator& a, const   iterator& b) { return (a.m_ptr > b.m_ptr); };
+ 			friend bool operator<=(const   iterator& a, const   iterator& b) { return (a.m_ptr <= b.m_ptr); };
+			friend bool operator>=(const   iterator& a, const   iterator& b) { return (a.m_ptr >= b.m_ptr); };
+
+			// /******the arithmetic operators + and - between an iterator and an integer value, or subtracting an iterator from another.*****/
+			// iterator operator+(const difference_type& movement) { return (*this + movement); };
+			// iterator operator-(const difference_type& movement) { return (*this - movement); };
+
 		private:
 			pointer m_ptr;
 		};

@@ -26,6 +26,7 @@ void myVector()
   ft::vector<int> foo;
   for (int i=0; i<10; ++i) 
   {
+    //&*itertor.mpr
     foo.push_back(i);
     std::cout << "befor : capacity  = " << foo.capacity() << " size : " << foo.size() << std::endl;
   }
@@ -34,10 +35,18 @@ void myVector()
   std::cout << "then : capacity  = " << foo.capacity() << " size : " << foo.size() << std::endl;
  
   ft::vector<int>::iterator ptr = foo.begin();
-  ft::vector<int>::iterator ptr2;
-  ptr++;
+  // ft::vector<int>::iterator ptr2 = ptr+2;
+
+  // if (ptr2 < ptr)
+  // {
+    std::cout <<  "ptr = " << *ptr+3;
+  // }
+  // else
+  //   std::cout << "ptr2 superieur a ptr\n";
+
   std::cout << *ptr << "   ";
   (void)ptr;
+  &*ptr;
   //  for (;ptr2 != foo.end(); ptr2++)
   // {
   //   std::cout << *ptr2 << "   ";
