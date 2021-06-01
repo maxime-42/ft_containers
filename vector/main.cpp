@@ -46,17 +46,52 @@ void myVector()
 
   std::cout << *ptr << "   ";
   (void)ptr;
-  &*ptr;
+//   &*ptr;
   //  for (;ptr2 != foo.end(); ptr2++)
   // {
   //   std::cout << *ptr2 << "   ";
   // }
 }
 
-int main ()
+// int main ()
+// {
+//   // originalVector();
+//   std::cout << "\n\n************************************************************************************************************************************************************************* \n" << std::endl;
+//   myVector();
+//   return (0);
+// }
+
+#include <bits/stdc++.h>
+using namespace std;
+  
+
+void print_container(const std::vector<int>& c) 
 {
-  // originalVector();
-  std::cout << "\n\n************************************************************************************************************************************************************************* \n" << std::endl;
-  myVector();
-  return (0);
+    for (auto &i : c) {
+        std::cout << i << " ";
+    }
+    std::cout << '\n';
+}
+ 
+int main( )
+{
+    std::vector<int> c{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+    print_container(c);
+ 
+    c.erase(c.begin());
+    print_container(c);
+ 
+    std::vector<int>::iterator ret = c.erase(c.begin(), c.begin()+2);
+    print_container(c);
+	std::cout << "ret = " << *ret << std::endl;
+ 
+    // Erase all even numbers (C++11 and later)
+    // for (auto it = c.begin(); it != c.end(); ) {
+    //     if (*it % 2 == 0) {
+    //         it = c.erase(it);
+    //     } else {
+    //         ++it;
+    //     }
+    // }
+    // print_container(c);
 }

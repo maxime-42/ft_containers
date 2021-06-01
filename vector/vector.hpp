@@ -13,12 +13,13 @@ namespace ft
 	
 	public:
 /************************************************************************ Typedef ************************************************************************/
-    	typedef T							value_type;
-   		typedef T& 							reference;            
-		typedef Alloc const &				const_reference;
-    	typedef T* 							pointer;
+		typedef T							value_type;
+		typedef T& 							reference;            
+		typedef Alloc						allocator_type;
+		typedef const T&					const_reference;
+		typedef T* 							pointer;
 		typedef T* const 					const_pointer;
-    	typedef std::ptrdiff_t				difference_type;
+		typedef std::ptrdiff_t				difference_type;
 		typedef size_t						size_type;
 		typedef std::forward_iterator_tag	iterator_category;
 		
@@ -26,29 +27,33 @@ namespace ft
 	protected:
 		Alloc _myAlloc;
 		size_type _capacity;
-		size_type _countTab;
-		T *_tab;
+		size_type _dataCounter;
+		T *_data;
 	public:
-		vector(void):_capacity(0),  _countTab(0), _tab(0){}
+		vector(void):_capacity(0),  _dataCounter(0), _data(0){}
 
-		vector(size_type size, T elem):_capacity(size), _countTab(size)
+		vector(size_type size, T elem):_capacity(size), _dataCounter(size)
 		{
-			_tab = _myAlloc.allocate(_capacity);
-			for (size_type i = 0; i < _countTab; i++)
+			_data = _myAlloc.allocate(_capacity);
+			for (size_type i = 0; i < _dataCounter; i++)
 			{
-				_tab[i] = elem;
+				_data[i] = elem;
 			}
 		}
 		~vector()
 		{
 			this->clear();
 		}
+		pointer	getData()const {return (_data);}
 /************************************************************************  iterator ************************************************************************/
 		class  iterator 
 		{
 		public:
+		/***************Is default-constructible, copy-constructible, copy-assignable and destructible	******************/
 			iterator(){}
 			iterator(pointer ptr) : m_ptr(ptr) {}
+			iterator(iterator const & toCopy)	{m_ptr = toCopy.m_ptr;}
+			~iterator(){}
 
 			/*********************Can be dereferenced as an rvalue (if in a dereferenceable state)***********************************/
 			reference operator*() const { return *m_ptr; }
@@ -57,9 +62,9 @@ namespace ft
 			/*********************mutable iterators********************/
 			iterator operator=(const   iterator& a){m_ptr = a.m_ptr; return (*this);}
 
-			/*********************incrementation*************/
+			/*********************incrementation******************/
 			/* Prefix increment	*/
-			iterator&	operator++() { m_ptr++; return (*this);	}  
+			iterator&	operator++() { m_ptr++; return (*this);	}
 			/* Postfix increment*/
 			iterator	operator++(int) { ++(*this); return (*this); }
 			iterator	operator+(const difference_type& movement)	{m_ptr+= movement; return (*this);	}
@@ -67,65 +72,151 @@ namespace ft
 			/*****************Can be decremented*************************/
 			iterator &	operator--(){--m_ptr;return (*this);}
 			iterator &	operator--(int){--m_ptr; return (*this);}
-
-
 			iterator	operator-(const int& movement){pointer oldPtr = this->m_ptr; this->m_ptr+=movement; this->m_ptr = oldPtr;return *this;}
 
 			/***************assignment operations += and -= ************ */
-		    iterator &  operator+=(const difference_type& movement){this->m_ptr -= movement;return (*this);}
-			iterator &  operator-=(const difference_type& movement){this->m_ptr += movement;return (*this);}
+		    iterator &  operator+=(const difference_type& movement){this->m_ptr += movement;return (*this);}
+			iterator &  operator-=(const difference_type& movement){this->m_ptr -= movement;return (*this);}
 
-
+			/***************** compared for equivalence using the equality/inequality operators***********/
 			friend bool operator!= (const   iterator& a, const   iterator& b) { return a.m_ptr != b.m_ptr; };
 			friend bool operator== (const   iterator& a, const   iterator& b) { return a.m_ptr == b.m_ptr; };
 			
-			/*********************Can be compared with inequality relational operators (<, >, <= and >=).****************************/
+			/*****************Can be compared with inequality relational operators (<, >, <= and >=).*********/
 			friend bool operator<(const   iterator& a, const   iterator& b) { return (a.m_ptr < b.m_ptr); };
 			friend bool operator>(const   iterator& a, const   iterator& b) { return (a.m_ptr > b.m_ptr); };
- 			friend bool operator<=(const   iterator& a, const   iterator& b) { return (a.m_ptr <= b.m_ptr); };
-			friend bool operator>=(const   iterator& a, const   iterator& b) { return (a.m_ptr >= b.m_ptr); };
-
-			// /******the arithmetic operators + and - between an iterator and an integer value, or subtracting an iterator from another.*****/
-			// iterator operator+(const difference_type& movement) { return (*this + movement); };
-			// iterator operator-(const difference_type& movement) { return (*this - movement); };
+ 			friend bool operator<=(const  iterator& a, const   iterator& b) { return (a.m_ptr <= b.m_ptr); };
+			friend bool operator>=(const  iterator& a, const   iterator& b) { return (a.m_ptr >= b.m_ptr); };
 
 		private:
 			pointer m_ptr;
 		};
-   	  	iterator begin() {return   iterator(&_tab[0]); }
-   	  	iterator end()   { return  iterator(&_tab[_countTab]); }
-/************************************************************************ utile ************************************************************************/
+		iterator begin() {return   iterator(&_data[0]); }
+		iterator end()   { return  iterator(&_data[_dataCounter]); }
 
-		void clear()
+
+/************************************************************************  const_iterator ************************************************************************/
+		class  const_iterator 
 		{
-			for (size_type i = 0; i < _capacity; i++)
-			{
-				_myAlloc.destroy(_tab + i);
-			}
-			_myAlloc.deallocate(_tab, _capacity);
-			_tab = 0;
-		}
+		public:
+		/***************Is default-constructible, copy-constructible, copy-assignable and destructible	******************/
+			const_iterator(){}
+			const_iterator(pointer ptr) : m_ptr(ptr) {}
+			const_iterator(const_iterator const &toCopy)	{m_ptr = toCopy.m_ptr;}
+			~const_iterator(){}
+
+			/*********************Can be dereferenced as an rvalue (if in a dereferenceable state)***********************************/
+			reference operator*() const { return *m_ptr; }
+			pointer operator->() const { return m_ptr; }
+
+			/*********************mutable const_iterators********************/
+			const_iterator operator=(const   const_iterator& a){m_ptr = a.m_ptr; return (*this);}
+
+			/*********************incrementation******************/
+			/* Prefix increment	*/
+			const_iterator&	operator++() const { m_ptr++; return (*this);	}
+			/* Postfix increment*/
+			const_iterator	operator++(int) const { ++(*this); return (*this); }
+			const_iterator	operator+(const difference_type& movement)	const {m_ptr+= movement; return (*this);	}
+
+			/*****************Can be decremented*************************/
+			const_iterator &	operator--() const {--m_ptr;return (*this);}
+			const_iterator &	operator--(int) const {--m_ptr; return (*this);}
+			const_iterator	operator-(const int& movement) const {pointer oldPtr = this->m_ptr; this->m_ptr+=movement; this->m_ptr = oldPtr;return *this;}
+
+			/***************assignment operations += and -= ************ */
+		    const_iterator &  operator+=(const difference_type& movement) const {this->m_ptr += movement;return (*this);}
+			const_iterator &  operator-=(const difference_type& movement) const {this->m_ptr -= movement;return (*this);}
+
+			/***************** compared for equivalence using the equality/inequality operators***********/
+			friend bool operator!= (const   iterator& a, const   iterator& b) { return a.m_ptr != b.m_ptr; };
+			friend bool operator== (const   iterator& a, const   iterator& b) { return a.m_ptr == b.m_ptr; };
+			
+			/*****************Can be compared with inequality relational operators (<, >, <= and >=).*********/
+			friend bool operator<(const   const_iterator & a, const   const_iterator& b) { return (a.m_ptr < b.m_ptr); };
+			friend bool operator>(const   const_iterator & a, const   const_iterator& b) { return (a.m_ptr > b.m_ptr); };
+ 			friend bool operator<=(const   const_iterator & a, const   const_iterator& b) { return (a.m_ptr <= b.m_ptr); };
+			friend bool operator>=(const   const_iterator & a, const   const_iterator& b) { return (a.m_ptr >= b.m_ptr); };
+		private:
+			pointer const m_ptr;
+		};
+		const_iterator cbegin() const {return   const_iterator(&_data[0]); }
+		const_iterator cend()   const { return  const_iterator(&_data[_dataCounter]); }
+
+
+/************************************************************************  reverse Iterator ************************************************************************/
+		class  rev_iterator 
+		{
+		public:
+		/***************Is default-constructible, copy-constructible, copy-assignable and destructible	******************/
+			rev_iterator(){}
+			rev_iterator(pointer ptr) : m_ptr(ptr) {}
+			rev_iterator(rev_iterator const & toCopy)	{m_ptr = toCopy.m_ptr;}
+			~rev_iterator(){}
+
+			/*********************Can be dereferenced as an rvalue (if in a dereferenceable state)***********************************/
+			reference operator*() const { return *m_ptr; }
+			pointer operator->() { return m_ptr; }
+
+			/*********************mutable rev_iterators********************/
+			rev_iterator operator=(const   rev_iterator& a){m_ptr = a.m_ptr; return (*this);}
+
+			/*********************incrementation******************/
+			/* Prefix increment	*/
+			rev_iterator&	operator++() { m_ptr--; return (*this);	}
+			/* Postfix increment*/
+			rev_iterator	operator++(int) { --(*this); return (*this); }
+			rev_iterator	operator+(const difference_type& movement)	{m_ptr-= movement; return (*this);	}
+
+			/*****************Can be decremented*************************/
+			rev_iterator &	operator--(){++m_ptr;return (*this);}
+			rev_iterator &	operator--(int){++m_ptr; return (*this);}
+			rev_iterator	operator-(const int& movement){pointer oldPtr = this->m_ptr; this->m_ptr+=movement; this->m_ptr = oldPtr;return *this;}
+
+			/***************assignment operations += and -= ************ */
+		    rev_iterator &  operator+=(const difference_type& movement){this->m_ptr -= movement;return (*this);}
+			rev_iterator &  operator-=(const difference_type& movement){this->m_ptr += movement;return (*this);}
+
+			/***************** compared for equivalence using the equality/inequality operators***********/
+			friend bool operator!= (const   rev_iterator& a, const   rev_iterator& b) { return a.m_ptr != b.m_ptr; };
+			friend bool operator== (const   rev_iterator& a, const   rev_iterator& b) { return a.m_ptr == b.m_ptr; };
+			
+			/*****************Can be compared with inequality relational operators (<, >, <= and >=).*********/
+			friend bool operator<(const   rev_iterator& a, const   rev_iterator& b) { return (a.m_ptr < b.m_ptr); };
+			friend bool operator>(const   rev_iterator& a, const   rev_iterator& b) { return (a.m_ptr > b.m_ptr); };
+ 			friend bool operator<=(const   rev_iterator& a, const   rev_iterator& b) { return (a.m_ptr <= b.m_ptr); };
+			friend bool operator>=(const   rev_iterator& a, const   rev_iterator& b) { return (a.m_ptr >= b.m_ptr); };
+
+		private:
+			pointer m_ptr;
+		};
+
+		rev_iterator rend() 	{return   rev_iterator(&_data[0]); }
+		rev_iterator rbegin()	{ return  rev_iterator(&_data[_dataCounter]); }
+
+/************************************************************************ utile ************************************************************************/
 
 		void	sizeCompute(void)
 		{
 			if (_capacity == 0)
 				_capacity++;
 			else
-				this->_capacity = _countTab * 2;
+				this->_capacity = _dataCounter * 2;
 		}
 
 		pointer	tubTab(size_type size)
 		{
 			pointer newTab = _myAlloc.allocate(size);
-			for (size_type i = 0; i < _countTab; i++)
+			for (size_type i = 0; i < _dataCounter; i++)
 			{
-				_myAlloc.construct(newTab + i, _tab[i]);
+				_myAlloc.construct(newTab + i, _data[i]);
 			}
 			return (newTab);
 		}
+
 /************************************************************************ Capacity ************************************************************************/
 
-		size_type size() const {return (_countTab);}
+		size_type size() const {return (_dataCounter);}
 
 		size_type capacity() const {return (_capacity);}
 
@@ -133,17 +224,17 @@ namespace ft
 
 		void resize (size_type n, value_type val = value_type())
 		{
-			if (n > _countTab)
+			if (n > _dataCounter)
 			{
 				this->_capacity *= 2 ;
 				pointer newTab = this->tubTab(_capacity);
 				this->clear();
-				while (_countTab < n)
+				while (_dataCounter < n)
 				{
-					_myAlloc.construct(newTab + _countTab, val);
-					_countTab++;
+					_myAlloc.construct(newTab + _dataCounter, val);
+					_dataCounter++;
 				}
-				_tab = newTab;
+				_data = newTab;
 			}
 		}
 
@@ -156,57 +247,138 @@ namespace ft
 				_capacity = n;
 				pointer newTab = this->tubTab(n * 2);
 				this->clear();
-				_tab = newTab;
+				_data = newTab;
 			}
 		}
 
 /************************************************************************ Modifier ************************************************************************/
 		void push_back(T elem)
 		{
-			if (_countTab < _capacity)
+			if (_dataCounter < _capacity)
 			{
-				_tab[_countTab++] = elem;
+				_data[_dataCounter++] = elem;
 			}
 			else
 			{
 				sizeCompute();
 				pointer newTab = tubTab(this->_capacity);
-				_myAlloc.construct(newTab + _countTab, elem);
-				_countTab++;
+				_myAlloc.construct(newTab + _dataCounter, elem);
+				_dataCounter++;
 				this->clear();
-				_tab = newTab;
+				_data = newTab;
 			}
 		}
 
-	void pop_back()
-	{
-		if (this->empty())
+		void pop_back()
 		{
-			_countTab -= 1;
+			if (this->empty())
+			{
+				_dataCounter -= 1;
+			}
 		}
-	}
 
+		void clear()
+		{
+			for (size_type i = 0; i < _capacity; i++)
+			{
+				_myAlloc.destroy(_data + i);
+			}
+			_myAlloc.deallocate(_data, _capacity);
+			_data = 0;
+		}
+
+
+		iterator erase(iterator &pos)
+		{
+			_dataCounter = 0;
+			_capacity -= 1;
+			iterator ret;
+			pointer newData = _myAlloc.allocate(_capacity);
+			for (iterator it = this->begin(); it != this->end(); it++)
+			{
+				if (it != pos)
+				{
+					_myAlloc.construct(newData + _dataCounter, *it);
+					_dataCounter++;
+				}
+				else if (it == pos)
+					ret = newData + _dataCounter;
+
+			}
+			this->clear();
+			_data = newData;
+			return (ret);
+		}
+
+		iterator erase(iterator &start, iterator &end)
+		{
+			iterator ret;
+			_dataCounter = 0;
+			_capacity = _capacity - (end - start);
+			pointer newData = _myAlloc.allocate(_capacity);
+			for (iterator it = this->begin(); it != this->end(); it++)
+			{
+				if (it != start)
+				{
+					_myAlloc.construct(newData + _dataCounter, *it);
+					_dataCounter++;
+				}
+				else if (it == start)
+				{
+					while (it != end)
+						it++;
+					ret = newData + _dataCounter;
+					it++;
+				}
+			}
+			return (ret);
+		}
+
+	
 /************************************************************************ OPERATOR ************************************************************************/
 		T & operator[](size_type index)
 		{
-			if (index >= this->_countTab || index < 0)
+			if (index >= this->_dataCounter || index < 0)
 				throw vector::OutOfLimit();
-			return (this->_tab[index]);
+			return (this->_data[index]);
 		}
 
 		vector & operator=(vector const & toCopy)
 		{
 			if (this != &toCopy)
 			{
-				if (this->_tab != NULL)
+				if (this->_data != NULL)
 					this->clear();
-				this->_tab = new T [toCopy.size()];
+				this->_data = new T [toCopy.size()];
 				this->_size = toCopy.size();
-				this->_countTab = toCopy._countTab;
-				this->_tab = tubTab(toCopy.size());
+				this->_dataCounter = toCopy._dataCounter;
+				this->_data = tubTab(toCopy.size());
 			}
 			return (*this);
 		}
+		
+/**************************************Element access****************************************************/
+
+			reference front() {return(_data[0]);}
+			const_reference front() const {return(_data[0]);}
+
+			reference	at(n) 
+			{
+				if (n > _dataCounter)
+					throw vector::OutOfLimit();
+				return (_data[n]);
+			}
+
+			const_reference	at(n) const
+			{
+				if (n > _dataCounter)
+					throw vector::OutOfLimit();
+				return (_data[n]);
+			}
+
+		reference back(){return (_data[_dataCounter]);}
+		const_reference back()const {return (_data[_dataCounter]);}
+
 
 /************************************************************************ EXCEPTION ************************************************************************/
 
