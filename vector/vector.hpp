@@ -30,21 +30,44 @@ namespace ft
 		size_type _dataCounter;
 		T *_data;
 	public:
-		vector(void):_capacity(0),  _dataCounter(0), _data(0){}
+	/***************************************** constructor***************************************/
 
-		vector(size_type size, T elem):_capacity(size), _dataCounter(size)
+		vector (const allocator_type& alloc = allocator_type()):_capacity(0),  _dataCounter(0), _data(0){(void)alloc;}
+
+		vector (size_type n, const value_type & val = value_type(), const allocator_type & alloc = allocator_type()):_capacity(0),  _dataCounter(0), _data(0)
 		{
-			_data = _myAlloc.allocate(_capacity);
-			for (size_type i = 0; i < _dataCounter; i++)
+			std::cout << "\nfill constructor\n" << std::endl;
+			(void)alloc;
+			for (size_type i = 0; i < n; i++)
 			{
-				_data[i] = elem;
+				this->push_back(val);
 			}
 		}
+
+
+		template <class InputIterator>
+		vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()):_capacity(0),  _dataCounter(0), _data(0)
+		{
+			std::cout << "construct avec des iterator\n" << std::endl;
+			(void)alloc;
+			for (; first != last ; first++)
+			{
+				push_back(*first);
+			}
+			push_back(*last);
+		}
+
+		vector (const vector& x):_capacity(0),  _dataCounter(0), _data(0)
+		{
+			*this = x; 
+		}
+
 		~vector()
 		{
 			this->clear();
 		}
 		pointer	getData()const {return (_data);}
+
 /************************************************************************  iterator ************************************************************************/
 		class  iterator 
 		{
@@ -214,6 +237,14 @@ namespace ft
 			return (newTab);
 		}
 
+		void	copyData(vector & src,  vector & dst)
+		{
+			for (size_type i = 0; i < src.size(), i++;)
+			{
+				_myAlloc.construct(dst._data + i, src._data[i]);
+			}
+		}
+
 /************************************************************************ Capacity ************************************************************************/
 
 		size_type size() const {return (_dataCounter);}
@@ -303,7 +334,6 @@ namespace ft
 				}
 				else if (it == pos)
 					ret = newData + _dataCounter;
-
 			}
 			this->clear();
 			_data = newData;
@@ -349,36 +379,108 @@ namespace ft
 			{
 				if (this->_data != NULL)
 					this->clear();
-				this->_data = new T [toCopy.size()];
+				pointer newTab = _myAlloc.allocate(toCopy.capacity());
+				copyData(toCopy, *this);
 				this->_size = toCopy.size();
 				this->_dataCounter = toCopy._dataCounter;
-				this->_data = tubTab(toCopy.size());
 			}
 			return (*this);
 		}
+
+		// vector& operator=(const vector& x)
+        //     {
+		//         if (data != NULL)
+		//             clear();
+		//         if (_capacity < x._capacity)
+		//             reserve(x._capacity);
+        //         for(const_iterator start = x.begin(); start != x.end(); start++)
+        //             push_back(*start);
+        //         return *this;
+        //     }
 		
 /**************************************Element access****************************************************/
 
-			reference front() {return(_data[0]);}
-			const_reference front() const {return(_data[0]);}
+		reference front() {return(_data[0]);}
+		const_reference front() const {return(_data[0]);}
 
-			reference	at(n) 
-			{
-				if (n > _dataCounter)
-					throw vector::OutOfLimit();
-				return (_data[n]);
-			}
+		reference at (size_type n)
+		{
+			if (n > _dataCounter)
+				throw vector::OutOfLimit();
+			return (_data[n]);
+		}
 
-			const_reference	at(n) const
-			{
-				if (n > _dataCounter)
-					throw vector::OutOfLimit();
-				return (_data[n]);
-			}
+		const_reference at (size_type n) const
+		{
+			if (n > _dataCounter)
+				throw vector::OutOfLimit();
+			return (_data[n]);
+		}
 
 		reference back(){return (_data[_dataCounter]);}
 		const_reference back()const {return (_data[_dataCounter]);}
 
+		template <class M>
+		void ft_swap(M &a, M &b)
+		{
+			M tmp = a;
+			a = b;
+			b = tmp;
+		}
+		void swap (vector& x)
+		{
+			ft_swap(_data, x._data);
+			ft_swap(_myAlloc, x._myAlloc);
+			ft_swap(_dataCounter, x._dataCounter);
+            ft_swap(_capacity, x._capacity);
+
+		}
+
+		iterator insert (iterator position, const value_type& val)
+		{
+			size_type index = 0;
+			for (iterator it = this->begin(); it != this->begin(); it++)
+			{
+				index++;
+			}
+			insert(position, 1, val);
+			return (begin() + index);
+		}
+		
+		void insert(iterator position, size_type n, const value_type& val)
+		{
+			vector tmp;
+			iterator it = this->begin();
+			for (; it != position;  it++)
+				tmp.push_back(*it);
+			for (; n > 0; n--)
+				tmp.push_back(val);
+
+			for (; it != this->end(); it++)
+			{
+				tmp.push_back(*it);
+			}
+			this->swap(tmp);
+		}
+		// template <class InputIterator>
+		// void insert (iterator position, InputIterator first, InputIterator last)
+		// {
+		// 	vector tmp;
+		// 	iterator it = this->begin();
+		// 	for (; position != first; position++)
+		// 	{
+		// 		tmp.push_back(*position);
+		// 	}
+		// 	for (; first != last; first++)
+		// 	{
+		// 		tmp.push_back(*first);
+		// 	}
+		// 	for (; it != this->end(); it++)
+		// 	{
+		// 		tmp.push_back(*it);
+		// 	}
+		// 	this->swap(tmp);
+		// }
 
 /************************************************************************ EXCEPTION ************************************************************************/
 
