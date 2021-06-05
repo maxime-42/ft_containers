@@ -16,3 +16,16 @@ iterator vector:
 	https://www.geeksforgeeks.org/stdallocator-in-cpp-with-examples/
 
 	https://stackoverflow.com/questions/3574831/why-does-the-postfix-increment-operator-take-a-dummy-parameter
+
+	enable_if:
+	https://koor.fr/Cpp/Tutos.wp
+
+	https://www.bfilipek.com/2016/02/notes-on-c-sfinae.html
+	
+	https://www.youtube.com/watch?v=dR64GQb4AGo
+
+	https://www.geeksforgeeks.org/template-specialization-c/
+
+	http://casteyde.christian.free.fr/cpp/cours/online/x4755.html
+
+	https://koor.fr/Cpp/Templates/Traits.wp

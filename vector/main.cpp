@@ -85,21 +85,12 @@ void originalVector()
 #include <iostream>
 #include <vector>
 
-// int main ()
-// {
-//   // originalVector();
-//   std::cout << "\n" << std::endl;
-//   myVector();
-
-//   return 0;
-// }
-
-using namespace std;
-  
-int main()
+int main ()
 {
-  originalVector();
+  // originalVector();
+  std::cout << "\n" << std::endl;
   // myVector();
-  ft::vector<int> vect(5, 10);
+  ft::vector<int> vect(2u, 3);
+
   return (0);
 }

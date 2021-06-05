@@ -4,6 +4,7 @@
 #include <memory>
 #include <iostream>
 #include <limits>
+#include <type_traits>
 
 namespace ft
 {
@@ -30,6 +31,16 @@ namespace ft
 		size_type _dataCounter;
 		T *_data;
 	public:
+		// template<bool, class T = void>			
+		struct enable_if {};
+		
+		// template<class T>			
+		struct enable_if<true, T>{ 
+			typedef T type; 
+		};
+
+
+
 	/***************************************** constructor***************************************/
 
 		vector (const allocator_type& alloc = allocator_type()):_capacity(0),  _dataCounter(0), _data(0){(void)alloc;}
@@ -46,7 +57,10 @@ namespace ft
 
 
 		template <class InputIterator>
-		vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()):_capacity(0),  _dataCounter(0), _data(0)
+            // vector (typename ft::Enable_if<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type first, InputIterator last)
+		// vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()):_capacity(0),  _dataCounter(0), _data(0)
+		vector (typename enable_if<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type first, InputIterator last, const allocator_type& alloc = allocator_type())
+
 		{
 			std::cout << "construct avec des iterator\n" << std::endl;
 			(void)alloc;
@@ -67,6 +81,7 @@ namespace ft
 			this->clear();
 		}
 		pointer	getData()const {return (_data);}
+
 
 /************************************************************************  iterator ************************************************************************/
 		class  iterator 
@@ -216,6 +231,7 @@ namespace ft
 
 		rev_iterator rend() 	{return   rev_iterator(&_data[0]); }
 		rev_iterator rbegin()	{ return  rev_iterator(&_data[_dataCounter]); }
+
 
 /************************************************************************ utile ************************************************************************/
 
