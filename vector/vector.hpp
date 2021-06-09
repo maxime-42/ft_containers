@@ -11,7 +11,6 @@ namespace ft
 	template < class T, class Alloc = std::allocator<T> > 
 	class vector
 	{
-	
 	public:
 /************************************************************************ Typedef ************************************************************************/
 		typedef T							value_type;
@@ -24,22 +23,12 @@ namespace ft
 		typedef size_t						size_type;
 		typedef std::forward_iterator_tag	iterator_category;
 		
-
 	protected:
 		Alloc _myAlloc;
 		size_type _capacity;
 		size_type _dataCounter;
 		T *_data;
 	public:
-		// template<bool, class T = void>			
-		struct enable_if {};
-		
-		// template<class T>			
-		struct enable_if<true, T>{ 
-			typedef T type; 
-		};
-
-
 
 	/***************************************** constructor***************************************/
 
@@ -47,33 +36,29 @@ namespace ft
 
 		vector (size_type n, const value_type & val = value_type(), const allocator_type & alloc = allocator_type()):_capacity(0),  _dataCounter(0), _data(0)
 		{
-			std::cout << "\nfill constructor\n" << std::endl;
 			(void)alloc;
-			for (size_type i = 0; i < n; i++)
+			_capacity = n;
+			_data = _myAlloc.allocate(n);
+			for (; _dataCounter < n; _dataCounter++)
 			{
-				this->push_back(val);
+				_myAlloc.construct(_data + _dataCounter, val);
 			}
+			// std::cout << "_datacounter = " << _dataCounter << std::endl;
 		}
 
-
 		template <class InputIterator>
-            // vector (typename ft::Enable_if<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type first, InputIterator last)
-		// vector (InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type()):_capacity(0),  _dataCounter(0), _data(0)
-		vector (typename enable_if<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type first, InputIterator last, const allocator_type& alloc = allocator_type())
-
+	    vector (typename std::enable_if<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type first, InputIterator last, const allocator_type& alloc = allocator_type()):_capacity(0),  _dataCounter(0), _data(0)
 		{
-			std::cout << "construct avec des iterator\n" << std::endl;
 			(void)alloc;
 			for (; first != last ; first++)
 			{
 				push_back(*first);
 			}
-			push_back(*last);
 		}
 
 		vector (const vector& x):_capacity(0),  _dataCounter(0), _data(0)
 		{
-			*this = x; 
+			*this = x;
 		}
 
 		~vector()
@@ -117,7 +102,7 @@ namespace ft
 			iterator &  operator-=(const difference_type& movement){this->m_ptr -= movement;return (*this);}
 
 			/***************** compared for equivalence using the equality/inequality operators***********/
-			friend bool operator!= (const   iterator& a, const   iterator& b) { return a.m_ptr != b.m_ptr; };
+			friend bool operator!=(const   iterator& a, const   iterator& b) { return a.m_ptr != b.m_ptr; };
 			friend bool operator== (const   iterator& a, const   iterator& b) { return a.m_ptr == b.m_ptr; };
 			
 			/*****************Can be compared with inequality relational operators (<, >, <= and >=).*********/
@@ -183,54 +168,57 @@ namespace ft
 
 
 /************************************************************************  reverse Iterator ************************************************************************/
-		class  rev_iterator 
+		class  reverse_iterator 
 		{
 		public:
+		
 		/***************Is default-constructible, copy-constructible, copy-assignable and destructible	******************/
-			rev_iterator(){}
-			rev_iterator(pointer ptr) : m_ptr(ptr) {}
-			rev_iterator(rev_iterator const & toCopy)	{m_ptr = toCopy.m_ptr;}
-			~rev_iterator(){}
+			reverse_iterator(){}
+			reverse_iterator(pointer ptr) : m_ptr(ptr) {}
+			reverse_iterator(reverse_iterator const & toCopy)	{m_ptr = toCopy.m_ptr;}
+			~reverse_iterator(){}
 
 			/*********************Can be dereferenced as an rvalue (if in a dereferenceable state)***********************************/
 			reference operator*() const { return *m_ptr; }
 			pointer operator->() { return m_ptr; }
 
-			/*********************mutable rev_iterators********************/
-			rev_iterator operator=(const   rev_iterator& a){m_ptr = a.m_ptr; return (*this);}
+			/*********************mutable reverse_iterators********************/
+			reverse_iterator operator=(const   reverse_iterator& a){m_ptr = a.m_ptr; return (*this);}
 
 			/*********************incrementation******************/
 			/* Prefix increment	*/
-			rev_iterator&	operator++() { m_ptr--; return (*this);	}
+			// reverse_iterator&	operator++() { m_ptr--; std::cout << "prefix " << std::endl; return (*this);	}
 			/* Postfix increment*/
-			rev_iterator	operator++(int) { --(*this); return (*this); }
-			rev_iterator	operator+(const difference_type& movement)	{m_ptr-= movement; return (*this);	}
+			reverse_iterator&   operator++(){--this->m_ptr;return (*this);}
+
+			reverse_iterator	operator++(int) { --(*this); std::cout << "Postfix " << std::endl; return (*this); }
+			reverse_iterator	operator+(const difference_type& movement)	{m_ptr-= movement; return (*this);	}
 
 			/*****************Can be decremented*************************/
-			rev_iterator &	operator--(){++m_ptr;return (*this);}
-			rev_iterator &	operator--(int){++m_ptr; return (*this);}
-			rev_iterator	operator-(const int& movement){pointer oldPtr = this->m_ptr; this->m_ptr+=movement; this->m_ptr = oldPtr;return *this;}
+			reverse_iterator &	operator--(){++m_ptr;return (*this);}
+			reverse_iterator &	operator--(int){++m_ptr; return (*this);}
+			reverse_iterator	operator-(const int& movement){pointer oldPtr = this->m_ptr; this->m_ptr+=movement; this->m_ptr = oldPtr;return *this;}
 
 			/***************assignment operations += and -= ************ */
-		    rev_iterator &  operator+=(const difference_type& movement){this->m_ptr -= movement;return (*this);}
-			rev_iterator &  operator-=(const difference_type& movement){this->m_ptr += movement;return (*this);}
+		    reverse_iterator &  operator+=(const difference_type& movement){this->m_ptr -= movement;return (*this);}
+			reverse_iterator &  operator-=(const difference_type& movement){this->m_ptr += movement;return (*this);}
 
 			/***************** compared for equivalence using the equality/inequality operators***********/
-			friend bool operator!= (const   rev_iterator& a, const   rev_iterator& b) { return a.m_ptr != b.m_ptr; };
-			friend bool operator== (const   rev_iterator& a, const   rev_iterator& b) { return a.m_ptr == b.m_ptr; };
+			friend bool operator!= (const   reverse_iterator& a, const   reverse_iterator& b) { return a.m_ptr != b.m_ptr; };
+			friend bool operator== (const   reverse_iterator& a, const   reverse_iterator& b) { return a.m_ptr == b.m_ptr; };
 			
 			/*****************Can be compared with inequality relational operators (<, >, <= and >=).*********/
-			friend bool operator<(const   rev_iterator& a, const   rev_iterator& b) { return (a.m_ptr < b.m_ptr); };
-			friend bool operator>(const   rev_iterator& a, const   rev_iterator& b) { return (a.m_ptr > b.m_ptr); };
- 			friend bool operator<=(const   rev_iterator& a, const   rev_iterator& b) { return (a.m_ptr <= b.m_ptr); };
-			friend bool operator>=(const   rev_iterator& a, const   rev_iterator& b) { return (a.m_ptr >= b.m_ptr); };
+			friend bool operator<(const   reverse_iterator& a, const   reverse_iterator& b) { return (a.m_ptr < b.m_ptr); };
+			friend bool operator>(const   reverse_iterator& a, const   reverse_iterator& b) { return (a.m_ptr > b.m_ptr); };
+ 			friend bool operator<=(const   reverse_iterator& a, const   reverse_iterator& b) { return (a.m_ptr <= b.m_ptr); };
+			friend bool operator>=(const   reverse_iterator& a, const   reverse_iterator& b) { return (a.m_ptr >= b.m_ptr); };
 
 		private:
 			pointer m_ptr;
 		};
 
-		rev_iterator rend() 	{return   rev_iterator(&_data[0]); }
-		rev_iterator rbegin()	{ return  rev_iterator(&_data[_dataCounter]); }
+		reverse_iterator rend() 	{return   reverse_iterator(&_data[-1]);}
+		reverse_iterator rbegin()	{ return  reverse_iterator(&_data[_dataCounter - 1]); }
 
 
 /************************************************************************ utile ************************************************************************/
@@ -253,9 +241,9 @@ namespace ft
 			return (newTab);
 		}
 
-		void	copyData(vector & src,  vector & dst)
+		void	copyData(vector const & src,  vector & dst, size_type size)
 		{
-			for (size_type i = 0; i < src.size(), i++;)
+			for (size_type i = 0; i < size; i++)
 			{
 				_myAlloc.construct(dst._data + i, src._data[i]);
 			}
@@ -302,9 +290,7 @@ namespace ft
 		void push_back(T elem)
 		{
 			if (_dataCounter < _capacity)
-			{
 				_data[_dataCounter++] = elem;
-			}
 			else
 			{
 				sizeCompute();
@@ -380,7 +366,6 @@ namespace ft
 			return (ret);
 		}
 
-	
 /************************************************************************ OPERATOR ************************************************************************/
 		T & operator[](size_type index)
 		{
@@ -388,6 +373,14 @@ namespace ft
 				throw vector::OutOfLimit();
 			return (this->_data[index]);
 		}
+		
+		T & operator[](size_type index) const
+		{
+			if (index >= this->_dataCounter || index < 0)
+				throw vector::OutOfLimit();
+			return (this->_data[index]);
+		}
+
 
 		vector & operator=(vector const & toCopy)
 		{
@@ -395,25 +388,17 @@ namespace ft
 			{
 				if (this->_data != NULL)
 					this->clear();
-				pointer newTab = _myAlloc.allocate(toCopy.capacity());
-				copyData(toCopy, *this);
-				this->_size = toCopy.size();
-				this->_dataCounter = toCopy._dataCounter;
+				this->_data = _myAlloc.allocate(toCopy.capacity());
+				this->_dataCounter = 0;
+				for(size_type i = 0; i < toCopy.size(); i++)
+				{
+					_myAlloc.construct(this->_data + this->_dataCounter, toCopy[i]);
+					this->_dataCounter += 1;
+				}
+				this->_capacity = toCopy.capacity();
 			}
 			return (*this);
 		}
-
-		// vector& operator=(const vector& x)
-        //     {
-		//         if (data != NULL)
-		//             clear();
-		//         if (_capacity < x._capacity)
-		//             reserve(x._capacity);
-        //         for(const_iterator start = x.begin(); start != x.end(); start++)
-        //             push_back(*start);
-        //         return *this;
-        //     }
-		
 /**************************************Element access****************************************************/
 
 		reference front() {return(_data[0]);}

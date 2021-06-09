@@ -3,11 +3,7 @@ in progress
 
 iterator vector:
 
-	https://www.geeksforgeeks.org/introduction-iterators-c/
 
-	https://stackoverflow.com/questions/3582608/how-to-correctly-implement-custom-iterators-and-const-iterators
-
-	https://internalpointers.com/post/writing-custom-iterators-modern-cpp
 
 	https://gist.github.com/jeetsukumaran/307264
 
@@ -15,7 +11,15 @@ iterator vector:
 
 	https://www.geeksforgeeks.org/stdallocator-in-cpp-with-examples/
 
+	operator:
+	https://www.geeksforgeeks.org/introduction-iterators-c/
+
+	https://stackoverflow.com/questions/3582608/how-to-correctly-implement-custom-iterators-and-const-iterators
+
+	https://internalpointers.com/post/writing-custom-iterators-modern-cpp
+
 	https://stackoverflow.com/questions/3574831/why-does-the-postfix-increment-operator-take-a-dummy-parameter
+
 
 	enable_if:
 	https://koor.fr/Cpp/Tutos.wp
@@ -24,8 +28,14 @@ iterator vector:
 	
 	https://www.youtube.com/watch?v=dR64GQb4AGo
 
-	https://www.geeksforgeeks.org/template-specialization-c/
-
 	http://casteyde.christian.free.fr/cpp/cours/online/x4755.html
 
 	https://koor.fr/Cpp/Templates/Traits.wp
+
+	Template Specialization in C++:
+	https://www.geeksforgeeks.org/template-specialization-c/
+
+	rvalue and lvalue:
+	https://www.youtube.com/watch?v=EElsUaoWxIo
+
+
