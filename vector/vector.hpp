@@ -63,7 +63,7 @@ namespace ft
 
 		~vector()
 		{
-			this->clear();
+			this->ft_clear();
 		}
 		pointer	getData()const {return (_data);}
 
@@ -263,7 +263,7 @@ namespace ft
 			{
 				this->_capacity *= 2 ;
 				pointer newTab = this->tubTab(_capacity);
-				this->clear();
+				this->ft_clear();
 				while (_dataCounter < n)
 				{
 					_myAlloc.construct(newTab + _dataCounter, val);
@@ -281,7 +281,7 @@ namespace ft
 			{
 				_capacity = n;
 				pointer newTab = this->tubTab(n * 2);
-				this->clear();
+				this->ft_clear();
 				_data = newTab;
 			}
 		}
@@ -297,7 +297,7 @@ namespace ft
 				pointer newTab = tubTab(this->_capacity);
 				_myAlloc.construct(newTab + _dataCounter, elem);
 				_dataCounter++;
-				this->clear();
+				this->ft_clear();
 				_data = newTab;
 			}
 		}
@@ -310,7 +310,7 @@ namespace ft
 			}
 		}
 
-		void clear()
+		void ft_clear()
 		{
 			for (size_type i = 0; i < _capacity; i++)
 			{
@@ -320,49 +320,75 @@ namespace ft
 			_data = 0;
 		}
 
-
-		iterator erase(iterator &pos)
+		void clear()
 		{
-			_dataCounter = 0;
-			_capacity -= 1;
-			iterator ret;
-			pointer newData = _myAlloc.allocate(_capacity);
-			for (iterator it = this->begin(); it != this->end(); it++)
+			for (size_type i = 0; i < _capacity; i++)
 			{
-				if (it != pos)
-				{
-					_myAlloc.construct(newData + _dataCounter, *it);
-					_dataCounter++;
-				}
-				else if (it == pos)
-					ret = newData + _dataCounter;
+				_myAlloc.destroy(_data + i);
 			}
-			this->clear();
+			_myAlloc.deallocate(_data, _capacity);
+			_data = 0;
+			_dataCounter = 0;
+			_capacity = 0;
+		}
+
+		iterator erase(iterator pos)
+		{
+			_capacity -= 1;
+			size_type tmpCounter = 0;
+			pointer newData = _myAlloc.allocate(_capacity);
+			for (iterator it = this->begin(); it != pos; it++)
+			{
+				_myAlloc.construct(newData + tmpCounter, *it);
+				tmpCounter++;
+			}
+			iterator ret = newData + 1;
+			while (pos++ != this->end())
+			{
+				_myAlloc.construct(newData + tmpCounter, *pos);
+				tmpCounter++;
+			}
+			this->ft_clear();
+			_dataCounter = tmpCounter;
 			_data = newData;
 			return (ret);
 		}
 
-		iterator erase(iterator &start, iterator &end)
+		size_type	sizeCompute(iterator first, iterator last)
 		{
-			iterator ret;
-			_dataCounter = 0;
-			_capacity = _capacity - (end - start);
-			pointer newData = _myAlloc.allocate(_capacity);
-			for (iterator it = this->begin(); it != this->end(); it++)
+			size_type size = 0;
+			while (first != last)
 			{
-				if (it != start)
-				{
-					_myAlloc.construct(newData + _dataCounter, *it);
-					_dataCounter++;
-				}
-				else if (it == start)
-				{
-					while (it != end)
-						it++;
-					ret = newData + _dataCounter;
-					it++;
-				}
+				first++;
+				size++;
 			}
+			return ((size == 0) ? 1 : size);			
+		}
+
+		iterator erase(iterator first, iterator last)
+		{
+			_capacity -= sizeCompute(first, last);
+			pointer tmpData = _myAlloc.allocate(_capacity);
+			size_type tmpCounter = 0;
+			// std::cout << "first = " << *first << std::endl;
+			// std::cout << "last = " << *last << std::endl;
+
+			for (iterator it = this->begin(); it != first; it++)
+			{
+				// std::cout << "it = " << *it << std::endl;
+				_myAlloc.construct(tmpData + tmpCounter, *it);
+				tmpCounter++;
+			}
+			iterator ret = tmpData + 1;
+			for (; last != this->end(); last++)
+			{
+				// std::cout << "last = " << *last << std::endl;
+				_myAlloc.construct(tmpData + tmpCounter, *last);
+				tmpCounter++;
+			}
+			_dataCounter = tmpCounter;
+			ft_clear();
+			_data = tmpData;
 			return (ret);
 		}
 
@@ -387,7 +413,7 @@ namespace ft
 			if (this != &toCopy)
 			{
 				if (this->_data != NULL)
-					this->clear();
+					this->ft_clear();
 				this->_data = _myAlloc.allocate(toCopy.capacity());
 				this->_dataCounter = 0;
 				for(size_type i = 0; i < toCopy.size(); i++)
@@ -463,25 +489,26 @@ namespace ft
 			}
 			this->swap(tmp);
 		}
-		// template <class InputIterator>
-		// void insert (iterator position, InputIterator first, InputIterator last)
-		// {
-		// 	vector tmp;
-		// 	iterator it = this->begin();
-		// 	for (; position != first; position++)
-		// 	{
-		// 		tmp.push_back(*position);
-		// 	}
-		// 	for (; first != last; first++)
-		// 	{
-		// 		tmp.push_back(*first);
-		// 	}
-		// 	for (; it != this->end(); it++)
-		// 	{
-		// 		tmp.push_back(*it);
-		// 	}
-		// 	this->swap(tmp);
-		// }
+		
+		template <class InputIterator>
+        void insert (iterator position, typename std::enable_if<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type first, InputIterator last)
+		{
+			vector tmp;
+			iterator it = this->begin();
+			for (iterator it = this->begin(); it < position; it++)
+			{
+				tmp.push_back(*it);
+			}
+			for (; first != last; first++)
+			{
+				tmp.push_back(*first);
+			}
+			for (; position != this->end(); position++)
+			{
+				tmp.push_back(*position);
+			}
+			this->swap(tmp);
+		}
 
 /************************************************************************ EXCEPTION ************************************************************************/
 
