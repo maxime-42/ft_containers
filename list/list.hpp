@@ -42,11 +42,44 @@ namespace ft
 		{
 			_head = _alloc_node.allocate(1);
 			_myAlloc.construct(&_head->data, 555);
-			_head->next = NULL;
-			_head->prev = NULL;
+			_head->next = _head;
+			_head->prev = _head;
 			 (void)alloc;
 		}
 
+		list (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type())
+		{
+			while (n > 0)
+			{
+				this->push_back(val);
+				n--;
+			}
+		}
+		list (const list& x)
+		{
+				this->push_back(x);
+		}
+
+		template <typename T, typename Alloc> template <class InputIterator>
+		list<T, Alloc>::list(typename std::enable_if<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type first, InputIterator last, const allocator_type& alloc) :_head(0), _size(0)
+		{
+			_head = _alloc_node.allocate(1);
+			_head->prev = _head;
+			_head->next = _head;
+    		while (first != last)
+    		{
+        		push_back(*first);
+        		first++;
+    		}
+		}
+		void delete_one_Node()
+		{
+			
+		}
+		~list()
+		{
+
+		}
 /************************************************************************  iterator ************************************************************************/
 		class  iterator 
 		{
@@ -68,18 +101,18 @@ namespace ft
 			value_type operator->() { return (&m_ptr); }
 
 			// /*********************mutable iterators********************/
-			// iterator operator=(const   iterator& a){m_ptr = a.m_ptr; return (*this);}
 
 			// /*********************incrementation******************/
 			// /* Prefix increment	*/
-			iterator&	operator++() { m_ptr->next; return (*this);	}
+			iterator&	operator++(int) { m_ptr = m_ptr->next; return (*this);	}
+
 			// /* Postfix increment*/
-			iterator	operator++(int) { ++(*this); return (*this); }
+			// iterator	operator++(int) { ++(*this); return (*this); }
 			// iterator	operator+(const difference_type& movement)	{m_ptr+= movement; return (*this);	}
 
-			// /*****************Can be decremented*************************/
-			// iterator &	operator--(){--m_ptr;return (*this);}
-			// iterator &	operator--(int){--m_ptr; return (*this);}
+			// /*****************Can be decremented*************************/        
+			iterator        &operator--() { m_ptr = m_ptr->prev; return *this; }; // --a
+        	iterator        operator--(int) { iterator it = *this; --(*this); return it; }; // a--
 			// iterator	operator-(const int& movement){pointer oldPtr = this->m_ptr; this->m_ptr+=movement; this->m_ptr = oldPtr;return *this;}
 
 			// /***************assignment operations += and -= ************ */
@@ -88,48 +121,43 @@ namespace ft
 
 			// /***************** compared for equivalence using the equality/inequality operators***********/
 			friend bool operator!=(const   iterator& a, const   iterator& b) { return a.m_ptr != b.m_ptr; };
-			// friend bool operator== (const   iterator& a, const   iterator& b) { return a.m_ptr == b.m_ptr; };
+			friend bool operator== (const   iterator& a, const   iterator& b) { return a.m_ptr == b.m_ptr; };
 			
-			// /*****************Can be compared with inequality relational operators (<, >, <= and >=).*********/
-			// friend bool operator<(const   iterator& a, const   iterator& b) { return (a.m_ptr < b.m_ptr); };
-			// friend bool operator>(const   iterator& a, const   iterator& b) { return (a.m_ptr > b.m_ptr); };
- 			// friend bool operator<=(const  iterator& a, const   iterator& b) { return (a.m_ptr <= b.m_ptr); };
-			// friend bool operator>=(const  iterator& a, const   iterator& b) { return (a.m_ptr >= b.m_ptr); };
+			/*****************Can be compared with inequality relational operators (<, >, <= and >=).*********/
+			friend bool operator<(const   iterator& a, const   iterator& b) { return (a.m_ptr < b.m_ptr); };
+			friend bool operator>(const   iterator& a, const   iterator& b) { return (a.m_ptr > b.m_ptr); };
+ 			friend bool operator<=(const  iterator& a, const   iterator& b) { return (a.m_ptr <= b.m_ptr); };
+			friend bool operator>=(const  iterator& a, const   iterator& b) { return (a.m_ptr >= b.m_ptr); };
 
 		private:
 			pointeur m_ptr;
 		};
 		iterator begin() {return   iterator(_head->next); }
-		// iterator end()   { return  iterator(_head); }
+		iterator end()   { return  iterator(_head); }
+
 		void push_back(const value_type& val)
 		{
-			t_node **last = _&head->next;
 			t_node *new_node = _alloc_node.allocate(1);
-			// _alloc_node.construct(&new_node->data, val);
-			_myAlloc.construct(&new_node->data, val)
+			_myAlloc.construct(&new_node->data, val);
 			new_node->next = _head;
-			new_node->prev = _head->next;
+			new_node->prev = _head->prev;
+			_head->prev->next = new_node;
 			_head->prev = new_node;
+			_size++;
+        }
+
+		void push_front(const value_type& val)
+		{
+			t_node *new_node = _alloc_node.allocate(1);
+			_myAlloc.construct(&new_node->data, val);
+			new_node->prev = _head;
+			new_node->next = _head->next;
+			_head->next->prev = new_node;
 			_head->next = new_node;
-			*last->next = new_node;
 			_size++;
         }
 
 		size_type	size(void){return (_size);}
-		// void push_back(const value_type& val)
-		// {
-		// 	t_node *new_node = _alloc_node.allocate(1);
-		// 	_myAlloc.construct(new_node, val);
-		// 	node->data = val;
-		// 	_myAlloc.construct(node->data, val;
-		// 	_myAlloc.construct(new_node->next NULL);
-		// 	_myAlloc.construct(new_node->prev, NULL);
-
-		// 	new_node->next = 0;
-		// 	_control.next->next = new_node;
-		// 	_control.prev = new_node;
-		// 	_size--;
-        // }
 		
 	};
 }
