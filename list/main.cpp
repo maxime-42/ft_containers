@@ -1,8 +1,12 @@
 #include "list.hpp"
 #include <iostream>
 #include <list>
+#include <string>
+#include <cctype>
+
 #define SIZE 5
-// using namespace std;
+
+using namespace std;
 
 void test_push_front()
 {
@@ -88,42 +92,122 @@ void test_sort()
   std::cout << '\n';
 }
 
+
+bool compare_nocase (const std::string& first, const std::string& second)
+{
+  unsigned int i=0;
+  while ( (i<first.length()) && (i<second.length()) )
+  {
+    if (tolower(first[i])<tolower(second[i])) return true;
+    else if (tolower(first[i])>tolower(second[i])) return false;
+    ++i;
+  }
+  return ( first.length() < second.length() );
+}
+
 void my_test_sort()
 {
   ft::list<int> mylist;
   ft::list<int>::iterator it;
   mylist.push_back (5);
   mylist.push_back (1);
-//   mylist.push_back (9);
-//   mylist.push_back (2);
+  mylist.push_back (9);
+  mylist.push_back (2);
+  mylist.push_back (7);
+  mylist.push_back (20);
+  mylist.push_back (4);
+  mylist.push_back (6);
+  mylist.push_back (0);
 
-
+  std::cout << "size = " << mylist.size() << std::endl;
   std::cout << "befor sort mylist contains:\n";
   for (it=mylist.begin(); it!=mylist.end(); it++)
     std::cout << *it << " addr = " << &*it << "\n";
   std::cout << "\n\n";
 
+  // std::cout << "sort :\n" << std::endl;
   mylist.sort();
-    
-    it = mylist.begin();it--;
-  std::cout << "begin =  " << *it;
-
-    // it = mylist.end();
-//     it++;
-//   std::cout << "\nend =  " << *it;
-    return ;
-  std::cout << "after sor  mylist contains:\n";
-  for (it=mylist.begin(); it!=mylist.end(); it++)
+  std::cout << "\nafter sort  mylist contains:\n";
+  it = mylist.begin();
+  for (it=mylist.begin(); it != mylist.end(); it++)
     std::cout << *it << " addr = " << &*it<< "\n";
+  std::cout << '\n';
   std::cout << '\n';
 }
 
+using namespace std;
+  
+void  test()
+{
+    std::list<int> l1;
+    std::list<int> l2 ;
+    l1.push_back(10);
+    l1.push_back(20);
+    l1.push_back(30);
+
+    l2.push_back(50);
+    l2.push_back(40);
+    l2.push_back(50);
+
+    // list<int> l3 = { 6, 7, 8 };
+    std::cout << "list l1 befor splice:" << std::endl;
+    for (std::list<int>::iterator x = l1.begin() ; x != l1.end(); x++)
+        cout << *x << " address =  " << &*x <<std::endl;
+
+    std::cout << "\nlist l2 befor splice:" << std::endl;
+    for (std::list<int>::iterator x = l2.begin() ; x != l2.end(); x++)
+        cout << *x << " address =  " << &*x <<std::endl;
+
+
+    // transfer all the elements of l2
+    l1.splice(l1.begin(), l2);
+  
+    // at the beginning of l1
+    cout << "\nlist l1 after splice operation" << endl;
+    for (std::list<int>::iterator x = l1.begin() ; x != l1.end(); x++)
+        cout << *x << " address =  " << &*x <<std::endl;
+
+  
+    // transfer all the elements of l1
+    // l3.splice(l3.end(), l1);
+  
+    // // at the end of l3
+    // cout << "\nlist l3 after splice operation" << endl;
+    // for (auto x : l3)
+    //     cout << x << " ";
+}
+
+void  test_2()
+{
+  ft::list<std::string> mylist;
+  ft::list<std::string>::iterator it;
+  mylist.push_back ("one");
+  mylist.push_back ("two");
+  mylist.push_back ("Three");
+
+  mylist.sort();
+
+  std::cout << "mylist contains:";
+  for (it=mylist.begin(); it!=mylist.end(); ++it)
+    std::cout << ' ' << *it;
+  std::cout << '\n';
+
+  mylist.sort(compare_nocase);
+
+  std::cout << "mylist contains:";
+  for (it=mylist.begin(); it!=mylist.end(); ++it)
+    std::cout << ' ' << *it;
+  std::cout << '\n';
+}
 
 int main(void) 
 {
     // test_push_front();
     // test_swap();
-    my_test_sort();
+    // my_test_sort();
+    // test_2();
+    test();
+
     // std::cout << "\n\n" << std::endl;
     // test_push_back();
   

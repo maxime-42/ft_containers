@@ -35,13 +35,14 @@ namespace ft
 		size_type		_size;
 		Alloc 			_myAlloc;
         std::allocator<struct s_node> _alloc_node;
+	    typedef t_node *  pointer_node;
 
     
     public:
 		list (const allocator_type& alloc = allocator_type()):_head(0), _size(0)	
 		{
 			_head = _alloc_node.allocate(1);
-			// _myAlloc.construct(&_head->data, 555);
+			_myAlloc.construct(&_head->data, T());
 			_head->next = _head;
 			_head->prev = _head;
 			 (void)alloc;
@@ -110,7 +111,6 @@ namespace ft
 		class  iterator 
 		{
 		public:
-		    typedef t_node *                           pointer_node;
 
 		/***************Is default-constructible, copy-constructible, copy-assignable and destructible	******************/
 			iterator():m_ptr(0){}
@@ -124,14 +124,11 @@ namespace ft
 			// value_type *operator*() const { return (&m_ptr->data); }
 			value_type		&operator*()const {return m_ptr->data;}
 
-			value_type operator->() { return (&m_ptr); }
+			pointer_node operator->() { return (m_ptr); }
 
-			// /*********************mutable iterators********************/
-
-			// /*********************incrementation******************/
-			// /* Prefix increment	*/
-			iterator&	operator++(int) { m_ptr = m_ptr->next; return (*this);	}
-
+ 			iterator        &operator++() { m_ptr = m_ptr->next; return *this; }; // ++a
+        	iterator        operator++(int) { iterator it = *this; ++(*this); return it; }; // a++
+			
 			// /* Postfix increment*/
 			// iterator	operator++(int) { ++(*this); return (*this); }
 			// iterator	operator+(const difference_type& movement)	{m_ptr+= movement; return (*this);	}
@@ -140,10 +137,6 @@ namespace ft
 			iterator        &operator--() { m_ptr = m_ptr->prev; return *this; }; // --a
         	iterator        operator--(int) { iterator it = *this; --(*this); return it; }; // a--
 			// iterator	operator-(const int& movement){pointer oldPtr = this->m_ptr; this->m_ptr+=movement; this->m_ptr = oldPtr;return *this;}
-
-			// /***************assignment operations += and -= ************ */
-		    // iterator &  operator+=(const difference_type& movement){this->m_ptr += movement;return (*this);}
-			// iterator &  operator-=(const difference_type& movement){this->m_ptr -= movement;return (*this);}
 
 			// /***************** compared for equivalence using the equality/inequality operators***********/
 			friend bool operator!=(const   iterator& a, const   iterator& b) { return a.m_ptr != b.m_ptr; };
@@ -200,47 +193,97 @@ namespace ft
 			ft_swap(_myAlloc, x._myAlloc);
 			ft_swap(_alloc_node, x._alloc_node);
 		}
+
 		void	swap_node(t_node *a, t_node *b)
 		{
-			t_node *tmpNextB = b->next;
-			b->next =b->prev;
-			b->prev = a->prev;
-			a->next = tmpNextB;
-			a->next->prev = a;
+			t_node *prev_a = a->prev;
+			t_node *next_b = b->next;
+			a->prev = a->next;
+			a->next = b->next;
+			b->prev = prev_a;
+			b->next = a;
+			prev_a->next = b;
+			next_b->prev = a;
 		}
+
 		void	updateHead(t_node *a, t_node *b)
 		{
 			if (_head->prev == b)
 			{
-				
-					  std::cout << "a = " << a->data << "\n";
 				_head->prev = a;
 			}
-			// else if (_head->prev == b)
-			// {
-			// 	_head->prev = b;
-			// }
 		}
 
 		void sort()
 		{
-			if (_size < 2)
-				return ;
-			t_node *it = _head->next;
-			for (size_type i = 0; i < (_size - 1); i++)
+			if (_size > 1)
 			{
-				if (it->data > it->next->data)
+				size_type count = -1;
+				t_node *it = _head->next;
+				while (++count < this->size() - 1)
 				{
-					  std::cout << "sort\n";
-					updateHead(it->next, it);
-					return ;
-					// swap_node(it, it->next);
-
-					i = 0;
+					if (it->data > it->next->data)
+					{
+						updateHead(it, it->next);
+						swap_node(it, it->next);
+						it = _head->next;
+						count = -1;
+					}
+					else
+						it = it->next;
 				}
 			}
-			
 		}
+		
+		template <class Compare>
+	 	void sort (Compare comp)
+		{
+			if (_size > 1)
+			{
+				size_type count = -1;
+				t_node *it = _head->next;
+				while (++count < this->size() - 1)
+				{
+					if (comp(it->data , it->next->data) == false)
+					{
+						updateHead(it, it->next);
+						swap_node(it, it->next);
+						it = _head->next;
+						count = -1;
+					}
+					else
+						it = it->next;
+				}
+			}
+		}
+		
+		void	detachNode(pointer_node *a)
+		{
+			pointer_node prev_a = a->prev;
+			pointer_node next_a = a->next;
+			prev_a->next = next_a;
+			next_a->prev = prev_a;
+			if (_head->prev == a)
+				_head->prev = prev_a;
+		}
+
+		void insert(pointer_node *currentList, pointer_node *toInsert)
+		{
+			pointer_node *prevCurrent = currentList->prev;
+			pointer_node *nextCurrent = currentList->nexr;
+
+			toInsert->prev = prevCurrent;
+			toInsert->next = currentList;
+			currentList->prev = toInsert;
+		}
+
+		void splice (iterator position, list& x)
+		{
+			t_node *tp =  position.operator->();
+			std::cout << "data " << tp->data << std::endl;
+			(void)x;
+		}
+
 	};
 }
 
