@@ -149,7 +149,6 @@ void  test()
     l2.push_back(40);
     l2.push_back(50);
 
-    // list<int> l3 = { 6, 7, 8 };
     std::cout << "list l1 befor splice:" << std::endl;
     for (std::list<int>::iterator x = l1.begin() ; x != l1.end(); x++)
         cout << *x << " address =  " << &*x <<std::endl;
@@ -160,21 +159,55 @@ void  test()
 
 
     // transfer all the elements of l2
-    l1.splice(l1.begin(), l2);
+    std::list<int>::iterator i = l2.begin();
+    i++;
+    // std::cout << "i = " << *i << std::endl;
+    l1.splice(l1.begin(), l2, i);
   
     // at the beginning of l1
     cout << "\nlist l1 after splice operation" << endl;
     for (std::list<int>::iterator x = l1.begin() ; x != l1.end(); x++)
         cout << *x << " address =  " << &*x <<std::endl;
+  
+}
 
+void  test_splice()
+{
+    ft::list<int> l1;
+    ft::list<int> l2 ;
+    l1.push_back(10);
+    l1.push_back(20);
+    l1.push_back(30);
+
+    l2.push_back(50);
+    l2.push_back(40);
+    l2.push_back(60);
+
+    // list<int> l3 = { 6, 7, 8 };
+    std::cout << "list l1 befor splice:" << std::endl;
+    for (ft::list<int>::iterator x = l1.begin() ; x != l1.end(); x++)
+        cout << *x << " address =  " << &*x <<std::endl;
+
+    std::cout << "\nlist l2 befor splice:" << std::endl;
+    for (ft::list<int> ::iterator x = l2.begin() ; x != l2.end(); x++)
+        cout << *x << " address =  " << &*x <<std::endl;
+
+
+    // transfer all the elements of l2
+    ft::list<int>::iterator i = l2.begin();
+    i++;
+    // std::cout << "i = " << *i << std::endl;
+    l1.splice(l1.begin(), l2);
   
-    // transfer all the elements of l1
-    // l3.splice(l3.end(), l1);
-  
-    // // at the end of l3
-    // cout << "\nlist l3 after splice operation" << endl;
-    // for (auto x : l3)
-    //     cout << x << " ";
+    // at the beginning of l1
+    cout << "\nlist l1 after splice operation" << endl;
+    for (ft::list<int>::iterator x = l1.begin() ; x != l1.end(); x++)
+        cout << *x << " address =  " << &*x <<std::endl;
+
+      std::cout << "\nlist l2 after splice:" << std::endl;
+    for (ft::list<int> ::iterator x = l2.begin() ; x != l2.end(); x++)
+        cout << *x << " address =  " << &*x <<std::endl;
+
 }
 
 void  test_2()
@@ -206,7 +239,10 @@ int main(void)
     // test_swap();
     // my_test_sort();
     // test_2();
+    std::cout << "\nstl splice:\n" << std::endl;
     test();
+    std::cout << "\nmy splice:\n" << std::endl;
+    test_splice();
 
     // std::cout << "\n\n" << std::endl;
     // test_push_back();

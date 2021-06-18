@@ -257,33 +257,54 @@ namespace ft
 			}
 		}
 		
-		void	detachNode(pointer_node *a)
+		void	detachNode(pointer_node listX, pointer_node a)
 		{
 			pointer_node prev_a = a->prev;
 			pointer_node next_a = a->next;
 			prev_a->next = next_a;
 			next_a->prev = prev_a;
-			if (_head->prev == a)
-				_head->prev = prev_a;
+			if (a->next == listX)
+				listX->prev = prev_a;
 		}
 
-		void insert(pointer_node *currentList, pointer_node *toInsert)
+		void insert(pointer_node currentList, pointer_node toInsert)
 		{
-			pointer_node *prevCurrent = currentList->prev;
-			pointer_node *nextCurrent = currentList->nexr;
+			pointer_node prevCurrent = currentList->prev;
+			// pointer_node nextCurrent = currentList->next;
 
+			prevCurrent->next = toInsert;
+			currentList->prev = toInsert;
 			toInsert->prev = prevCurrent;
 			toInsert->next = currentList;
-			currentList->prev = toInsert;
+			// if (_head->prev == toInsert->prev)
+				// _head->prev = toInsert;
 		}
 
 		void splice (iterator position, list& x)
 		{
-			t_node *tp =  position.operator->();
-			std::cout << "data " << tp->data << std::endl;
-			(void)x;
-		}
+			pointer_node headX = x.end().operator->();
+			pointer_node toDetach = NULL;
+			pointer_node where_to_insert = NULL;
+			// std::cout << "data " << tp->data << std::endl;
+			for (iterator it = x.begin(); it != x.end(); it++)
+			{
+			// 	// std::cout << "*****quel by ici*****" << std::endl;
+			// 	// std::cout << "*****quel by ici*****" << std::endl;
+				toDetach =  it.operator->();
+				std::cout << "it =  " << *it << std::endl;
+				where_to_insert = position.operator->();
+				detachNode(headX, toDetach);
+				// std::cout << "\n****** headX begin" << headX->next->data << "*******" <<  std::endl;
 
+				insert(where_to_insert, toDetach);
+				position++;
+				// return ;
+			}
+			(void)where_to_insert;
+			(void)toDetach;
+			(void)x;
+			(void)position;
+		}
 	};
 }
 
