@@ -171,44 +171,32 @@ void  test()
   
 }
 
-void  test_splice()
+void	print_list(ft::list<int> &list)
 {
-    ft::list<int> l1;
-    ft::list<int> l2 ;
-    l1.push_back(10);
-    l1.push_back(20);
-    l1.push_back(30);
-
-    l2.push_back(50);
-    l2.push_back(40);
-    l2.push_back(60);
-
-    // list<int> l3 = { 6, 7, 8 };
-    std::cout << "list l1 befor splice:" << std::endl;
-    for (ft::list<int>::iterator x = l1.begin() ; x != l1.end(); x++)
+    for (ft::list<int>::iterator x = list.begin() ; x != list.end(); x++)
         cout << *x << " address =  " << &*x <<std::endl;
-
-    std::cout << "\nlist l2 befor splice:" << std::endl;
-    for (ft::list<int> ::iterator x = l2.begin() ; x != l2.end(); x++)
-        cout << *x << " address =  " << &*x <<std::endl;
-
-
-    // transfer all the elements of l2
-    ft::list<int>::iterator i = l2.begin();
-    i++;
-    // std::cout << "i = " << *i << std::endl;
-    l1.splice(l1.begin(), l2);
-  
-    // at the beginning of l1
-    cout << "\nlist l1 after splice operation" << endl;
-    for (ft::list<int>::iterator x = l1.begin() ; x != l1.end(); x++)
-        cout << *x << " address =  " << &*x <<std::endl;
-
-      std::cout << "\nlist l2 after splice:" << std::endl;
-    for (ft::list<int> ::iterator x = l2.begin() ; x != l2.end(); x++)
-        cout << *x << " address =  " << &*x <<std::endl;
-
 }
+
+void	print_list(std::list<int> &list)
+{
+    for (std::list<int>::iterator x = list.begin() ; x != list.end(); x++)
+        cout << *x << " address =  " << &*x <<std::endl;
+}
+
+void	print_list_rev(ft::list<int> &list)
+{
+    // for (ft::list<int>::iterator x = list.end() ; x != list.end(); x--)
+    //     cout << *x << " address =  " << &*x <<std::endl;
+	// ft::list<int>::iterator x = list.end(); 
+	ft::list<int>::iterator x = list.end();
+	x--;
+	while (x != list.end())
+	{
+        cout << *x << " address =  " << &*x <<std::endl;
+		x--;
+	}
+}
+
 
 void  test_2()
 {
@@ -225,7 +213,7 @@ void  test_2()
     std::cout << ' ' << *it;
   std::cout << '\n';
 
-  mylist.sort(compare_nocase);
+//   mylist.sort(compare_nocase);
 
   std::cout << "mylist contains:";
   for (it=mylist.begin(); it!=mylist.end(); ++it)
@@ -233,19 +221,195 @@ void  test_2()
   std::cout << '\n';
 }
 
+void  test_splice_2()
+{
+    ft::list<int> l1;
+
+    ft::list<int> l2;
+    l1.push_back(10);
+    l1.push_back(20);
+	l1.push_back(30);
+
+    l2.push_back(40);
+    l2.push_back(50);
+    l2.push_back(60);
+    l2.push_back(70);
+    l2.push_back(80);
+    l2.push_back(90);
+    l2.push_back(100);
+    l2.push_back(200);
+    l2.push_back(300);
+    std::cout << "list l1 befor splice:" << std::endl;
+	print_list(l1);
+
+    std::cout << "\nlist l2 befor splice:" << std::endl;
+	print_list(l2);
+    ft::list<int>::iterator position = l1.begin();
+    std::cout << "\nposition = " << *position << std::endl;
+	std::cout << "\n*************** SPLICE ***************" << std::endl;
+	ft::list<int>::iterator elem = l2.begin();
+	// elem++;
+    l1.splice(position, l2, elem);
+    cout << "\nlist l1 after splice operation" << endl;
+	print_list(l1);
+	std::cout << "\nlist l2 after splice:" << std::endl;
+	print_list(l2);
+
+}
+
+
+void  test_splice_3()
+{
+    ft::list<int> l1;
+
+    ft::list<int> l2;
+    l1.push_back(10);
+    l1.push_back(20);
+	l1.push_back(30);
+
+    l2.push_back(40);
+    l2.push_back(50);
+    l2.push_back(60);
+    l2.push_back(70);
+    l2.push_back(80);
+    l2.push_back(90);
+    l2.push_back(100);
+    l2.push_back(200);
+    l2.push_back(300);
+    std::cout << "list l1 befor splice:" << std::endl;
+	print_list(l1);
+
+    std::cout << "\nlist l2 befor splice:" << std::endl;
+	print_list(l2);
+    ft::list<int>::iterator position = l1.begin();
+    std::cout << "\nposition = " << *position << std::endl;
+	std::cout << "\n*************** SPLICE ***************" << std::endl;
+	ft::list<int>::iterator first = l2.begin();
+	// elem++;
+	ft::list<int>::iterator last = l2.begin();
+	last++;
+	last++;
+	std::cout << "last = " << *last << std::endl;
+    l1.splice(position, l2, first, last);
+    cout << "\nlist l1 after splice operation" << endl;
+	print_list(l1);
+	std::cout << "\nlist l2 after splice:" << std::endl;
+	print_list(l2);
+
+}
+
+void reverse_list()
+{
+  std::list<int> mylist;
+
+  for (int i=1; i<10; ++i) mylist.push_back(i);
+
+	std::cout << "befor reverse" << std::endl;
+	for (std::list<int>::iterator it=mylist.begin(); it!=mylist.end(); ++it)
+	{
+		std::cout << "value = "  << *it << " addresse = " << &*it << std::endl;
+	}
+  mylist.reverse();
+
+  std::cout << "\nafter reveerse s:\n";
+	std::cout << "befor reverse" << std::endl;
+	for (std::list<int>::iterator it=mylist.begin(); it!=mylist.end(); ++it)
+	{
+		std::cout << "value = "  << *it << " addresse = " << &*it << std::endl;
+	}
+
+  std::cout << '\n';
+
+}
+
+
+void  test_reverse()
+{
+    ft::list<int> l1;
+
+    l1.push_back(10);
+    l1.push_back(20);
+	l1.push_back(30);
+    l1.push_back(40);
+    l1.push_back(50);
+    l1.push_back(60);
+    l1.push_back(70);
+    l1.push_back(80);
+    l1.push_back(90);
+    l1.push_back(100);
+    l1.push_back(200);
+    l1.push_back(300);
+    std::cout << "list l1 befor reverse:" << std::endl;
+	print_list(l1);
+
+	std::cout << "\n*************** reverser ***************" << std::endl;
+	l1.reverse();
+	print_list(l1);
+
+}
+
+void  test_merge()
+{
+    ft::list<int> l1;
+
+    l1.push_back(10);
+    l1.push_back(20);
+	l1.push_back(30);
+    l1.push_back(40);
+    l1.push_back(50);
+    l1.push_back(60);
+    l1.push_back(70);
+    l1.push_back(80);
+    l1.push_back(90);
+    l1.push_back(100);
+    l1.push_back(200);
+    l1.push_back(300);
+    std::cout << "list l1 befor reverse:" << std::endl;
+	print_list(l1);
+
+	std::cout << "\n*************** reverser ***************" << std::endl;
+	l1.reverse();
+	print_list(l1);
+
+}
+bool mycomparison (int first, int second)
+{ 
+	return (  first< second ); 
+}
+
 int main(void) 
 {
-    // test_push_front();
-    // test_swap();
-    // my_test_sort();
-    // test_2();
-    std::cout << "\nstl splice:\n" << std::endl;
-    test();
-    std::cout << "\nmy splice:\n" << std::endl;
-    test_splice();
+	// test_push_front();
+	// test_swap();
+	// my_test_sort();
+	// test_2();
+	// std::cout << "\nstl splice:\n" << std::endl;
+	// test();
+	// std::cout << "\nmy splice:\n" << std::endl;
+	// test_splice_3();
+	std::list<int> l1;
+	std::list<int> l2;
 
-    // std::cout << "\n\n" << std::endl;
-    // test_push_back();
-  
+	l1.push_back(1);
+	l1.push_back(8);
+	l1.push_back(2);
+	l1.push_back(6);
+	// l1.push_back(10);
+	// l1.push_back(60);
+	l2.push_back(0);
+	l2.push_back(5);
+	l2.push_back(-1);
+	l2.push_back(7);
+
+	std::cout << "\nl1 : " << std::endl;
+	print_list(l1);
+	std::cout << "\nl2 : " << std::endl;
+	print_list(l2);
+	// l1.merge(l2, mycomparison);
+	l1.merge(l2);
+
+	std::cout << "\nl1 after merge:" << std::endl;
+	print_list(l1);
+
     return (0);
 }

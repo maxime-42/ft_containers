@@ -1,4 +1,4 @@
-#ifndef LIST_HPP
+	#ifndef LIST_HPP
 # define LIST_HPP
 #include <iostream>
 #include <memory>
@@ -28,6 +28,7 @@ namespace ft
         typedef struct s_node
         {
             T data;
+			// size_type lenght;
             struct s_node *next;
             struct s_node *prev;
         }               t_node;
@@ -45,6 +46,7 @@ namespace ft
 			_myAlloc.construct(&_head->data, T());
 			_head->next = _head;
 			_head->prev = _head;
+			// _head->lenght = 0;
 			 (void)alloc;
 		}
 
@@ -55,6 +57,7 @@ namespace ft
 			_myAlloc.construct(&_head->data, 555);
 			_head->next = _head;
 			_head->prev = _head;
+			// _head->lenght = 0;
 			std::cout<< "hellow world\n";
 			while (n > 0)
 			{
@@ -67,6 +70,7 @@ namespace ft
 			_head = _alloc_node.allocate(1);
 			_head->prev = _head;
 			_head->next = _head;
+			// _head->lenght = 0;
 			this->push_back(x);
 		}
 		
@@ -95,15 +99,18 @@ namespace ft
 			toDel->prev = 0;
 			_alloc_node.deallocate(toDel, 1);
 			_alloc_node.destroy(toDel);
-			toDel = 0;
 		}
+		
+
+
 		~list()
 		{
-			size_type count = _size;
-			for (size_t i = 0; i < count; i++)
+			for (size_t i = 0; i < _size; i++)
 			{
 				this->delete_one_Node(_head->next);
 			}
+			_alloc_node.deallocate(_head, 1);
+			_alloc_node.destroy(_head);
 			_head = 0;
 			_size = 0;
 		}
@@ -163,6 +170,7 @@ namespace ft
 			_head->prev->next = new_node;
 			_head->prev = new_node;
 			_size++;
+			// _head->lenght++;
         }
 
 		void push_front(const value_type& val)
@@ -257,6 +265,15 @@ namespace ft
 			}
 		}
 		
+		void insert(pointer_node currentList, pointer_node toInsert)
+		{
+			pointer_node prevCurrent = currentList->prev;
+			prevCurrent->next = toInsert;
+			currentList->prev = toInsert;
+			toInsert->prev = prevCurrent;
+			toInsert->next = currentList;
+		}
+		
 		void	detachNode(pointer_node listX, pointer_node a)
 		{
 			pointer_node prev_a = a->prev;
@@ -267,44 +284,58 @@ namespace ft
 				listX->prev = prev_a;
 		}
 
-		void insert(pointer_node currentList, pointer_node toInsert)
-		{
-			pointer_node prevCurrent = currentList->prev;
-			// pointer_node nextCurrent = currentList->next;
-
-			prevCurrent->next = toInsert;
-			currentList->prev = toInsert;
-			toInsert->prev = prevCurrent;
-			toInsert->next = currentList;
-			// if (_head->prev == toInsert->prev)
-				// _head->prev = toInsert;
-		}
-
 		void splice (iterator position, list& x)
 		{
+			iterator it;
 			pointer_node headX = x.end().operator->();
 			pointer_node toDetach = NULL;
 			pointer_node where_to_insert = NULL;
-			// std::cout << "data " << tp->data << std::endl;
-			for (iterator it = x.begin(); it != x.end(); it++)
+			while (x._size)
 			{
-			// 	// std::cout << "*****quel by ici*****" << std::endl;
-			// 	// std::cout << "*****quel by ici*****" << std::endl;
+				it = x.begin();
 				toDetach =  it.operator->();
-				std::cout << "it =  " << *it << std::endl;
 				where_to_insert = position.operator->();
 				detachNode(headX, toDetach);
-				// std::cout << "\n****** headX begin" << headX->next->data << "*******" <<  std::endl;
-
+				x._size--;
 				insert(where_to_insert, toDetach);
-				position++;
-				// return ;
+				_size++;
 			}
-			(void)where_to_insert;
-			(void)toDetach;
-			(void)x;
-			(void)position;
 		}
+
+		void splice(iterator position, list& x, iterator i)
+		{
+			pointer_node headX = x.end().operator->();
+			pointer_node  toDetach =  i.operator->();
+			pointer_node where_to_insert = position.operator->();
+			detachNode(headX, toDetach);
+			x._size--;
+			insert(where_to_insert, toDetach);
+			_size++;
+		}
+
+		void splice(iterator position, list& x, iterator first, iterator last)
+		{
+			while (first != last)
+			{
+				splice(position, x, first++);
+			}
+		}
+		void reverse()
+		{
+			pointer_node next_current;
+			pointer_node prev_current;
+			pointer_node current = _head;
+			for (size_type i = 0; i <= _size; i++)
+			{
+				next_current = current->next;
+				prev_current = current->prev;
+				current->next = prev_current;
+				current->prev = next_current;
+				current = current->prev;
+			}
+			
+		}
+
 	};
 }
 

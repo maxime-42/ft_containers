@@ -38,4 +38,6 @@ iterator vector:
 	rvalue and lvalue:
 	https://www.youtube.com/watch?v=EElsUaoWxIo
 
+list :
+http://www.cplusplus.com/reference/list/list/
 
