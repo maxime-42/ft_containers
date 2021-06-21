@@ -348,58 +348,21 @@ void  test_reverse()
 
 }
 
-void  test_merge()
+
+void test_merge()
 {
-    ft::list<int> l1;
-
-    l1.push_back(10);
-    l1.push_back(20);
-	l1.push_back(30);
-    l1.push_back(40);
-    l1.push_back(50);
-    l1.push_back(60);
-    l1.push_back(70);
-    l1.push_back(80);
-    l1.push_back(90);
-    l1.push_back(100);
-    l1.push_back(200);
-    l1.push_back(300);
-    std::cout << "list l1 befor reverse:" << std::endl;
-	print_list(l1);
-
-	std::cout << "\n*************** reverser ***************" << std::endl;
-	l1.reverse();
-	print_list(l1);
-
-}
-bool mycomparison (int first, int second)
-{ 
-	return (  first< second ); 
-}
-
-int main(void) 
-{
-	// test_push_front();
-	// test_swap();
-	// my_test_sort();
-	// test_2();
-	// std::cout << "\nstl splice:\n" << std::endl;
-	// test();
-	// std::cout << "\nmy splice:\n" << std::endl;
-	// test_splice_3();
-	std::list<int> l1;
-	std::list<int> l2;
+  ft::list<int> l1;
+	ft::list<int> l2;
 
 	l1.push_back(1);
 	l1.push_back(8);
 	l1.push_back(2);
 	l1.push_back(6);
-	// l1.push_back(10);
-	// l1.push_back(60);
-	l2.push_back(0);
-	l2.push_back(5);
+
 	l2.push_back(-1);
 	l2.push_back(7);
+	l2.push_back(5);
+
 
 	std::cout << "\nl1 : " << std::endl;
 	print_list(l1);
@@ -411,5 +374,70 @@ int main(void)
 	std::cout << "\nl1 after merge:" << std::endl;
 	print_list(l1);
 
-    return (0);
+}
+void stl_merge()
+{
+  	std::list<int> l1;
+	std::list<int> l2;
+
+	l1.push_back(1);
+	l1.push_back(8);
+	l1.push_back(2);
+	l1.push_back(6);
+
+	l2.push_back(-1);
+	l2.push_back(7);
+	l2.push_back(5);
+
+	std::cout << "\nl1 : " << std::endl;
+	print_list(l1);
+	std::cout << "\nl2 : " << std::endl;
+	print_list(l2);
+	// l1.merge(l2, mycomparison);
+	l1.merge(l2);
+
+	std::cout << "\nl1 after merge:" << std::endl;
+	print_list(l1);
+}
+
+bool mycomparison (double first, double second)
+{ return ( int(first)<int(second) ); }
+
+void  test_merge_2()
+{
+  ft::list<double> first, second;
+
+  first.push_back (3.1);
+  first.push_back (2.2);
+  first.push_back (2.9);
+
+  second.push_back (3.7);
+  second.push_back (7.1);
+  second.push_back (1.4);
+
+  first.sort();
+  second.sort();
+
+  first.merge(second);
+
+  // (second is now empty)
+
+  second.push_back (2.1);
+
+  first.merge(second,mycomparison);
+
+  std::cout << "first contains:";
+  for (ft::list<double>::iterator it=first.begin(); it!=first.end(); ++it)
+    std::cout << ' ' << *it;
+  std::cout << '\n';
+}
+
+
+int main(void) 
+{
+  // test_merge();
+  // std::cout << "\n\nstl merge\n" << std::endl;
+  // stl_merge();
+  test_merge_2();
+  return (0);
 }

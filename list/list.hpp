@@ -274,14 +274,14 @@ namespace ft
 			toInsert->next = currentList;
 		}
 		
-		void	detachNode(pointer_node listX, pointer_node a)
+		void	detachNode(pointer_node head, pointer_node a)
 		{
 			pointer_node prev_a = a->prev;
 			pointer_node next_a = a->next;
 			prev_a->next = next_a;
 			next_a->prev = prev_a;
-			if (a->next == listX)
-				listX->prev = prev_a;
+			if (a->next == head)
+				head->prev = prev_a;
 		}
 
 		void splice (iterator position, list& x)
@@ -333,9 +333,57 @@ namespace ft
 				current->prev = next_current;
 				current = current->prev;
 			}
-			
+		}
+		/*
+		*Transfers elements from x (l2) into l1.
+		exemple:
+			l1 = 1-3-4
+			l2 = 0-6-7
+			this function going to transfer 0 at the first position in l1 : 
+			l1 = 0-1-3-4
+			l2 = 6-7
+		*/
+		void	transfers_elements(iterator l1, iterator l2, list & x)
+		{
+				pointer_node headX = x.end().operator->();
+				detachNode(headX, l2.operator->());
+				insert(l1.operator->(), l2.operator->());
+				_size++;
+				x._size--;
 		}
 
+		void merge (list& x)
+		{
+			iterator l1 = begin();
+			iterator l2 = x.begin();
+			while (l2 != x.end())
+			{
+				if (*l2 < *l1 || l1 == end())
+				{
+					transfers_elements(l1, l2++, x);
+				}
+				else if (*l2 > *l1)
+					l1++;
+			}
+		}
+
+	template <class Compare>
+  	void merge (list& x, Compare comp)
+	{
+		iterator l1 = begin();
+		iterator l2 = x.begin();
+		while (l2 != x.end())
+		{
+			if (comp(*l1, *l2) == false || l1 == end())
+			{
+				transfers_elements(l1, l2++, x);
+			}
+			else if (*l2 > *l1)
+				l1++;
+		}
+	}
+	
+	
 	};
 }
 
