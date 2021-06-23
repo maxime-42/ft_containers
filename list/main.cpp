@@ -3,10 +3,26 @@
 #include <list>
 #include <string>
 #include <cctype>
+#include <vector>
 
-#define SIZE 5
 
-using namespace std;
+// using namespace std;
+
+
+#ifdef STD
+ using namespace std;
+ #define NAMESPACE_DEFINED
+#endif
+
+#ifdef FT
+ using namespace ft;
+ #define NAMESPACE_DEFINED
+#endif
+
+#ifndef NAMESPACE_DEFINED
+ using namespace ft;
+#endif
+
 
 void test_push_front()
 {
@@ -173,6 +189,7 @@ void  test()
 
 void	print_list(ft::list<int> &list)
 {
+    std::cout << "My list :" << std::endl;
     for (ft::list<int>::iterator x = list.begin() ; x != list.end(); x++)
         cout << *x << " address =  " << &*x <<std::endl;
 }
@@ -181,6 +198,7 @@ void	print_list(std::list<int> &list)
 {
     for (std::list<int>::iterator x = list.begin() ; x != list.end(); x++)
         cout << *x << " address =  " << &*x <<std::endl;
+    std::cout << "" << std::endl;
 }
 
 void	print_list_rev(ft::list<int> &list)
@@ -432,12 +450,253 @@ void  test_merge_2()
   std::cout << '\n';
 }
 
+void test_remove()
+{
+  ft::list<int> l1;
+  int n = 6;
+	l1.push_back(1);
+	l1.push_back(8);
+	l1.push_back(2);
+	l1.push_back(6);
+  std::cout << "befor remove " << n << std::endl;
+  print_list(l1);
+  l1.remove(n);
+  std::cout << "after remove " << n << std::endl;
+  print_list(l1);
+}
 
+bool single_digit (const int& value) { return (value<10); }
+
+void test_remove_if()
+{
+  ft::list<int> l1;
+  int n = 2;
+	l1.push_back(80);
+	l1.push_back(1);
+	l1.push_back(20);//1
+	l1.push_back(2);//2
+	l1.push_back(2);//3
+	l1.push_back(2);//4
+	l1.push_back(76);
+	l1.push_back(500);
+	l1.push_back(450);
+  std::cout << "befor remove_if " << n << std::endl;
+  print_list(l1);
+  l1.remove_if(single_digit);
+  // l1.remove(1);
+
+  std::cout << "after remove_if " << n << std::endl;
+  print_list(l1);
+}
+
+bool same_integral_part (int first, int second)
+{ return ( first== second ); }
+
+void test_unique()
+{
+  ft::list<int> l1;
+  int n = 2;
+	l1.push_back(80);
+	l1.push_back(2);//3
+	l1.push_back(2);//3
+	// l1.push_back(2);//3
+	// l1.push_back(76);
+	// l1.push_back(2);//4
+  std::cout << "befor unique " << n << std::endl;
+  print_list(l1);
+  l1.unique(same_integral_part);
+  // l1.remove(1);
+
+  std::cout << "after unique " << n << std::endl;
+  print_list(l1);
+}
+
+
+		void test_erase()
+		{
+			ft::list<int> mylist;
+			ft::list<int>::iterator it1,it2;
+			// set some values:
+			for (int i=1; i<10; ++i) mylist.push_back(i*10);                                    // 10 20 30 40 50 60 70 80 90
+      std::cout << "mylist : " << std::endl;
+
+      print_list(mylist);
+      it1 = it2 = mylist.begin(); // ^^
+      it1 = mylist.erase (it1);   // 30 40 50 60 70 80 90
+      it1++;
+      it1++;
+      it2 = mylist.begin();
+      it2++;
+      it2++;
+      it2++;
+      it2++;
+      it2++;
+      it2++;
+
+      std::cout << "\nit1 = " << *it1 << " it2 = " << *it2 << std::endl;
+      it1 = mylist.erase (it1, it2); 
+      std::cout << "ret  = " << *it1 << std::endl;
+      std::cout << "\nmylist : " << std::endl;
+      print_list(mylist);
+
+		}
+
+void  test_assign()
+{
+  // ft::list<int> first;
+  // ft::list<int> second;
+
+  // first.push_back(666);
+  // first.push_back(888);
+  // first.push_back(111);
+
+  // second.push_back(666);
+  // second.push_back(888);
+  // second.push_back(111);
+
+
+  // first.assign (2,100);                      // 7 ints with value 100
+  // // print_list(first);
+  // second.assign (first.begin(),first.end()); // a copy of first
+  // std::cout << "\nsecond:" << std::endl;
+  // print_list(second);
+
+  // int myints[]={1776,7,4};
+  // first.assign (myints,myints+3);            // assigning from array
+
+  // std::cout << "Size of first: " << int (first.size()) << '\n';
+  // std::cout << "Size of second: " << int (second.size()) << '\n';
+  ft::list<int> first;
+  ft::list<int> second;
+
+  first.assign (7,100);                      // 7 ints with value 100
+
+  second.assign (first.begin(),first.end()); // a copy of first
+
+  int myints[]={1776,7,4};
+  first.assign (myints,myints+3);            // assigning from array
+
+  std::cout << "Size of first: " << int (first.size()) << '\n';
+  std::cout << "Size of second: " << int (second.size()) << '\n';
+}
+
+void  test_pop()
+{
+  std::list<int> mylist;
+  mylist.push_back (100);
+  mylist.push_back (200);
+  mylist.push_back (300);
+
+  std::cout << "Popping out the elements in mylist:";
+  while (!mylist.empty())
+  {
+    std::cout << ' ' << mylist.front();
+    mylist.pop_front();
+  }
+  std::cout << "\nFinal size of mylist is " << mylist.size() << '\n';
+}
+
+void test_back()
+{
+  ft::list<int> mylist;
+
+  mylist.push_back(10);
+  std::cout << "back =  " << mylist.back() << std::endl;
+
+  while (mylist.back() != 0)
+  {
+    mylist.push_back ( mylist.back() -1 );
+  }
+
+  std::cout << "mylist contains:";
+  for (ft::list<int>::iterator it=mylist.begin(); it!=mylist.end() ; ++it)
+    std::cout << ' ' << *it;
+
+  std::cout << '\n';
+}
+
+
+void test_front()
+{
+  ft::list<int> mylist;
+
+  mylist.push_back(77);
+  mylist.push_back(22);
+
+  // now front equals 77, and back 22
+
+  mylist.front() -= mylist.back();
+
+  std::cout << "mylist.front() is now " << mylist.front() << '\n';
+}
+
+void  test_insert ()
+{
+  ft::list<int> mylist;
+  ft::list<int>::iterator it;
+
+  // set some initial values:
+  for (int i=1; i<=5; ++i) mylist.push_back(i); // 1 2 3 4 5
+
+  it = mylist.begin();
+  ++it;       // it points now to number 2           ^
+
+  std::cout << "befor insert:" << std::endl;
+  print_list(mylist);
+  std::cout << "\nafter insert:" << std::endl;
+  mylist.insert (it, 10);
+  print_list(mylist);
+  mylist.insert (it,2,20);
+  std::cout << "\nnew after 2, 20:" << std::endl;
+  print_list(mylist);
+
+  std::vector<int> myvector(2, 30);
+
+  // myvector.push_back(2);
+  // myvector.push_back(30);
+  --it;       // it points now to the second 20            ^
+
+  mylist.insert (it, myvector.begin(), myvector.end());   // 1 10 20 30 30 20 2 3 4 5
+  std::cout << "mylist contains:";
+  for (it=mylist.begin(); it!=mylist.end(); ++it)
+    std::cout << ' ' << *it;
+  std::cout << '\n';
+
+}
+
+
+void test_resize()
+{
+  std::list<int> mylist;
+
+  // set some initial content:
+  for (int i=1; i<10; ++i) mylist.push_back(i);
+
+  print_list(mylist);
+  mylist.resize(5);
+  print_list(mylist);
+  mylist.resize(8,100);
+  mylist.resize(12);
+
+  std::cout << "mylist contains:";
+  for (std::list<int>::iterator it=mylist.begin(); it!=mylist.end(); ++it)
+    std::cout << ' ' << *it;
+
+  std::cout << '\n';
+}
 int main(void) 
 {
   // test_merge();
   // std::cout << "\n\nstl merge\n" << std::endl;
   // stl_merge();
-  test_merge_2();
+  // test_merge_2();
+  // test_remove_if();
+  // test_unique();
+  // test_erase();
+  // test_back();
+  // test_front();
+  // test_insert ();
+  test_resize();
+  // test_assign();
   return (0);
 }

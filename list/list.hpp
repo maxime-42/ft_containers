@@ -1,4 +1,4 @@
-	#ifndef LIST_HPP
+#ifndef LIST_HPP
 # define LIST_HPP
 #include <iostream>
 #include <memory>
@@ -87,7 +87,9 @@ namespace ft
         		first++;
     		}
 		}
-
+	/*
+	** this function delete one node and update the header of circuar list if it is need
+	*/
 		void delete_one_Node(t_node *toDel)
 		{
 			t_node *prev = toDel->prev;
@@ -97,6 +99,8 @@ namespace ft
 			next->prev = prev;
 			toDel->next = 0;
 			toDel->prev = 0;
+			if (_head->prev == toDel)// condition to allow to update the _header 
+				_head->prev = prev;
 			_alloc_node.deallocate(toDel, 1);
 			_alloc_node.destroy(toDel);
 		}
@@ -367,25 +371,210 @@ namespace ft
 			}
 		}
 
-	template <class Compare>
-  	void merge (list& x, Compare comp)
-	{
-		iterator l1 = begin();
-		iterator l2 = x.begin();
-		while (l2 != x.end())
+		template <class Compare>
+		void merge(list& x, Compare comp)
 		{
-			if (comp(*l1, *l2) == false || l1 == end())
+			iterator l1 = begin();
+			iterator l2 = x.begin();
+			while (l2 != x.end())
 			{
-				transfers_elements(l1, l2++, x);
+				if (comp(*l1, *l2) == false || l1 == end())
+				{
+					transfers_elements(l1, l2++, x);
+				}
+				else if (*l2 > *l1)
+					l1++;
 			}
-			else if (*l2 > *l1)
-				l1++;
 		}
-	}
+		
+		void remove (const value_type& val)
+		{
+			pointer_node node;
+			for (iterator it = begin(); it != end(); it++)
+			{
+				if (*it == val)
+				{
+					node = it.operator->();
+					delete_one_Node(node);
+					_size--;
+					return ;
+				}
+			}
+		}
+
+		template <class Predicate>
+		void remove_if (Predicate pred)
+		{
+			pointer_node node;
+			for (iterator it = begin(); it != end(); it++)
+			{
+				if (pred(*it) == true)
+				{
+					node = it.operator->();
+					it--;
+					delete_one_Node(node);
+					_size--;
+				}
+			}
+		}
+
+		void unique()
+		{
+			pointer_node next;
+			pointer_node it  = _head->next;
+			while (it != _head->prev)
+			{
+				next = it->next;
+				if (it->data == next->data)
+				{
+					delete_one_Node(next);
+					_size--;
+				}
+				else
+					it = it->next;			
+			}
+		}
+
+		template <class BinaryPredicate>
+		void unique (BinaryPredicate binary_pred)
+		{
+			bool state;
+			pointer_node next;
+			pointer_node it  = _head->next;
+			while (it != _head->prev)
+			{
+				next = it->next;
+				state = binary_pred(it->data, next->data);
+				if (state == true)
+				{
+					delete_one_Node(next);
+					_size--;
+				}
+				else
+					it = it->next;			
+			}
+		}
+
+		iterator erase (iterator position)
+		{
+			pointer_node node = position.operator->();
+			position++;
+			delete_one_Node(node);
+			_size--;
+			return (position);
+		}
+
+		iterator erase (iterator first, iterator last)
+		{
+			pointer_node node;
+			while (first != last)
+			{
+				node = first.operator->();
+				first++;
+				delete_one_Node(node);
+				_size--;
+
+			}
+			return (first);
+		}
+
+		void assign (size_type n, const value_type& val)
+		{
+			for (; _size != 0; _size--)
+			{
+				delete_one_Node(_head->next);
+			}
+			for (; n ; n--)
+			{
+				push_back(val);
+			}
+		}
+
+		template <class InputIterator>
+		void assign(typename std::enable_if<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type first, InputIterator last)
+		{
+			for (; _size != 0; _size--)
+			{
+				delete_one_Node(_head->next);
+			}
+			for (; first != last; first++)
+			{
+				push_back(*first);
+			}
+		}
+
+		bool empty() const
+		{
+			return (_size == 0);
+		}
+
+		void pop_front()
+		{
+			delete_one_Node(_head->next);
+			_size--;
+		}
 	
-	
+		void pop_back()
+		{
+			delete_one_Node(_head->prev);
+			_size--;
+
+		}
+
+      	reference back()
+		{
+			return(_head->prev->data);
+		}
+		const_reference back() const
+		{
+			return(_head->prev->data);
+		}
+
+      reference front()
+	  {
+		return(_head->next->data);
+	  }
+		
+		iterator insert(iterator position, const value_type& val)
+		{
+			pointer_node where_add = position.operator->();
+			pointer_node toAdd = _alloc_node.allocate(1);
+			_myAlloc.construct(&toAdd->data, val);
+			insert(where_add,toAdd);
+			return (--toAdd);
+		}
+
+		void insert (iterator position, size_type n, const value_type& val)
+		{
+			while (n)
+			{
+				insert(position, val);
+				n--;
+			}
+		}
+
+		template <class InputIterator>
+		// void insert (iterator position, InputIterator first, InputIterator last)
+		void insert(iterator position, typename std::enable_if<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type first, InputIterator last)
+		{
+			while (first != last)
+			{
+				insert(position, *first);
+				first++;
+			}
+		}
+
+		void resize (size_type n, value_type val = value_type())
+		{
+			while (n > _size)
+			{
+				push_back(val);
+			}
+			while(n < _size)
+			{
+				pop_back();
+			}
+		}
 	};
 }
-
-
 #endif
