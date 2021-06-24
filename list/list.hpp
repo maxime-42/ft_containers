@@ -40,47 +40,117 @@ namespace ft
 
     
     public:
-		list (const allocator_type& alloc = allocator_type()):_head(0), _size(0)	
+		void	init_head()
 		{
 			_head = _alloc_node.allocate(1);
 			_myAlloc.construct(&_head->data, T());
 			_head->next = _head;
 			_head->prev = _head;
-			// _head->lenght = 0;
+		}
+
+
+
+
+
+
+/************************************************************************  const_iterator ************************************************************************/
+
+class  const_iterator 
+		{
+		public:
+
+		/***************Is default-constructible, copy-constructible, copy-assignable and destructible	******************/
+			const_iterator():m_ptr(0){}
+			const_iterator(pointer_node ptr) : m_ptr(ptr) {}
+
+			const_iterator(const_iterator const & toCopy)	{m_ptr = toCopy.m_ptr;}
+
+			~const_iterator(){}
+
+			/*********************Can be dereferenced as an rvalue (if in a dereferenceable state)***********************************/
+			// value_type *operator*() const { return (&m_ptr->data); }
+			value_type		&operator*()const {return m_ptr->data;}
+
+			pointer_node operator->() { return (m_ptr); }
+
+ 			const_iterator        &operator++() { m_ptr = m_ptr->next; return *this; }; // ++a
+        	const_iterator        operator++(int) { const_iterator it = *this; ++(*this); return it; }; // a++
+			
+			// /*****************Can be decremented*************************/        
+			const_iterator        &operator--() { m_ptr = m_ptr->prev; return *this; }; // --a
+        	const_iterator        operator--(int) { const_iterator it = *this; --(*this); return it; }; // a--
+
+			// /***************** compared for equivalence using the equality/inequality operators***********/
+			friend bool operator!=(const   const_iterator& a, const   const_iterator& b) { return a.m_ptr != b.m_ptr; };
+			friend bool operator== (const   const_iterator& a, const   const_iterator& b) { return a.m_ptr == b.m_ptr; };
+
+		private:
+			pointer_node m_ptr;
+		};
+		const_iterator cbegin() const {return   const_iterator(_head->next); }
+		const_iterator cend()   const { return  const_iterator(_head); }
+
+
+/************************************************************************  iterator ************************************************************************/
+		class  iterator 
+		{
+		public:
+
+/*********************************Is default-constructible, copy-constructible, copy-assignable and destructible	**********************/
+			iterator():m_ptr(0){}
+			iterator(pointer_node ptr) : m_ptr(ptr) {}
+
+			iterator(iterator const & toCopy)	{m_ptr = toCopy.m_ptr;}
+
+			~iterator(){}
+
+			/*********************Can be dereferenced as an rvalue (if in a dereferenceable state)***********************************/
+			// value_type *operator*() const { return (&m_ptr->data); }
+			value_type		&operator*()const {return m_ptr->data;}
+
+			pointer_node operator->() { return (m_ptr); }
+
+ 			iterator        &operator++() { m_ptr = m_ptr->next; return *this; }; // ++a
+        	iterator        operator++(int) { iterator it = *this; ++(*this); return it; }; // a++
+			
+			// /*****************Can be decremented*************************/        
+			iterator        &operator--() { m_ptr = m_ptr->prev; return *this; }; // --a
+        	iterator        operator--(int) { iterator it = *this; --(*this); return it; }; // a--
+
+			// /***************** compared for equivalence using the equality/inequality operators***********/
+			friend bool operator!=(const   iterator& a, const   iterator& b) { return a.m_ptr != b.m_ptr; };
+			friend bool operator== (const   iterator& a, const   iterator& b) { return a.m_ptr == b.m_ptr; };
+
+		private:
+			pointer_node m_ptr;
+		};
+		iterator begin() {return   iterator(_head->next); }
+		iterator end()   { return  iterator(_head); }
+
+
+
+		list (const allocator_type& alloc = allocator_type()):_head(0), _size(0)	
+		{
+			init_head();
 			 (void)alloc;
 		}
 
 		list (size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()):_head(0), _size(0)	
 		{
 			(void)alloc;
-			_head = _alloc_node.allocate(1);
-			_myAlloc.construct(&_head->data, 555);
-			_head->next = _head;
-			_head->prev = _head;
-			// _head->lenght = 0;
-			std::cout<< "hellow world\n";
+			init_head();
 			while (n > 0)
 			{
 				this->push_back(val);
 				n--;
 			}
 		}
-		list (const list& x)
-		{
-			_head = _alloc_node.allocate(1);
-			_head->prev = _head;
-			_head->next = _head;
-			// _head->lenght = 0;
-			this->push_back(x);
-		}
 		
 		template <class InputIterator>
-		list(typename std::enable_if<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type first, InputIterator last, const allocator_type& alloc) :_head(0), _size(0)
+		list(typename std::enable_if<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type first, InputIterator last, const allocator_type& alloc = allocator_type()):_head(0), _size(0)
 		{
 			(void)alloc;
-			_head = _alloc_node.allocate(1);
-			_head->prev = _head;
-			_head->next = _head;
+			init_head();
     		while (first != last)
     		{
         		push_back(*first);
@@ -109,61 +179,57 @@ namespace ft
 
 		~list()
 		{
-			for (size_t i = 0; i < _size; i++)
-			{
-				this->delete_one_Node(_head->next);
-			}
+			// for (size_t i = 0; i < _size; i++)
+			// {
+			// 	this->delete_one_Node(_head->next);
+			// }
+			clear();
 			_alloc_node.deallocate(_head, 1);
 			_alloc_node.destroy(_head);
 			_head = 0;
 			_size = 0;
 		}
-/************************************************************************  iterator ************************************************************************/
-		class  iterator 
+
+		void clear()
 		{
-		public:
+			for (size_t i = 0; i < _size; i++)
+			{
+				this->delete_one_Node(_head->next);
+			}
+			_size = 0;
+		}
 
-		/***************Is default-constructible, copy-constructible, copy-assignable and destructible	******************/
-			iterator():m_ptr(0){}
-			// iterator(pointer ptr) : m_ptr(ptr) {}
-			iterator(t_node *ptr) : m_ptr(ptr) {}
+		list (const list & x):_head(0), _size(0)
+		{
+			// _head = 0;
+			// _size = 0;
+			*this = x;
+		}
 
-			// iterator(iterator const & toCopy)	{m_ptr = toCopy.m_ptr;}
-			~iterator(){}
+		list & operator=(const list& x)
+		{
+			if (this != &x)
+			{
+				std::cout << "********* quel by, operator= *********" << std::endl;
+				clear();
+				_head = _alloc_node.allocate(1);
+				_myAlloc.construct(&_head->data, T());
+				_head->next = _head;
+				_head->prev = _head;
+				// init_head();
+				for (const_iterator it = x.cbegin() ; it != x.cend() ; it++)
+				{
+					push_back(*it);
+				}
+			}
+			return (*this);
+		}
 
-			/*********************Can be dereferenced as an rvalue (if in a dereferenceable state)***********************************/
-			// value_type *operator*() const { return (&m_ptr->data); }
-			value_type		&operator*()const {return m_ptr->data;}
 
-			pointer_node operator->() { return (m_ptr); }
 
- 			iterator        &operator++() { m_ptr = m_ptr->next; return *this; }; // ++a
-        	iterator        operator++(int) { iterator it = *this; ++(*this); return it; }; // a++
-			
-			// /* Postfix increment*/
-			// iterator	operator++(int) { ++(*this); return (*this); }
-			// iterator	operator+(const difference_type& movement)	{m_ptr+= movement; return (*this);	}
 
-			// /*****************Can be decremented*************************/        
-			iterator        &operator--() { m_ptr = m_ptr->prev; return *this; }; // --a
-        	iterator        operator--(int) { iterator it = *this; --(*this); return it; }; // a--
-			// iterator	operator-(const int& movement){pointer oldPtr = this->m_ptr; this->m_ptr+=movement; this->m_ptr = oldPtr;return *this;}
 
-			// /***************** compared for equivalence using the equality/inequality operators***********/
-			friend bool operator!=(const   iterator& a, const   iterator& b) { return a.m_ptr != b.m_ptr; };
-			friend bool operator== (const   iterator& a, const   iterator& b) { return a.m_ptr == b.m_ptr; };
-			
-			/*****************Can be compared with inequality relational operators (<, >, <= and >=).*********/
-			friend bool operator<(const   iterator& a, const   iterator& b) { return (a.m_ptr < b.m_ptr); };
-			friend bool operator>(const   iterator& a, const   iterator& b) { return (a.m_ptr > b.m_ptr); };
- 			friend bool operator<=(const  iterator& a, const   iterator& b) { return (a.m_ptr <= b.m_ptr); };
-			friend bool operator>=(const  iterator& a, const   iterator& b) { return (a.m_ptr >= b.m_ptr); };
 
-		private:
-			pointer_node m_ptr;
-		};
-		iterator begin() {return   iterator(_head->next); }
-		iterator end()   { return  iterator(_head); }
 
 		void push_back(const value_type& val)
 		{
@@ -174,7 +240,6 @@ namespace ft
 			_head->prev->next = new_node;
 			_head->prev = new_node;
 			_size++;
-			// _head->lenght++;
         }
 
 		void push_front(const value_type& val)
@@ -338,6 +403,7 @@ namespace ft
 				current = current->prev;
 			}
 		}
+
 		/*
 		*Transfers elements from x (l2) into l1.
 		exemple:
@@ -575,6 +641,7 @@ namespace ft
 				pop_back();
 			}
 		}
+		size_type max_size() const{return _alloc_node.max_size();}
 	};
 }
 #endif

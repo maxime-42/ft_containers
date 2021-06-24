@@ -684,6 +684,38 @@ void test_resize()
 
   std::cout << '\n';
 }
+
+void test_constructor()
+{
+  // constructors used in the same order as described above:
+  ft::list<int> first;                                // empty list of ints
+  ft::list<int> second (4,100);                       // four ints with value 100
+  ft::list<int> third (second.begin(),second.end());  // iterating through second
+  ft::list<int> fourth (third);                       // a copy of third
+
+  std::cout << "second" << std::endl;
+  print_list(second);
+
+  std::cout << "\nthird" << std::endl;
+  print_list(third);
+
+
+  std::cout << "\nfourth" << std::endl;
+  print_list(fourth);
+
+  // the iterator constructor can also be used to construct from arrays:
+  int myints[] = {16,2,77,29};
+  ft::list<int> fifth (myints, myints + sizeof(myints) / sizeof(int) );
+
+  std::cout << "The contents of fifth are: ";
+  for (ft::list<int>::iterator it = fifth.begin(); it != fifth.end(); it++)
+    std::cout << *it << ' ';
+
+  std::cout << '\n';
+  (void)first;
+  (void)second;
+  // (void)third;
+}
 int main(void) 
 {
   // test_merge();
@@ -696,7 +728,8 @@ int main(void)
   // test_back();
   // test_front();
   // test_insert ();
-  test_resize();
+  // test_resize();
   // test_assign();
+  test_constructor();
   return (0);
 }
