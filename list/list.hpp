@@ -28,7 +28,6 @@ namespace ft
         typedef struct s_node
         {
             T data;
-			// size_type lenght;
             struct s_node *next;
             struct s_node *prev;
         }               t_node;
@@ -49,17 +48,13 @@ namespace ft
 		}
 
 
-
-
-
-
 /************************************************************************  const_iterator ************************************************************************/
 
 class  const_iterator 
 		{
 		public:
 
-		/***************Is default-constructible, copy-constructible, copy-assignable and destructible	******************/
+			/***************Is default-constructible, copy-constructible, copy-assignable and destructible	******************/
 			const_iterator():m_ptr(0){}
 			const_iterator(pointer_node ptr) : m_ptr(ptr) {}
 
@@ -76,11 +71,11 @@ class  const_iterator
  			const_iterator        &operator++() { m_ptr = m_ptr->next; return *this; }; // ++a
         	const_iterator        operator++(int) { const_iterator it = *this; ++(*this); return it; }; // a++
 			
-			// /*****************Can be decremented*************************/        
+			/*****************Can be decremented*************************/        
 			const_iterator        &operator--() { m_ptr = m_ptr->prev; return *this; }; // --a
         	const_iterator        operator--(int) { const_iterator it = *this; --(*this); return it; }; // a--
 
-			// /***************** compared for equivalence using the equality/inequality operators***********/
+			/***************** compared for equivalence using the equality/inequality operators***********/
 			friend bool operator!=(const   const_iterator& a, const   const_iterator& b) { return a.m_ptr != b.m_ptr; };
 			friend bool operator== (const   const_iterator& a, const   const_iterator& b) { return a.m_ptr == b.m_ptr; };
 
@@ -95,8 +90,6 @@ class  const_iterator
 		class  iterator 
 		{
 		public:
-
-/*********************************Is default-constructible, copy-constructible, copy-assignable and destructible	**********************/
 			iterator():m_ptr(0){}
 			iterator(pointer_node ptr) : m_ptr(ptr) {}
 
@@ -127,6 +120,80 @@ class  const_iterator
 		iterator begin() {return   iterator(_head->next); }
 		iterator end()   { return  iterator(_head); }
 
+
+
+/************************************************************************  reverse_iterator ************************************************************************/
+
+		class  reverse_iterator
+		{
+		public:
+			reverse_iterator():m_ptr(0){}
+			reverse_iterator(pointer_node ptr) : m_ptr(ptr) {}
+
+			reverse_iterator(reverse_iterator const & toCopy)	{m_ptr = toCopy.m_ptr;}
+
+			~reverse_iterator(){}
+
+			/*********************Can be dereferenced as an rvalue (if in a dereferenceable state)***********************************/
+			// value_type *operator*() const { return (&m_ptr->data); }
+			value_type		&operator*()const {return m_ptr->data;}
+
+			pointer_node operator->() { return (m_ptr); }
+
+ 			reverse_iterator        &operator++() { m_ptr = m_ptr->prev; return *this; }; // ++a
+        	reverse_iterator        operator++(int) { reverse_iterator it = *this; ++(*this); return it; }; // a++
+			
+			// /*****************Can be decremented*************************/  
+			reverse_iterator        &operator--() { m_ptr = m_ptr->next; return *this; }; // --a
+			reverse_iterator        operator--(int) { reverse_iterator it = *this; --(*this); return it; }; // a--
+
+			// /***************** compared for equivalence using the equality/inequality operators***********/
+			friend bool operator!=(const   reverse_iterator& a, const   reverse_iterator& b) { return a.m_ptr != b.m_ptr; };
+			friend bool operator== (const   reverse_iterator& a, const   reverse_iterator& b) { return a.m_ptr == b.m_ptr; };
+
+		private:
+			pointer_node m_ptr;
+		};
+		reverse_iterator  rbegin() {return   reverse_iterator(_head->prev); }
+		reverse_iterator rend()   { return  reverse_iterator(_head); }
+
+
+/************************************************************************  const_reverse_iterator ************************************************************************/
+
+		class  const_reverse_iterator 
+		{
+			public:
+
+				/***************Is default-constructible, copy-constructible, copy-assignable and destructible	******************/
+				const_reverse_iterator():m_ptr(0){}
+				const_reverse_iterator(pointer_node ptr) : m_ptr(ptr) {}
+
+				const_reverse_iterator(const_reverse_iterator const & toCopy)	{m_ptr = toCopy.m_ptr;}
+
+				~const_reverse_iterator(){}
+
+				/*********************Can be dereferenced as an rvalue (if in a dereferenceable state)***********************************/
+				// value_type *operator*() const { return (&m_ptr->data); }
+				value_type		&operator*()const {return m_ptr->data;}
+
+				pointer_node operator->() { return (m_ptr); }
+
+				const_reverse_iterator        &operator++() { m_ptr = m_ptr->prev; return *this; }; // ++a
+				const_reverse_iterator        operator++(int) { const_reverse_iterator it = *this; ++(*this); return it; }; // a++
+
+				/*****************Can be decremented*************************/        
+				const_reverse_iterator        &operator--() { m_ptr = m_ptr->prev; return *this; }; // --a
+				const_reverse_iterator        operator--(int) { const_reverse_iterator it = *this; --(*this); return it; }; // a--
+
+				/***************** compared for equivalence using the equality/inequality operators***********/
+				friend bool operator!=(const   const_reverse_iterator& a, const   const_reverse_iterator& b) { return a.m_ptr != b.m_ptr; };
+				friend bool operator== (const   const_reverse_iterator& a, const   const_reverse_iterator& b) { return a.m_ptr == b.m_ptr; };
+
+			private:
+				pointer_node m_ptr;
+		};
+		const_reverse_iterator rbegin() const { return   const_reverse_iterator(_head->prev); }
+		const_reverse_iterator rend()   const { return  const_reverse_iterator(_head); }
 
 
 		list (const allocator_type& alloc = allocator_type()):_head(0), _size(0)	
@@ -403,6 +470,7 @@ class  const_iterator
 				current = current->prev;
 			}
 		}
+		
 
 		/*
 		*Transfers elements from x (l2) into l1.
@@ -584,7 +652,6 @@ class  const_iterator
 		{
 			delete_one_Node(_head->prev);
 			_size--;
-
 		}
 
       	reference back()
@@ -620,7 +687,6 @@ class  const_iterator
 		}
 
 		template <class InputIterator>
-		// void insert (iterator position, InputIterator first, InputIterator last)
 		void insert(iterator position, typename std::enable_if<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type first, InputIterator last)
 		{
 			while (first != last)

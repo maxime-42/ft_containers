@@ -716,20 +716,36 @@ void test_constructor()
   (void)second;
   // (void)third;
 }
-int main(void) 
+
+int main ()
 {
-  // test_merge();
-  // std::cout << "\n\nstl merge\n" << std::endl;
-  // stl_merge();
-  // test_merge_2();
-  // test_remove_if();
-  // test_unique();
-  // test_erase();
-  // test_back();
-  // test_front();
-  // test_insert ();
-  // test_resize();
-  // test_assign();
-  test_constructor();
-  return (0);
+  std::list<int> mylist;
+  for (int i=1; i<=5; ++i) mylist.push_back(i);
+
+  print_list(mylist);
+  std::cout << "mylist backwards:";
+  for (std::list<int>::reverse_iterator rit=mylist.rbegin(); rit!=mylist.rend(); ++rit)
+    std::cout << ' ' << *rit;
+
+  std::cout << '\n';
+
+  return 0;
 }
+
+// int main(void) 
+// {
+//   // test_merge();
+//   // std::cout << "\n\nstl merge\n" << std::endl;
+//   // stl_merge();
+//   // test_merge_2();
+//   // test_remove_if();
+//   // test_unique();
+//   // test_erase();
+//   // test_back();
+//   // test_front();
+//   // test_insert ();
+//   // test_resize();
+//   // test_assign();
+//   test_constructor();
+//   return (0);
+// }
