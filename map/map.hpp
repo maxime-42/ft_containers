@@ -68,7 +68,7 @@ namespace ft
 					typedef t_node						*pointeur;
 					// typedef ptrdiff_t					difference_type;
 
-				iterator(pointeur ptr = 0): _ptr(ptr){}
+				iterator(pointeur ptr = 0): _ptr(ptr), _size(0){}
 				// iterator(iterator const &cp){_ptr = cp.get_ptr();}
 				// iterator operator=(MapIterator const &cp)
 				// {
@@ -103,17 +103,30 @@ namespace ft
 				std::cout << "destructeur" << std::endl;
 			}
 
+			void my_insert (const value_type & val, t_node *node)
+			{
+				if (!node)
+				{
+					_size++;
+					root = _alloc_node.allocate(1);
+					_myAlloc.construct(&node->data, val);
+				}
+				if (Compare(root->data, val) < 0)
+				{
+					my_insert(val, node->left);
+				}
+				else if (Compare(root->data, val) > 0)
+				{
+					my_insert(val, node->left);
+				}
+				else if (!Compare(root->data, val))
+					return ;
+			}
+
 			void insert (const value_type & val)
 			{
 				(void)val;
-				if (!_root)
-				{
-					_root = _alloc_node.allocate(1);
-					_root->data = val;
-					// _root->data.first = val.first;
-					// std::cout << "val first" << val.first << std::endl;
-					// _myAlloc.construct(&root, val);
-				}
+					my_insert (val);
 			}
 
 	};
