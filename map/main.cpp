@@ -31,7 +31,7 @@ int	main(void)
 	// ft::pair<char,int> p1(p);
 	// std::cout << "first " << p1.second << std::endl;
 	// first insert function version (single parameter):
-		mymap.insert (p);
+	mymap.insert (p);
 	// mymap.insert ( std::pair<char,int>('b',200) );
 	// mymap.insert ( std::pair<char,int>('c',400) );
 	// mymap.insert ( std::pair<char,int>('d',400) );

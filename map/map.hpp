@@ -41,6 +41,7 @@ namespace ft
 		public:
 			typedef pair<const Key, T>					value_type;
 			typedef T& 									reference;
+			typedef Compare								key_compare;
 			typedef Alloc								allocator_type;
 			typedef const T&							const_reference;
 			typedef T* 									pointer;
@@ -68,7 +69,7 @@ namespace ft
 					typedef t_node						*pointeur;
 					// typedef ptrdiff_t					difference_type;
 
-				iterator(pointeur ptr = 0): _ptr(ptr), _size(0){}
+				iterator(pointeur ptr = 0): _ptr(ptr){}
 				// iterator(iterator const &cp){_ptr = cp.get_ptr();}
 				// iterator operator=(MapIterator const &cp)
 				// {
@@ -108,25 +109,25 @@ namespace ft
 				if (!node)
 				{
 					_size++;
-					root = _alloc_node.allocate(1);
+					_root = _alloc_node.allocate(1);
 					_myAlloc.construct(&node->data, val);
 				}
-				if (Compare(root->data, val) < 0)
+				if (key_compare(node->data.first, val.first))
 				{
 					my_insert(val, node->left);
 				}
-				else if (Compare(root->data, val) > 0)
-				{
-					my_insert(val, node->left);
-				}
-				else if (!Compare(root->data, val))
-					return ;
+				// else if (!key_compare(node->data.first, val.first))
+				// {
+				// 	my_insert(val, node->right);
+				// }
+				// if (!(root->data.first ^ val.first))
+					// return ;
 			}
 
 			void insert (const value_type & val)
 			{
 				(void)val;
-					my_insert (val);
+				my_insert (val, _root);
 			}
 
 	};
