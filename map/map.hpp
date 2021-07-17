@@ -53,6 +53,7 @@ namespace ft
 			typedef struct								s_node
 			{
 				value_type								data;
+				struct s_node							*parent;
 				struct s_node							*left;
 				struct s_node							*right;
 			}											t_node;
@@ -66,7 +67,7 @@ namespace ft
  			class iterator
 			{
 				private:
-					t_node								_ptr; 
+					t_node								*_ptr; 
 				public:
 					typedef t_node						*pointeur;
 					// typedef ptrdiff_t					difference_type;
@@ -92,14 +93,17 @@ namespace ft
 					// bool			operator!=(const iterator &it){ return _ptr != it.get_ptr();}
 
 			};
+
 			t_node *get_begin(t_node *node)
 			{
-				if (_node)
+				t_node *node_begin = 0;
+				if (node)
 				{
-					get_begin(node->left);
-					return (node);
+					node_begin = get_begin(node->left);
+					if (!node_begin)
+						return (node);
 				}
-				return (0);
+				return (node_begin);
 			}
 
 			t_node *get_next_node(t_node *node)
@@ -135,6 +139,9 @@ namespace ft
 					_size++;
 					*node = _alloc_node.allocate(1);
 					_myAlloc.construct(&(*node)->data, val);
+					(*node)->parent = 0;
+					(*node)->left = 0;
+					(*node)->right = 0;
 				}
 				else if (cmp((*node)->data.first, val.first))
 				{
