@@ -113,6 +113,8 @@ namespace ft
 					get_next_node(node->left);
 					return (node);
 				}
+				if (is_leaf(node))
+					return (node->parent);
 				return (0);
 			}
 
@@ -132,33 +134,44 @@ namespace ft
 				std::cout << "destructeur" << std::endl;
 			}
 
- 			void my_insert (const value_type & val, t_node **node, key_compare cmp)
+ 			void my_insert (const value_type & val, t_node **node, t_node *root_node, key_compare cmp)
 			{
 				if (!*node)
 				{
 					_size++;
 					*node = _alloc_node.allocate(1);
 					_myAlloc.construct(&(*node)->data, val);
-					(*node)->parent = 0;
+					(*node)->parent = root_node;
 					(*node)->left = 0;
 					(*node)->right = 0;
 				}
 				else if (cmp((*node)->data.first, val.first))
 				{
-					my_insert(val, &(*node)->right, cmp);
+					my_insert(val, &(*node)->right, *node, cmp);
 				}
 				else if (cmp((*node)->data.first, val.first) == false)
 				{
 					if (cmp(val.first, (*node)->data.first) == false)
 						return ;
-					my_insert(val, &(*node)->left, cmp);
+					my_insert(val, &(*node)->left, *node, cmp);
 				}
+			}
+
+			bool	is_leaf(t_node *node)
+			{
+				if (!node->left && node->right)
+					return (true);
+				return (false);
 			}
 
 			void insert (const value_type & val)
 			{
 				(void)val;
-				my_insert (val, &_root, key_compare());
+				if (!_size)
+					my_insert (val, &_root, 0, key_compare());
+				else
+					my_insert (val, &_root, _root, key_compare());
+
 			}
 
 			void	print_tree(t_node *node)
