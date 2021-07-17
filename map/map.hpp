@@ -50,8 +50,22 @@ namespace ft
 			typedef size_t								size_type;
 			typedef std::forward_iterator_tag			iterator_category;
 
+
+
 			typedef struct								s_node
 			{
+				bool	is_leaf(struct s_node *node)
+				{
+					if (!node->left && !node->right)
+						return (true);
+					return (false);
+				}
+				struct s_node *get_next_node(struct s_node *node)
+				{
+					if (is_leaf(node))
+						return (node->parent);
+					return (node->right);
+				}
 				value_type								data;
 				struct s_node							*parent;
 				struct s_node							*left;
@@ -64,6 +78,7 @@ namespace ft
 			Alloc										_myAlloc;
 		public:
 		///////////////////////iterator/////////////////////////////////
+
  			class iterator
 			{
 				private:
@@ -72,9 +87,9 @@ namespace ft
 					typedef t_node						*pointeur;
 					// typedef ptrdiff_t					difference_type;
 
-					iterator(pointeur ptr = 0): _ptr(ptr){}
+					iterator(t_node *ptr = 0): _ptr(ptr){}
 					// iterator(iterator const &cp){_ptr = cp.get_ptr();}
-					// iterator operator=(MapIterator const &cp)
+					// iterator operator=(iterator const &cp)
 					// {
 						// if (this != &cp)
 							// this->_ptr = cp.get_ptr();
@@ -83,8 +98,9 @@ namespace ft
 					~iterator(){}
 					value_type		&operator*()const {return _ptr->data;}
 					value_type		*operator->()const {return &(_ptr->data);}
-					// MapIterator	&operator++(){_ptr = _ptr->getnext(); return *this;}
-					// MapIterator	operator++(int){iterator it = *this; _ptr = _ptr->getnext(); return it;}
+					iterator	&operator++(){_ptr->get_next_node(_ptr); return *this;}//++a
+					iterator	operator++(int){iterator it = *this; _ptr->get_next_node(_ptr); return (it);}//a++
+
 					// MapIterator	&operator--(){ _ptr = _ptr->getprev(); return *this;}
 					// MapIterator	operator--(int){iterator it = *this; _ptr = _ptr->getprev(); return it;}
 					// pointeur        get_ptr()const{return _ptr;}
@@ -106,17 +122,6 @@ namespace ft
 				return (node_begin);
 			}
 
-			t_node *get_next_node(t_node *node)
-			{
-				if (node)
-				{
-					get_next_node(node->left);
-					return (node);
-				}
-				if (is_leaf(node))
-					return (node->parent);
-				return (0);
-			}
 
 			iterator begin()
 			{
@@ -134,14 +139,14 @@ namespace ft
 				std::cout << "destructeur" << std::endl;
 			}
 
- 			void my_insert (const value_type & val, t_node **node, t_node *root_node, key_compare cmp)
+ 			void my_insert (const value_type & val, t_node **node, t_node *parent, key_compare cmp)
 			{
 				if (!*node)
 				{
 					_size++;
 					*node = _alloc_node.allocate(1);
 					_myAlloc.construct(&(*node)->data, val);
-					(*node)->parent = root_node;
+					(*node)->parent = parent;
 					(*node)->left = 0;
 					(*node)->right = 0;
 				}
@@ -157,13 +162,7 @@ namespace ft
 				}
 			}
 
-			bool	is_leaf(t_node *node)
-			{
-				if (!node->left && node->right)
-					return (true);
-				return (false);
-			}
-
+	
 			void insert (const value_type & val)
 			{
 				(void)val;
