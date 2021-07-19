@@ -73,6 +73,7 @@ namespace ft
 			}											t_node;
 		protected:
 			t_node										*_root;
+			t_node										*_end;
 			size_type									_size;
 			std::allocator<struct s_node>				_alloc_node;
 			Alloc										_myAlloc;
@@ -87,26 +88,46 @@ namespace ft
 					typedef t_node						*pointeur;
 					// typedef ptrdiff_t					difference_type;
 
+					bool is_end(t_node *node)
+					{
+						t_node *tmp = _root;
+						while(tmp && tmp->right)
+						{
+							tmp = tmp->right;
+						}
+						return (tmp == node);
+					}
+
+
 					iterator(t_node *ptr = 0): _ptr(ptr){}
 					// iterator(iterator const &cp){_ptr = cp.get_ptr();}
-					// iterator operator=(iterator const &cp)
-					// {
-						// if (this != &cp)
-							// this->_ptr = cp.get_ptr();
-						// return *this;
-					// }
-					~iterator(){}
-					value_type		&operator*()const {return _ptr->data;}
-					value_type		*operator->()const {return &(_ptr->data);}
-					iterator	&operator++(){_ptr->get_next_node(_ptr); return *this;}//++a
-					iterator	operator++(int){iterator it = *this; _ptr->get_next_node(_ptr); return (it);}//a++
+					iterator operator=(iterator const &cp)
+					{
+						if (this != &cp)
+							this->_ptr = cp.get_ptr();
+						return *this;
+					}
 
+					~iterator(){}
+					value_type							&operator*()const {return _ptr->data;}
+					value_type							*operator->()const {return &(_ptr->data);}
+					iterator							&operator++(){_ptr = _ptr->get_next_node(_ptr); return *this;
+					}//++a
+					iterator							operator++(int)
+					{
+						iterator it = *this;
+						ptr = _ptr->get_next_node(_ptr);
+						if (_ptr == NULL) 
+							return (NULL); 
+							return (it);
+					}//a++
 					// MapIterator	&operator--(){ _ptr = _ptr->getprev(); return *this;}
 					// MapIterator	operator--(int){iterator it = *this; _ptr = _ptr->getprev(); return it;}
-					// pointeur        get_ptr()const{return _ptr;}
+					pointeur        get_ptr()const{return _ptr;}
 
 					// bool			operator==(const iterator &it){ return _ptr == it.get_ptr();}
 					// bool			operator!=(const iterator &it){ return _ptr != it.get_ptr();}
+					friend bool operator!=(const   iterator& a, const   iterator& b) { return a._ptr != b._ptr; };
 
 			};
 
@@ -128,6 +149,12 @@ namespace ft
 				return (get_begin(_root));
 			}
 
+
+			iterator end()
+			{
+				return (NULL);
+			}
+
 			map():_root(0), _size(0)
 			{
 				std::cout << "hellow world\n" << std::endl;
@@ -139,16 +166,28 @@ namespace ft
 				std::cout << "destructeur" << std::endl;
 			}
 
+			void	updte_end(t_node *parent)
+			{
+				if (!_size)
+				{
+					_end = _alloc_node.allocate(1);
+ 					_myAlloc.construct(&_end->data, value_type());
+					_end->parent = parent;
+					parent->left = _end;
+					parent->right = _end;
+				}
+			}
+
  			void my_insert (const value_type & val, t_node **node, t_node *parent, key_compare cmp)
 			{
 				if (!*node)
 				{
-					_size++;
 					*node = _alloc_node.allocate(1);
-					_myAlloc.construct(&(*node)->data, val);
+ 					_myAlloc.construct(&(*node)->data, val);
 					(*node)->parent = parent;
 					(*node)->left = 0;
 					(*node)->right = 0;
+					_size++;
 				}
 				else if (cmp((*node)->data.first, val.first))
 				{
