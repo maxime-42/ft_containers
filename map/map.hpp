@@ -56,16 +56,25 @@ namespace ft
 			{
 				bool	is_leaf(struct s_node *node)
 				{
-					if (!node->left && !node->right)
+					if (node->left == NULL && node->right == NULL )
 						return (true);
 					return (false);
 				}
+				
 				struct s_node *get_next_node(struct s_node *node)
 				{
 					if (is_leaf(node))
-						return (node->parent);
-					return (node->right);
+					{
+						// std::cout << " parent " ;
+						if (node->data.first > node->parent->data.first)
+							get_next_node(node->parent);
+							// node = node->parent;
+					}
+					else 
+						node = node->right;
+					return (node);
 				}
+
 				value_type								data;
 				struct s_node							*parent;
 				struct s_node							*left;
@@ -88,16 +97,6 @@ namespace ft
 					typedef t_node						*pointeur;
 					// typedef ptrdiff_t					difference_type;
 
-					bool is_end(t_node *node)
-					{
-						t_node *tmp = _root;
-						while(tmp && tmp->right)
-						{
-							tmp = tmp->right;
-						}
-						return (tmp == node);
-					}
-
 
 					iterator(t_node *ptr = 0): _ptr(ptr){}
 					// iterator(iterator const &cp){_ptr = cp.get_ptr();}
@@ -111,16 +110,8 @@ namespace ft
 					~iterator(){}
 					value_type							&operator*()const {return _ptr->data;}
 					value_type							*operator->()const {return &(_ptr->data);}
-					iterator							&operator++(){_ptr = _ptr->get_next_node(_ptr); return *this;
-					}//++a
-					iterator							operator++(int)
-					{
-						iterator it = *this;
-						ptr = _ptr->get_next_node(_ptr);
-						if (_ptr == NULL) 
-							return (NULL); 
-							return (it);
-					}//a++
+					iterator							&operator++(){_ptr = _ptr->get_next_node(_ptr); return *this;}//++a
+					iterator							operator++(int)	{iterator it = *this; _ptr = _ptr->get_next_node(_ptr); return (it);}//a++
 					// MapIterator	&operator--(){ _ptr = _ptr->getprev(); return *this;}
 					// MapIterator	operator--(int){iterator it = *this; _ptr = _ptr->getprev(); return it;}
 					pointeur        get_ptr()const{return _ptr;}
@@ -149,13 +140,12 @@ namespace ft
 				return (get_begin(_root));
 			}
 
-
 			iterator end()
 			{
-				return (NULL);
+				return (_end);
 			}
 
-			map():_root(0), _size(0)
+			map():_root(0), _end(0), _size(0)
 			{
 				std::cout << "hellow world\n" << std::endl;
 			}
@@ -166,28 +156,34 @@ namespace ft
 				std::cout << "destructeur" << std::endl;
 			}
 
-			void	updte_end(t_node *parent)
+			void	updte_end(t_node *new_node)
 			{
-				if (!_size)
+				if (!_end)
 				{
 					_end = _alloc_node.allocate(1);
  					_myAlloc.construct(&_end->data, value_type());
-					_end->parent = parent;
-					parent->left = _end;
-					parent->right = _end;
+					new_node->right = _end;
+					_end->parent = new_node;
 				}
+				else if (new_node->parent->right == new_node && new_node->parent == _end->parent)
+				{
+					new_node->right = _end;
+					_end->parent = new_node;
+				}
+
 			}
 
  			void my_insert (const value_type & val, t_node **node, t_node *parent, key_compare cmp)
 			{
-				if (!*node)
+				if (!*node || *node == _end)
 				{
+					_size++;
 					*node = _alloc_node.allocate(1);
  					_myAlloc.construct(&(*node)->data, val);
 					(*node)->parent = parent;
 					(*node)->left = 0;
 					(*node)->right = 0;
-					_size++;
+					updte_end(*node);
 				}
 				else if (cmp((*node)->data.first, val.first))
 				{

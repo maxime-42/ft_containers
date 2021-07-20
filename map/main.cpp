@@ -38,22 +38,35 @@ int	main(void)
 	ft::pair<int,int> p1(1,100);
 	ft::pair<int,int> p2(2,200);
 	ft::pair<int,int> p3(3,300);
+	ft::pair<int,int> p4(4,400);
+	ft::pair<int,int> p5(0,000);
+	ft::pair<int,int> p6(30,3000);
+	ft::pair<int,int> p7(12,1300);
+	ft::pair<int,int> p8(220,2000);
 
 
-	// ft::pair<char,int> p1(p);
-	// std::cout << "first " << p1.second << std::endl;
-	// first insert function version (single parameter):
+
 	mymap.insert(p1);
 	mymap.insert(p2);
 	mymap.insert(p3);
-	ft::map<int,int>::iterator it = mymap.begin();
-	ft::map<int, int>::iterator it1 = it++;
-	
-	// std::cout << "it  : first = " << it->first << " second = " << it->second << '\n';
-	// std::cout << "it1 : first = " << it1->first << " second = " << it1->second << "\n\n";
+	mymap.insert(p4);
+	mymap.insert(p5);
+	mymap.insert(p6);
+	mymap.insert(p7);
+	mymap.insert(p8);
 
-	for(ft::map<int, int>::iterator it = mymap.begin(); it != mymap.end(); it++ )
+	int i = 0;
+	
+	for( ft::map<int, int>::iterator it = mymap.begin(); it != mymap.end(); it++ )
+	{
 		std::cout << it->first << " => " << it->second << '\n';
+
+		// if (i == 5)
+		// 	break;
+		i++;
+
+	}
+
 
 	// it++;
 	// std::cout << "data (first) = " << it->first << "data (value) = " << it->second << std::endl;
