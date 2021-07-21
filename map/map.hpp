@@ -63,6 +63,8 @@ namespace ft
 				
 				struct s_node *get_next_node(struct s_node *node)
 				{
+					if (node)
+						node = node->parent;
 					if (is_leaf(node))
 					{
 						// std::cout << " parent " ;
@@ -239,7 +241,7 @@ namespace ft
 }
 
 /*
-	is left child ,backtrack to find the greater than current node
+	is child left backtrack to find the greater than current node
 	other is right child , backtrack to the greater than current node then try to go on the left
 */
 
