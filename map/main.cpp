@@ -57,15 +57,12 @@ int	main(void)
 
 	// int i = 0;
 	
-	// for( ft::map<int, int>::iterator it = mymap.begin(); it != mymap.end(); it++ )
-	// {
-	// 	std::cout << it->first << " => " << it->second << '\n';
+	for( ft::map<int, int>::iterator it = mymap.begin(); it != mymap.end(); it++ )
+	{
+		std::cout << it->first << " => " << it->second << '\n';
 
-	// 	if (i == 3)
-	// 		break;
-	// 	i++;
 
-	// }
+	}
 
 
 	// it++;

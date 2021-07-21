@@ -60,20 +60,34 @@ namespace ft
 						return (true);
 					return (false);
 				}
-				
+/*
+	is child left backtrack to find the greater than current node
+	other is right child , backtrack to the greater than current node then try to go on the left
+*/
 				struct s_node *get_next_node(struct s_node *node)
 				{
-					if (node)
+					// key_compare cmp;
+					t_node *current = node;
+					if (node == node->parent->left)
 						node = node->parent;
-					if (is_leaf(node))
+					else if (node == node->parent->right)
 					{
-						// std::cout << " parent " ;
-						// if (node->data.first > node->parent->data.first)
-						// 	get_next_node(node->parent);
+						// while (cmp(node->data, current->data) == false)
+						while (node->data.first < current->data.first)
+						{
 							node = node->parent;
+						}
+						if (node->left /*&& cmp(node->left->data, current->data) == true*/)
+							node = node->left;
 					}
-					else 
-						node = node->right;
+					else if (current->parent == NULL)
+					{
+						current = current->right;
+						while (node->left)
+						{
+							node = node->left;
+						}
+					}
 					return (node);
 				}
 
@@ -155,18 +169,18 @@ namespace ft
 			~map()
 			{
 				print_tree(_root);
-				std::cout << "\n" << std::endl;
-				std::cout << "first = " << _root->data.first << " second = " <<  _root->data.second << "\n" ;
-				_root = _root->right;
-				std::cout << "first = " << _root->data.first << " second = " <<  _root->data.second << "\n" ;
-				_root = _root->right;
-				std::cout << "first = " << _root->data.first << " second = " <<  _root->data.second << "\n" ;
-				_root = _root->right;
-				std::cout << "first = " << _root->data.first << " second = " <<  _root->data.second << "\n" ;
-				_root = _root->right;
-				std::cout << "first = " << _root->data.first << " second = " <<  _root->data.second << "\n" ;
-				_root = _root->left;
-				std::cout << "first = " << _root->data.first << " second = " <<  _root->data.second << "\n" ;
+				// std::cout << "\n" << std::endl;
+				// std::cout << "first = " << _root->data.first << " second = " <<  _root->data.second << "\n" ;
+				// _root = _root->right;
+				// std::cout << "first = " << _root->data.first << " second = " <<  _root->data.second << "\n" ;
+				// _root = _root->right;
+				// std::cout << "first = " << _root->data.first << " second = " <<  _root->data.second << "\n" ;
+				// _root = _root->right;
+				// std::cout << "first = " << _root->data.first << " second = " <<  _root->data.second << "\n" ;
+				// _root = _root->right;
+				// std::cout << "first = " << _root->data.first << " second = " <<  _root->data.second << "\n" ;
+				// _root = _root->left;
+				// std::cout << "first = " << _root->data.first << " second = " <<  _root->data.second << "\n" ;
 
 
 				// std::cout << "destructeur" << std::endl;
@@ -232,17 +246,14 @@ namespace ft
 			// {
 				// clear_tree(node->left);
 				// _myAlloc.destroy(_data + i);
-// 
+							//
 				// clear_tree(node->right);
-// 
+				// 
 // 
 			// }
 	};
 }
 
-/*
-	is child left backtrack to find the greater than current node
-	other is right child , backtrack to the greater than current node then try to go on the left
-*/
+
 
 #endif
