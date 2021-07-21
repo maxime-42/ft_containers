@@ -66,9 +66,9 @@ namespace ft
 					if (is_leaf(node))
 					{
 						// std::cout << " parent " ;
-						if (node->data.first > node->parent->data.first)
-							get_next_node(node->parent);
-							// node = node->parent;
+						// if (node->data.first > node->parent->data.first)
+						// 	get_next_node(node->parent);
+							node = node->parent;
 					}
 					else 
 						node = node->right;
@@ -99,7 +99,7 @@ namespace ft
 
 
 					iterator(t_node *ptr = 0): _ptr(ptr){}
-					// iterator(iterator const &cp){_ptr = cp.get_ptr();}
+					// iterator(iterator const &cp){_ptr = cp.get_ptr(	);}
 					iterator operator=(iterator const &cp)
 					{
 						if (this != &cp)
@@ -153,7 +153,21 @@ namespace ft
 			~map()
 			{
 				print_tree(_root);
-				std::cout << "destructeur" << std::endl;
+				std::cout << "\n" << std::endl;
+				std::cout << "first = " << _root->data.first << " second = " <<  _root->data.second << "\n" ;
+				_root = _root->right;
+				std::cout << "first = " << _root->data.first << " second = " <<  _root->data.second << "\n" ;
+				_root = _root->right;
+				std::cout << "first = " << _root->data.first << " second = " <<  _root->data.second << "\n" ;
+				_root = _root->right;
+				std::cout << "first = " << _root->data.first << " second = " <<  _root->data.second << "\n" ;
+				_root = _root->right;
+				std::cout << "first = " << _root->data.first << " second = " <<  _root->data.second << "\n" ;
+				_root = _root->left;
+				std::cout << "first = " << _root->data.first << " second = " <<  _root->data.second << "\n" ;
+
+
+				// std::cout << "destructeur" << std::endl;
 			}
 
 			void	updte_end(t_node *new_node)
@@ -170,7 +184,6 @@ namespace ft
 					new_node->right = _end;
 					_end->parent = new_node;
 				}
-
 			}
 
  			void my_insert (const value_type & val, t_node **node, t_node *parent, key_compare cmp)
@@ -183,7 +196,7 @@ namespace ft
 					(*node)->parent = parent;
 					(*node)->left = 0;
 					(*node)->right = 0;
-					updte_end(*node);
+					// updte_end(*node);
 				}
 				else if (cmp((*node)->data.first, val.first))
 				{
@@ -197,15 +210,10 @@ namespace ft
 				}
 			}
 
-	
 			void insert (const value_type & val)
 			{
 				(void)val;
-				if (!_size)
-					my_insert (val, &_root, 0, key_compare());
-				else
-					my_insert (val, &_root, _root, key_compare());
-
+				my_insert (val, &_root, _root, key_compare());
 			}
 
 			void	print_tree(t_node *node)
@@ -218,7 +226,21 @@ namespace ft
 				}
 			}
 
+			// void	clear_tree(t_node *node)
+			// {
+				// clear_tree(node->left);
+				// _myAlloc.destroy(_data + i);
+// 
+				// clear_tree(node->right);
+// 
+// 
+			// }
 	};
 }
+
+/*
+	is left child ,backtrack to find the greater than current node
+	other is right child , backtrack to the greater than current node then try to go on the left
+*/
 
 #endif

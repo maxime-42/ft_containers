@@ -55,17 +55,17 @@ int	main(void)
 	mymap.insert(p7);
 	mymap.insert(p8);
 
-	int i = 0;
+	// int i = 0;
 	
-	for( ft::map<int, int>::iterator it = mymap.begin(); it != mymap.end(); it++ )
-	{
-		std::cout << it->first << " => " << it->second << '\n';
+	// for( ft::map<int, int>::iterator it = mymap.begin(); it != mymap.end(); it++ )
+	// {
+	// 	std::cout << it->first << " => " << it->second << '\n';
 
-		// if (i == 5)
-		// 	break;
-		i++;
+	// 	if (i == 3)
+	// 		break;
+	// 	i++;
 
-	}
+	// }
 
 
 	// it++;
