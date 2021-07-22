@@ -54,35 +54,38 @@ namespace ft
 
 			typedef struct								s_node
 			{
+				value_type								data;
+				struct s_node							*parent;
+				struct s_node							*left;
+				struct s_node							*right;
 				bool	is_leaf(struct s_node *node)
 				{
 					if (node->left == NULL && node->right == NULL )
 						return (true);
 					return (false);
 				}
-/*
-	is child left backtrack to find the greater than current node
-	other is right child , backtrack to the greater than current node then try to go on the left
-*/
+				/*
+				to increment there are mains two cases:
+				** one -> leaf or node don't have child on the right
+						 do to : backtrack to find greater parent
+				** interior node
+						do to : one step on the right then forward on the left
+				*/
 				struct s_node *get_next_node(struct s_node *node)
 				{
-					// key_compare cmp;
-					t_node *current = node;
-					if (node == node->parent->left)
-						node = node->parent;
-					else if (node == node->parent->right)
+					key_compare cmp;
+					t_node	*current = node;
+					
+					if (is_leaf(node) || !node->right)
 					{
-						// while (cmp(node->data, current->data) == false)
-						while (node->data.first < current->data.first)
+						while (cmp(current->data.first, node->data.first) == false)
 						{
 							node = node->parent;
 						}
-						if (node->left /*&& cmp(node->left->data, current->data) == true*/)
-							node = node->left;
 					}
-					else if (current->parent == NULL)
+					else
 					{
-						current = current->right;
+						node = node->right;
 						while (node->left)
 						{
 							node = node->left;
@@ -91,10 +94,27 @@ namespace ft
 					return (node);
 				}
 
-				value_type								data;
-				struct s_node							*parent;
-				struct s_node							*left;
-				struct s_node							*right;
+				struct s_node *get_prev_node(struct s_node *node)
+				{
+					key_compare cmp;
+					t_node	*current = node; 
+					if (is_leaf(node) || !node->right)
+					{
+						while (cmp(current->data.first, node->data.first) == true)
+						{
+							node = node->parent;
+						}
+					}
+					else
+					{
+						node = node->left;
+						while (node->right)
+						{
+							node = node->right;
+						}
+					}
+					return (node);
+				}
 			}											t_node;
 		protected:
 			t_node										*_root;
@@ -128,9 +148,9 @@ namespace ft
 					value_type							*operator->()const {return &(_ptr->data);}
 					iterator							&operator++(){_ptr = _ptr->get_next_node(_ptr); return *this;}//++a
 					iterator							operator++(int)	{iterator it = *this; _ptr = _ptr->get_next_node(_ptr); return (it);}//a++
-					// MapIterator	&operator--(){ _ptr = _ptr->getprev(); return *this;}
-					// MapIterator	operator--(int){iterator it = *this; _ptr = _ptr->getprev(); return it;}
-					pointeur        get_ptr()const{return _ptr;}
+					iterator							&operator--(){ _ptr = _ptr->get_prev_node(_ptr); return *this;}//--a
+					iterator							operator--(int){iterator it = *this; _ptr = _ptr->get_prev(_ptr); return it;} //a--
+					// pointeur        					get_ptr()const{return _ptr;}
 
 					// bool			operator==(const iterator &it){ return _ptr == it.get_ptr();}
 					// bool			operator!=(const iterator &it){ return _ptr != it.get_ptr();}
@@ -168,7 +188,7 @@ namespace ft
 
 			~map()
 			{
-				print_tree(_root);
+				// print_tree(_root);
 				// std::cout << "\n" << std::endl;
 				// std::cout << "first = " << _root->data.first << " second = " <<  _root->data.second << "\n" ;
 				// _root = _root->right;
@@ -192,8 +212,11 @@ namespace ft
 				{
 					_end = _alloc_node.allocate(1);
  					_myAlloc.construct(&_end->data, value_type());
+					_end->left = 0;
+					_end->left = 0;
 					new_node->right = _end;
 					_end->parent = new_node;
+					std::cout << "updte_end\n" << std::endl;
 				}
 				else if (new_node->parent->right == new_node && new_node->parent == _end->parent)
 				{
@@ -212,7 +235,7 @@ namespace ft
 					(*node)->parent = parent;
 					(*node)->left = 0;
 					(*node)->right = 0;
-					// updte_end(*node);
+					updte_end(*node);
 				}
 				else if (cmp((*node)->data.first, val.first))
 				{

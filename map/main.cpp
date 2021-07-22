@@ -57,13 +57,10 @@ int	main(void)
 
 	// int i = 0;
 	
-	for( ft::map<int, int>::iterator it = mymap.begin(); it != mymap.end(); it++ )
+	for( ft::map<int, int>::iterator it = mymap.begin(); it != mymap.end(); it++)
 	{
 		std::cout << it->first << " => " << it->second << '\n';
-
-
 	}
-
 
 	// it++;
 	// std::cout << "data (first) = " << it->first << "data (value) = " << it->second << std::endl;
