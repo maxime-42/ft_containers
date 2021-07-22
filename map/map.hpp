@@ -71,14 +71,13 @@ namespace ft
 				** interior node
 						do to : one step on the right then forward on the left
 				*/
-				struct s_node *get_next_node(struct s_node *node)
+				struct s_node *get_next_node()
 				{
 					key_compare cmp;
-					t_node	*current = node;
-					
+					t_node	*node = this;
 					if (is_leaf(node) || !node->right)
 					{
-						while (cmp(current->data.first, node->data.first) == false)
+						while (cmp(this->data.first, node->data.first) == false)
 						{
 							node = node->parent;
 						}
@@ -94,15 +93,24 @@ namespace ft
 					return (node);
 				}
 
-				struct s_node *get_prev_node(struct s_node *node)
+				struct s_node *get_prev_node()
 				{
-					key_compare cmp;
-					t_node	*current = node; 
-					if (is_leaf(node) || !node->right)
+					// key_compare cmp;
+					t_node	*node = this;
+					t_node	*current = this;
+					value_type p = value_type();
+					if (is_leaf(node) || !node->left)
 					{
-						while (cmp(current->data.first, node->data.first) == true)
+							std::cout << "get_prev_node" << std::endl;
+
+						node = node->parent;
+						// while (cmp(node->data.first, current->data.first) == true)
+						while (node->data.first < current->data.first )
 						{
 							node = node->parent;
+							// if (node->left)
+							// 	node = node->left;
+
 						}
 					}
 					else
@@ -119,9 +127,12 @@ namespace ft
 		protected:
 			t_node										*_root;
 			t_node										*_end;
+			t_node										*_begin;
 			size_type									_size;
+
 			std::allocator<struct s_node>				_alloc_node;
 			Alloc										_myAlloc;
+
 		public:
 		///////////////////////iterator/////////////////////////////////
 
@@ -146,34 +157,19 @@ namespace ft
 					~iterator(){}
 					value_type							&operator*()const {return _ptr->data;}
 					value_type							*operator->()const {return &(_ptr->data);}
-					iterator							&operator++(){_ptr = _ptr->get_next_node(_ptr); return *this;}//++a
-					iterator							operator++(int)	{iterator it = *this; _ptr = _ptr->get_next_node(_ptr); return (it);}//a++
+					iterator							&operator++(){_ptr = _ptr->get_next_node(); return *this;}//++a
+					iterator							operator++(int)	{iterator it = *this; _ptr = _ptr->get_next_node(); return (it);}//a++
 					iterator							&operator--(){ _ptr = _ptr->get_prev_node(_ptr); return *this;}//--a
-					iterator							operator--(int){iterator it = *this; _ptr = _ptr->get_prev(_ptr); return it;} //a--
-					// pointeur        					get_ptr()const{return _ptr;}
-
-					// bool			operator==(const iterator &it){ return _ptr == it.get_ptr();}
-					// bool			operator!=(const iterator &it){ return _ptr != it.get_ptr();}
-					friend bool operator!=(const   iterator& a, const   iterator& b) { return a._ptr != b._ptr; };
-
+					iterator							operator--(int){iterator it = *this; _ptr = _ptr->get_prev_node(); return it;} //a--
+					pointeur        					get_ptr()const{return _ptr;}
+					bool								operator==(const iterator &it){ return _ptr == it.get_ptr();}
+					bool								operator!=(const iterator &it){ return _ptr != it.get_ptr();}
+					friend bool 						operator!=(const iterator& a, const   iterator& b) { return a._ptr != b._ptr; };
 			};
-
-			t_node *get_begin(t_node *node)
-			{
-				t_node *node_begin = 0;
-				if (node)
-				{
-					node_begin = get_begin(node->left);
-					if (!node_begin)
-						return (node);
-				}
-				return (node_begin);
-			}
-
 
 			iterator begin()
 			{
-				return (get_begin(_root));
+				return (_begin->parent);
 			}
 
 			iterator end()
@@ -181,7 +177,7 @@ namespace ft
 				return (_end);
 			}
 
-			map():_root(0), _end(0), _size(0)
+			map():_root(0), _end(0), _begin(0), _size(0)
 			{
 				std::cout << "hellow world\n" << std::endl;
 			}
@@ -201,22 +197,25 @@ namespace ft
 				// std::cout << "first = " << _root->data.first << " second = " <<  _root->data.second << "\n" ;
 				// _root = _root->left;
 				// std::cout << "first = " << _root->data.first << " second = " <<  _root->data.second << "\n" ;
-
-
 				// std::cout << "destructeur" << std::endl;
+			}
+
+			void	init_node(t_node **node, t_node *parent ,const value_type & val)
+			{
+				*node = _alloc_node.allocate(1);
+ 				_myAlloc.construct(&(*node)->data, val);
+				(*node)->parent = parent;
+				(*node)->left = 0;
+				(*node)->right = 0;
 			}
 
 			void	updte_end(t_node *new_node)
 			{
 				if (!_end)
 				{
-					_end = _alloc_node.allocate(1);
- 					_myAlloc.construct(&_end->data, value_type());
-					_end->left = 0;
-					_end->left = 0;
+					init_node(&_end, new_node, value_type());
 					new_node->right = _end;
 					_end->parent = new_node;
-					std::cout << "updte_end\n" << std::endl;
 				}
 				else if (new_node->parent->right == new_node && new_node->parent == _end->parent)
 				{
@@ -225,17 +224,29 @@ namespace ft
 				}
 			}
 
- 			void my_insert (const value_type & val, t_node **node, t_node *parent, key_compare cmp)
+			void	updte_begin(t_node *new_node)
+			{
+				if (!_begin)
+				{
+					init_node(&_begin, new_node, value_type());
+					new_node->left = _end;
+					_end->parent = new_node;
+				}
+				else if (new_node->parent->left == new_node && new_node->parent == _begin->parent)
+				{
+					new_node->left = _begin;
+					_begin->parent = new_node;
+				}
+			}
+
+			void my_insert (const value_type & val, t_node **node, t_node *parent, key_compare cmp)
 			{
 				if (!*node || *node == _end)
 				{
 					_size++;
-					*node = _alloc_node.allocate(1);
- 					_myAlloc.construct(&(*node)->data, val);
-					(*node)->parent = parent;
-					(*node)->left = 0;
-					(*node)->right = 0;
+					init_node(node, parent, val);
 					updte_end(*node);
+					updte_begin(*node);
 				}
 				else if (cmp((*node)->data.first, val.first))
 				{

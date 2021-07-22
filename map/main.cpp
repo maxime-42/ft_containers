@@ -50,25 +50,22 @@ int	main(void)
 	mymap.insert(p2);
 	mymap.insert(p3);
 	mymap.insert(p4);
-	mymap.insert(p5);
+	// mymap.insert(p5);
 	mymap.insert(p6);
 	mymap.insert(p7);
 	mymap.insert(p8);
 
 	// int i = 0;
 	
-	for( ft::map<int, int>::iterator it = mymap.begin(); it != mymap.end(); it++)
-	{
-		std::cout << it->first << " => " << it->second << '\n';
-	}
+	// for( ft::map<int, int>::iterator it = mymap.begin(); it != mymap.end(); it++)
+	// {
+	// 	std::cout << it->first << " => " << it->second << '\n';
+	// }
 
-	// it++;
-	// std::cout << "data (first) = " << it->first << "data (value) = " << it->second << std::endl;
-	 // mymap.insert ( std::pair<char,int>('b',200));
-	// mymap.insert ( std::pair<char,int>('c',400));
-	// mymap.insert ( std::pair<char,int>('d',400));
-	// std::cout << "size = " << mymap.size() << std::endl;
-	// for (std::map<char, int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
-		// std::cout << it->first << " => " << it->second << '\n';
+	ft::map<int, int>::iterator it = mymap.end();
+	it--;
+	std::cout << it->first << " => " << it->second << '\n';
+	it--;
+	std::cout << it->first << " => " << it->second << '\n';
 	return (0);
 }
