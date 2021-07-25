@@ -1,5 +1,7 @@
 #ifndef MAP
 #define MAP
+#define TYPE_LEAF 1
+
 #include <iostream>
 
 namespace ft
@@ -54,6 +56,7 @@ namespace ft
 
 			typedef struct								s_node
 			{
+				int										type_node;
 				value_type								data;
 				struct s_node							*parent;
 				struct s_node							*left;
@@ -95,22 +98,14 @@ namespace ft
 
 				struct s_node *get_prev_node()
 				{
-					// key_compare cmp;
+					key_compare cmp;
 					t_node	*node = this;
-					t_node	*current = this;
-					value_type p = value_type();
 					if (is_leaf(node) || !node->left)
 					{
-							std::cout << "get_prev_node" << std::endl;
-
 						node = node->parent;
-						// while (cmp(node->data.first, current->data.first) == true)
-						while (node->data.first < current->data.first )
+						while (cmp(this->data.first, node->data.first) == true)
 						{
 							node = node->parent;
-							// if (node->left)
-							// 	node = node->left;
-
 						}
 					}
 					else
@@ -146,7 +141,7 @@ namespace ft
 
 
 					iterator(t_node *ptr = 0): _ptr(ptr){}
-					// iterator(iterator const &cp){_ptr = cp.get_ptr(	);}
+					iterator(iterator const &cp){_ptr = cp.get_ptr(	);}
 					iterator operator=(iterator const &cp)
 					{
 						if (this != &cp)
@@ -159,7 +154,7 @@ namespace ft
 					value_type							*operator->()const {return &(_ptr->data);}
 					iterator							&operator++(){_ptr = _ptr->get_next_node(); return *this;}//++a
 					iterator							operator++(int)	{iterator it = *this; _ptr = _ptr->get_next_node(); return (it);}//a++
-					iterator							&operator--(){ _ptr = _ptr->get_prev_node(_ptr); return *this;}//--a
+					iterator							&operator--(){ _ptr = _ptr->get_prev_node(_ptr); return (*this);}//--a
 					iterator							operator--(int){iterator it = *this; _ptr = _ptr->get_prev_node(); return it;} //a--
 					pointeur        					get_ptr()const{return _ptr;}
 					bool								operator==(const iterator &it){ return _ptr == it.get_ptr();}
@@ -174,30 +169,23 @@ namespace ft
 
 			iterator end()
 			{
-				return (_end);
+				return (_end->parent);
 			}
 
-			map():_root(0), _end(0), _begin(0), _size(0)
+			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()):_root(0), _end(0), _begin(0), _size(0)
 			{
-				std::cout << "hellow world\n" << std::endl;
+				(void)comp;
+				(void)alloc;
 			}
+
+	
 
 			~map()
 			{
+				my_clear_tree(_root);
 				// print_tree(_root);
 				// std::cout << "\n" << std::endl;
 				// std::cout << "first = " << _root->data.first << " second = " <<  _root->data.second << "\n" ;
-				// _root = _root->right;
-				// std::cout << "first = " << _root->data.first << " second = " <<  _root->data.second << "\n" ;
-				// _root = _root->right;
-				// std::cout << "first = " << _root->data.first << " second = " <<  _root->data.second << "\n" ;
-				// _root = _root->right;
-				// std::cout << "first = " << _root->data.first << " second = " <<  _root->data.second << "\n" ;
-				// _root = _root->right;
-				// std::cout << "first = " << _root->data.first << " second = " <<  _root->data.second << "\n" ;
-				// _root = _root->left;
-				// std::cout << "first = " << _root->data.first << " second = " <<  _root->data.second << "\n" ;
-				// std::cout << "destructeur" << std::endl;
 			}
 
 			void	init_node(t_node **node, t_node *parent ,const value_type & val)
@@ -207,6 +195,8 @@ namespace ft
 				(*node)->parent = parent;
 				(*node)->left = 0;
 				(*node)->right = 0;
+				(*node)->type_node = 0;
+
 			}
 
 			void	updte_end(t_node *new_node)
@@ -216,6 +206,7 @@ namespace ft
 					init_node(&_end, new_node, value_type());
 					new_node->right = _end;
 					_end->parent = new_node;
+					_end->type_node = TYPE_LEAF;
 				}
 				else if (new_node->parent->right == new_node && new_node->parent == _end->parent)
 				{
@@ -245,8 +236,8 @@ namespace ft
 				{
 					_size++;
 					init_node(node, parent, val);
-					updte_end(*node);
-					updte_begin(*node);
+					// updte_end(*node);
+					// updte_begin(*node);
 				}
 				else if (cmp((*node)->data.first, val.first))
 				{
@@ -259,7 +250,18 @@ namespace ft
 					my_insert(val, &(*node)->left, *node, cmp);
 				}
 			}
-
+		template <class InputIterator>
+  			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()):_root(0), _end(0), _begin(0), _size(0)
+			{
+				while (first != last)
+				{
+					t_node *node = first.get_ptr();
+					value_type val = node->data;
+					my_insert (val, &_root, _root, comp);
+					(void)alloc;
+					first++;
+				}
+			}
 			void insert (const value_type & val)
 			{
 				(void)val;
@@ -276,15 +278,59 @@ namespace ft
 				}
 			}
 
-			// void	clear_tree(t_node *node)
-			// {
-				// clear_tree(node->left);
-				// _myAlloc.destroy(_data + i);
-							//
-				// clear_tree(node->right);
-				// 
-// 
-			// }
+			void	my_clear_tree(t_node *node)
+			{
+				(void)node;
+
+				if (node)
+				{
+					my_clear_tree(node->left);
+					my_clear_tree(node->right);
+					_alloc_node.destroy(&node);
+					_alloc_node.deallocate(node, 1);
+				}
+			}
+
+			find_node_by_key(t_node *node, const Key & key)
+			{
+				t_node *result = 0; 
+				if (node)
+				{
+					result = ft_find(node->left);
+					if (node->data.first == key)
+						return (node);
+					result = ft_find(node->right);
+				}
+				return (result);
+			}
+
+			iterator find( const Key& key )
+			{
+				iterator result = find_node_by_key(_root, key);
+				return (iterator);
+			}
+
+			void	delete_one_node(t_node *to_delete)
+			{
+				t_node *parent = to_delete->parent;
+				if (parent->left == to_delete || parent->right == to_delete)
+				{
+					to_delete->left->parent = parent;
+					to_delete->right->parent = parent;
+					parent->left = to_delete->left;
+					parent->right = to_delete->right;
+					_alloc_node.destroy(&to_delete);
+					_alloc_node.deallocate(to_delete, 1);
+				}
+			}
+
+			void erase (iterator position)
+			{
+				iterator result = find(position->first);
+				t_node	*node_to_delete = result.get_ptr();
+				delete_one_node(node_to_delete);
+			}
+
 	};
 }
 
