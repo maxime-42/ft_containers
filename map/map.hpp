@@ -11,8 +11,8 @@ namespace ft
 	{
 		public:
 		// ******** Data ********
-			T1	first;
-			T2	second;
+			T1	  first;
+			T2	 second;
 		// ******** Member function ********
 			pair() : first(T1()), second(T2()) { };
 			template<class U, class V>
@@ -25,8 +25,8 @@ namespace ft
 			{
 				if (this != &pr)
 				{
-					first = pr.first;
-					second = pr.second;
+					this->first = pr.first;
+					this->second = pr.second;
 				}
 				return (*this);
 			}
@@ -169,7 +169,7 @@ namespace ft
 
 			iterator end()
 			{
-				return (_end->parent);
+				return (_end);
 			}
 
 			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()):_root(0), _end(0), _begin(0), _size(0)
@@ -177,8 +177,6 @@ namespace ft
 				(void)comp;
 				(void)alloc;
 			}
-
-	
 
 			~map()
 			{
@@ -236,8 +234,8 @@ namespace ft
 				{
 					_size++;
 					init_node(node, parent, val);
-					// updte_end(*node);
-					// updte_begin(*node);
+					updte_end(*node);
+					updte_begin(*node);
 				}
 				else if (cmp((*node)->data.first, val.first))
 				{
@@ -278,6 +276,8 @@ namespace ft
 				}
 			}
 
+	
+
 			void	my_clear_tree(t_node *node)
 			{
 				(void)node;
@@ -286,54 +286,75 @@ namespace ft
 				{
 					my_clear_tree(node->left);
 					my_clear_tree(node->right);
-					_alloc_node.destroy(&node);
+					_alloc_node.destroy(node);
 					_alloc_node.deallocate(node, 1);
 				}
 			}
 
-			find_node_by_key(t_node *node, const Key & key)
+	
+			void delete_node(t_node *node)
 			{
-				t_node *result = 0; 
-				if (node)
-				{
-					result = ft_find(node->left);
-					if (node->data.first == key)
-						return (node);
-					result = ft_find(node->right);
-				}
-				return (result);
+				_size--;
+				_alloc_node.destroy(node);
+				_alloc_node.deallocate(node, 1);
 			}
 
-			iterator find( const Key& key )
+			/* If one of the children is empty*/
+			t_node *delete_children_is_empty(t_node *to_delete)
 			{
-				iterator result = find_node_by_key(_root, key);
-				return (iterator);
+				t_node* temp = NULL;
+				if (to_delete->left == NULL)
+				{
+					temp = to_delete->right;
+					delete_node(to_delete);
+				}
+				else if (to_delete->right == NULL) 
+				{
+					temp = to_delete->left;
+					delete_node(to_delete);
+				}	
+					return (temp);
+
 			}
 
-			void	delete_one_node(t_node *to_delete)
+			t_node	*delete_one_node_by_key(t_node *root, Key toFind)
 			{
-				t_node *parent = to_delete->parent;
-				if (parent->left == to_delete || parent->right == to_delete)
+				key_compare cmp;
+				(void)cmp;
+				if (!root)
+					return (root);
+				if (cmp(root->data.first, toFind))
 				{
-					to_delete->left->parent = parent;
-					to_delete->right->parent = parent;
-					parent->left = to_delete->left;
-					parent->right = to_delete->right;
-					_alloc_node.destroy(&to_delete);
-					_alloc_node.deallocate(to_delete, 1);
+					root->right = delete_one_node_by_key(root->right, toFind);
 				}
+				else if (!cmp(root->data.first, toFind))
+					root->right = delete_one_node_by_key(root->left, toFind);
+				if (root->right == NULL || root->left == NULL)
+					return (delete_children_is_empty(root));
+				t_node *successor = root->get_next_node();
+				t_node *parent_successor = successor->parent;
+				if (parent_successor != root)
+					parent_successor->left = successor->right;
+				else
+					parent_successor->right = successor->right;
+				root->data = successor->data;
+				// return (delete_node(successor));
+				// (void)parent_successor;
+				// (void)successor;
+				return (0);
+
 			}
 
 			void erase (iterator position)
 			{
-				iterator result = find(position->first);
-				t_node	*node_to_delete = result.get_ptr();
-				delete_one_node(node_to_delete);
+				// iterator result = find(position->first);
+				// t_node	*node_to_delete = result.get_ptr();
+				// delete_one_node(node_to_delete);
+				(void)delete_one_node_by_key(_root, position->first);
+				(void)position;
 			}
 
 	};
 }
-
-
 
 #endif

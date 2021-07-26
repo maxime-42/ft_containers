@@ -53,6 +53,7 @@ int	main(void)
 	ft::pair<int,int> p6(30,3000);
 	ft::pair<int,int> p7(12,1200);
 	ft::pair<int,int> p8(220,2000);
+	// p7 = p8;
 	mymap.insert(p1);
 	mymap.insert(p2);
 	mymap.insert(p3);
@@ -65,6 +66,14 @@ int	main(void)
 	// for( ft::map<int, int>::iterator it = mymap.end(); it != mymap.begin(); it--)
 	// {
 	// 	std::cout << it->first << " => " << it->second << '\n';
+	// }
+	// mymap.delete_one_node_by_key(.0)
+	ft::map<int, int>::iterator it = mymap.begin(); 
+	it++;
+	mymap.erase(it);
+	// for( ft::map<int, int>::iterator it = mymap.begin(); it != mymap.end(); it++)
+	// {
+		// std::cout << it->first << " => " << it->second << '\n';
 	// }
 
 	// ft::map<int, int>::iterator it = mymap.end();
