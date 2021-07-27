@@ -25,8 +25,12 @@ namespace ft
 			{
 				if (this != &pr)
 				{
-					this->first = pr.first;
-					this->second = pr.second;
+					// pair cp(pr.first, pr.second);
+					// this->~pair();
+					(*this) = pr;
+					// std::cout << "first = " << this->first << std::endl;
+					// this->first = pr.first;
+					// this->second = pr.second;
 				}
 				return (*this);
 			}
@@ -204,7 +208,6 @@ namespace ft
 					init_node(&_end, new_node, value_type());
 					new_node->right = _end;
 					_end->parent = new_node;
-					_end->type_node = TYPE_LEAF;
 				}
 				else if (new_node->parent->right == new_node && new_node->parent == _end->parent)
 				{
@@ -218,8 +221,8 @@ namespace ft
 				if (!_begin)
 				{
 					init_node(&_begin, new_node, value_type());
-					new_node->left = _end;
-					_end->parent = new_node;
+					new_node->left = _begin;
+					_begin->parent = new_node;
 				}
 				else if (new_node->parent->left == new_node && new_node->parent == _begin->parent)
 				{
@@ -306,43 +309,65 @@ namespace ft
 				if (to_delete->left == NULL)
 				{
 					temp = to_delete->right;
-					delete_node(to_delete);
 				}
 				else if (to_delete->right == NULL) 
 				{
 					temp = to_delete->left;
-					delete_node(to_delete);
 				}	
-					return (temp);
+				delete_node(to_delete);
+				return (temp);
+			}
 
+			t_node *delet_has_two_child(t_node *root, t_node *successor)
+			{
+					t_node *succ_left_child = successor->left;
+					t_node *succ_right_child = successor->right;
+					if (root->parent)
+					{
+						if (root->parent->left == root)
+							root->parent->left = successor;
+						else if (root->parent->right == root)
+							root->parent->right = successor;
+					}
+					else
+					{
+						std::cout << "succesor : " << successor->data.first << " = " << successor->data.first << std::endl;
+						_begin->parent = successor;
+
+					}
+					
+					if (root->right != successor)
+						successor->right = root->right;
+					else 
+						successor->right = root->right->right;
+					root->left = succ_left_child;
+					root->right = succ_right_child;
+					return (successor);
 			}
 
 			t_node	*delete_one_node_by_key(t_node *root, Key toFind)
 			{
 				key_compare cmp;
-				(void)cmp;
-				if (!root)
+				if (!root || root == _end || root == _begin)
 					return (root);
 				if (cmp(root->data.first, toFind))
-				{
 					root->right = delete_one_node_by_key(root->right, toFind);
-				}
-				else if (!cmp(root->data.first, toFind))
-					root->right = delete_one_node_by_key(root->left, toFind);
-				if (root->right == NULL || root->left == NULL)
-					return (delete_children_is_empty(root));
-				t_node *successor = root->get_next_node();
-				t_node *parent_successor = successor->parent;
-				if (parent_successor != root)
-					parent_successor->left = successor->right;
+				else if (!cmp(root->data.first, toFind) && cmp(toFind, root->data.first) )
+					root->left = delete_one_node_by_key(root->left, toFind);
 				else
-					parent_successor->right = successor->right;
-				root->data = successor->data;
-				// return (delete_node(successor));
-				// (void)parent_successor;
-				// (void)successor;
-				return (0);
+				{
+					if (root->right == NULL || root->left == NULL)/* If one of the children is empty*/
+						root = delete_children_is_empty(root);
+					else
+					{
+					std::cout << "QUUUUUIIII kel by ??????????????" << std::endl;
 
+						root = delet_has_two_child(root, root->get_next_node());
+						delete_one_node_by_key(root, toFind);
+					}
+					return (root);
+				}
+				return (root);
 			}
 
 			void erase (iterator position)
@@ -350,6 +375,8 @@ namespace ft
 				// iterator result = find(position->first);
 				// t_node	*node_to_delete = result.get_ptr();
 				// delete_one_node(node_to_delete);
+				std::cout << "to delete : " << position->first << " => " << position->second << '\n';
+
 				(void)delete_one_node_by_key(_root, position->first);
 				(void)position;
 			}
