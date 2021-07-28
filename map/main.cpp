@@ -45,22 +45,29 @@ int	main(void)
 	// ft::mappair<int,int> p(1,100);
 	// obj.insert();
 	ft::map<int, int> mymap;
-	ft::pair<int,int> p1(1,100);
-	ft::pair<int,int> p2(2,200);
-	ft::pair<int,int> p3(3,300);
-	ft::pair<int,int> p4(4,400);
-	ft::pair<int,int> p5(0,000);
-	ft::pair<int,int> p6(30,3000);
-	ft::pair<int,int> p7(12,1200);
-	ft::pair<int,int> p8(220,2000);
-	mymap.insert(p1);
-	mymap.insert(p2);
-	mymap.insert(p3);
-	mymap.insert(p4);
-	mymap.insert(p5);
-	mymap.insert(p6);
+	ft::pair<int,int> p5(5,300);
+	ft::pair<int,int> p7(7,700);
+	ft::pair<int,int> p9(9,900);
+	ft::pair<int,int> p8(8,800);
+	ft::pair<int,int> p10(10,10000);
+	ft::pair<int,int> p11(11,111);
+	ft::pair<int,int> p12(12,1200);
+	ft::pair<int,int> p17(17, 1700);
+	ft::pair<int,int> p13(13, 1300);
+	ft::pair<int,int> p14(14,1400);
+	ft::pair<int,int> p19(19,19000);
+
+	mymap.insert(p11);
 	mymap.insert(p7);
+	mymap.insert(p12);
+	mymap.insert(p5);
+	mymap.insert(p9);
 	mymap.insert(p8);
+	mymap.insert(p13);
+	mymap.insert(p17);
+	mymap.insert(p10);
+	mymap.insert(p14);
+	mymap.insert(p19);
 
 	// for( ft::map<int, int>::iterator it = mymap.end(); it != mymap.begin(); it--)
 	// {
@@ -69,7 +76,6 @@ int	main(void)
 	// mymap.delete_one_node_by_key(.0)
 	ft::map<int, int>::iterator it = mymap.begin(); 
 	// 	std::cout << it->first << " => " << it->second << '\n';
-	
 
 	// it++;
 	// it++;

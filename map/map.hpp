@@ -184,10 +184,15 @@ namespace ft
 
 			~map()
 			{
-				my_clear_tree(_root);
 				// print_tree(_root);
+				t_node *node = _root;
+
+				// std::cout << "first = " << node->data.first << " second = " <<  node->data.second << "\n" ;
+				node = _root->left;
+				// std::cout << "first = " << node->data.first << " second = " <<  node->data.second << "\n" ;
+
+				my_clear_tree(_root);
 				// std::cout << "\n" << std::endl;
-				// std::cout << "first = " << _root->data.first << " second = " <<  _root->data.second << "\n" ;
 			}
 
 			void	init_node(t_node **node, t_node *parent ,const value_type & val)
@@ -233,7 +238,7 @@ namespace ft
 
 			void my_insert (const value_type & val, t_node **node, t_node *parent, key_compare cmp)
 			{
-				if (!*node || *node == _end)
+				if (!*node || *node == _end || *node == _begin)
 				{
 					_size++;
 					init_node(node, parent, val);
@@ -330,12 +335,7 @@ namespace ft
 							root->parent->right = successor;
 					}
 					else
-					{
-						std::cout << "succesor : " << successor->data.first << " = " << successor->data.first << std::endl;
 						_begin->parent = successor;
-
-					}
-					
 					if (root->right != successor)
 						successor->right = root->right;
 					else 
@@ -353,15 +353,17 @@ namespace ft
 				if (cmp(root->data.first, toFind))
 					root->right = delete_one_node_by_key(root->right, toFind);
 				else if (!cmp(root->data.first, toFind) && cmp(toFind, root->data.first) )
+				{
+					std::cout << "go to the LEFT " << std::endl;
 					root->left = delete_one_node_by_key(root->left, toFind);
+				}
 				else
 				{
 					if (root->right == NULL || root->left == NULL)/* If one of the children is empty*/
 						root = delete_children_is_empty(root);
 					else
 					{
-					std::cout << "QUUUUUIIII kel by ??????????????" << std::endl;
-
+					// std::cout << "QUUUUUIIII kel by ??????????????" << std::endl;
 						root = delet_has_two_child(root, root->get_next_node());
 						delete_one_node_by_key(root, toFind);
 					}
