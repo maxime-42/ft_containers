@@ -54,7 +54,7 @@ int	main(void)
 	ft::pair<int,int> p12(12,1200);
 	ft::pair<int,int> p17(17, 1700);
 	ft::pair<int,int> p13(13, 1300);
-	ft::pair<int,int> p14(14,1400);
+	ft::pair<int,int> p15(15,1400);
 	ft::pair<int,int> p19(19,19000);
 
 	mymap.insert(p11);
@@ -66,7 +66,7 @@ int	main(void)
 	mymap.insert(p13);
 	mymap.insert(p17);
 	mymap.insert(p10);
-	mymap.insert(p14);
+	mymap.insert(p15);
 	mymap.insert(p19);
 
 	// for( ft::map<int, int>::iterator it = mymap.end(); it != mymap.begin(); it--)
@@ -76,13 +76,7 @@ int	main(void)
 	// mymap.delete_one_node_by_key(.0)
 	ft::map<int, int>::iterator it = mymap.begin(); 
 	// 	std::cout << it->first << " => " << it->second << '\n';
-
-	// it++;
-	// it++;
-	// it++;
-	// it++;
-	// it++;
-	mymap.erase(it);
+	mymap.erase(7);
 	for( ft::map<int, int>::iterator it1 = mymap.begin(); it1 != mymap.end(); it1++)
 	{
 		std::cout << it1->first << " => " << it1->second << '\n';
@@ -93,6 +87,7 @@ int	main(void)
 	// it--;
 	// std::cout << it->first << " => " << it->second << '\n';
 	// it--;
+
 	// std::cout << it->first << " => " << it->second << '\n';
 	// it--;
 	// std::cout << it->first << " => " << it->second << '\n';

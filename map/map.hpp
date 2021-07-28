@@ -3,6 +3,7 @@
 #define TYPE_LEAF 1
 
 #include <iostream>
+#include <stdlib.h>
 
 namespace ft
 {
@@ -46,6 +47,7 @@ namespace ft
 	{
 		public:
 			typedef pair<const Key, T>					value_type;
+			typedef Key									key_type;     
 			typedef T& 									reference;
 			typedef Compare								key_compare;
 			typedef Alloc								allocator_type;
@@ -297,6 +299,9 @@ namespace ft
 					_alloc_node.destroy(node);
 					_alloc_node.deallocate(node, 1);
 				}
+				_size = 0;
+				_end = 0;
+				_begin = 0;
 			}
 
 	
@@ -317,14 +322,27 @@ namespace ft
 				}
 				else if (to_delete->right == NULL) 
 				{
+					std::cout << "im in the right null\n";
 					temp = to_delete->left;
+					if (temp == _begin)
+						_begin->parent = to_delete->parent;
 				}	
 				delete_node(to_delete);
 				return (temp);
 			}
+		template <class M>
 
+			
+			void ft_swap( M* a, M* b )
+			{
+			M t = *a;
+			*a = *b;
+			*b = t;
+			}
 			t_node *delet_has_two_child(t_node *root, t_node *successor)
 			{
+					std::cout << "successor :\nfirst : " << successor->data.first << " second : " << successor->data.second << std::endl;
+					std::cout << "\nroot :\nfirst : " << root->data.first << " second : " << root->data.second << std::endl;
 					t_node *succ_left_child = successor->left;
 					t_node *succ_right_child = successor->right;
 					if (root->parent)
@@ -333,21 +351,71 @@ namespace ft
 							root->parent->left = successor;
 						else if (root->parent->right == root)
 							root->parent->right = successor;
+
 					}
 					else
 						_begin->parent = successor;
 					if (root->right != successor)
+					{
+						std::cout << "wwwwwwwwwwwwwwwwwwwwhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh ?" << std::endl;
+
 						successor->right = root->right;
+
+					}
 					else 
+					{
 						successor->right = root->right->right;
+					}
 					root->left = succ_left_child;
 					root->right = succ_right_child;
 					return (successor);
 			}
 
+			t_node *successor_is_not_adjancy(t_node *root, t_node *successor)
+			{
+				t_node *succ_left_child = successor->left;
+				t_node *succ_right_child = successor->right;
+				t_node *parentSuccessor = successor->parent;
+				t_node *parentRoot = root->parent;
+				if (!parentRoot)
+					parentRoot = root;
+				if (parentRoot->left == root)
+				{
+					parentRoot->left = successor;
+					successor->left = root->left;
+					successor->right = root->right;
+					successor->parent = parentRoot;
+					std::cout << "successor parent: first : " << successor->parent->data.first << " second : " << successor->parent->data.second << std::endl;
+
+				}
+				else if (parentRoot->right == root)
+				{
+					parentRoot->right = successor;
+					successor->left = root->left;
+					successor->right = root->right;
+					successor->parent = parentRoot;
+				}
+				if (parentSuccessor->left == successor)
+				{
+					parentSuccessor->left = root;
+					root->parent = parentSuccessor;
+					root->left = succ_left_child;
+					root->right = succ_right_child;
+
+				}
+				else if (parentSuccessor->right == successor)
+				{
+					parentSuccessor->right = root;
+					root->parent = parentSuccessor;
+					root->right = succ_right_child;
+					root->parent = parentSuccessor;
+				}
+				return (root);
+			}
+
 			t_node	*delete_one_node_by_key(t_node *root, Key toFind)
 			{
-				key_compare cmp;
+key_compare cmp;
 				if (!root || root == _end || root == _begin)
 					return (root);
 				if (cmp(root->data.first, toFind))
@@ -363,11 +431,37 @@ namespace ft
 						root = delete_children_is_empty(root);
 					else
 					{
-					// std::cout << "QUUUUUIIII kel by ??????????????" << std::endl;
-						root = delet_has_two_child(root, root->get_next_node());
-						delete_one_node_by_key(root, toFind);
+						t_node *successor = root->get_next_node();
+						std::cout << "\nbefor\nroot : first : " << root->data.first << " second : " << root->data.second << std::endl;
+						std::cout << "successor : first : " << successor->data.first << " second : " << successor->data.second << std::endl;
+						// print_tree(_root);
+						std::cout << "\n\n";
+						root = successor_is_not_adjancy(root, successor);
+						// std::cout << "after \nroot : first : " << root->data.first << " second : " << root->data.second << std::endl;
+						// std::cout << "parent \nroot : first : " << root->parent->data.first << " second : " << root->parent->data.second << std::endl;
+
+						// std::cout << "successor : first : " << successor->data.first << " second : " << successor->data.second << std::endl;
+						// std::cout << "\nafter \nroot : first : " << _root->left->data.first << " second : " << _root->left->data.second << std::endl;
+						// std::cout << "\nafter parent \nroot : first : " << _root->left->parent->data.first << " second : " << _root->left->parent->data.second << std::endl;
+
+						// std::cout << "\nafter \nroot : first : " << _root->left->right->data.first << " second : " << _root->left->right->data.second << std::endl;
+						// std::cout << "\nafter \nroot : first : " << _root->left->right->left->data.first << " second : " << _root->left->right->left->data.second << std::endl;
+						// if (_root->left->right->left->left == NULL)
+						// 	std::cout << "LEFT NUULL" << std::endl;
+						// if (_root->left->right->left->right == NULL)
+						// 	std::cout << "RIGHT NUULL" << std::endl;
+						// std::cout << "\nparent \nroot : first : " << _root->left->right->left->parent->data.first << " second : " << _root->left->right->left->parent->data.second << std::endl;
+
+
+						// print_tree(_root);
+						// this->~map();
+						// exit(0);
+						root = delete_one_node_by_key(_root, toFind);
+
+						// // std::cout << "QUUUUUIIII kel by ??????????????" << std::endl;
+						// root = delet_has_two_child(root, root->get_next_node());
+						
 					}
-					return (root);
 				}
 				return (root);
 			}
@@ -380,10 +474,27 @@ namespace ft
 				std::cout << "to delete : " << position->first << " => " << position->second << '\n';
 
 				(void)delete_one_node_by_key(_root, position->first);
+	
+
 				(void)position;
 			}
+
+			size_type erase (const key_type & k)
+			{
+				(void)delete_one_node_by_key(_root, k);
+				return (1);
+			}
+
 
 	};
 }
 
 #endif
+/*
+
+      6 
+    /  \ 
+   10    8 
+  / \   / \ 
+ 1   3 7  12 
+ */
