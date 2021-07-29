@@ -26,12 +26,10 @@ namespace ft
 			{
 				if (this != &pr)
 				{
-					// pair cp(pr.first, pr.second);
-					// this->~pair();
-					(*this) = pr;
-					// std::cout << "first = " << this->first << std::endl;
+					T1 *ptr = const_cast <T1 *> (&pr.first); 
 					// this->first = pr.first;
-					// this->second = pr.second;
+					*ptr = pr.first;
+					this->second = pr.second;
 				}
 				return (*this);
 			}
@@ -130,6 +128,7 @@ namespace ft
 			t_node										*_end;
 			t_node										*_begin;
 			size_type									_size;
+			t_node 										*_parent_root;
 
 			std::allocator<struct s_node>				_alloc_node;
 			Alloc										_myAlloc;
@@ -177,11 +176,24 @@ namespace ft
 			{
 				return (_end);
 			}
+			void	init_node(t_node **node, t_node *parent ,const value_type & val)
+			{
+				*node = _alloc_node.allocate(1);
+ 				_myAlloc.construct(&(*node)->data, val);
+				(*node)->parent = parent;
+				(*node)->left = 0;
+				(*node)->right = 0;
+				(*node)->type_node = 0;
 
-			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()):_root(0), _end(0), _begin(0), _size(0)
+			}
+			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()):_root(0), _end(0), _begin(0), _size(0), _parent_root(0)
 			{
 				(void)comp;
 				(void)alloc;
+				// if (_parent_root == NULL)
+				// {
+				// 	init_node(&_parent_root, 0, value_type());
+				// }
 			}
 
 			~map()
@@ -194,19 +206,11 @@ namespace ft
 				// std::cout << "first = " << node->data.first << " second = " <<  node->data.second << "\n" ;
 
 				my_clear_tree(_root);
+
 				// std::cout << "\n" << std::endl;
 			}
 
-			void	init_node(t_node **node, t_node *parent ,const value_type & val)
-			{
-				*node = _alloc_node.allocate(1);
- 				_myAlloc.construct(&(*node)->data, val);
-				(*node)->parent = parent;
-				(*node)->left = 0;
-				(*node)->right = 0;
-				(*node)->type_node = 0;
 
-			}
 
 			void	updte_end(t_node *new_node)
 			{
@@ -246,6 +250,7 @@ namespace ft
 					init_node(node, parent, val);
 					updte_end(*node);
 					updte_begin(*node);
+
 				}
 				else if (cmp((*node)->data.first, val.first))
 				{
@@ -274,6 +279,8 @@ namespace ft
 			{
 				(void)val;
 				my_insert (val, &_root, _root, key_compare());
+				// if (_parent_root->right == 0)
+				// 	_parent_root->right = _root;
 			}
 
 			void	print_tree(t_node *node)
@@ -330,92 +337,30 @@ namespace ft
 				delete_node(to_delete);
 				return (temp);
 			}
-		template <class M>
 
-			
-			void ft_swap( M* a, M* b )
+			t_node *deleted_has_two_children(t_node *to_delete)
 			{
-			M t = *a;
-			*a = *b;
-			*b = t;
-			}
-			t_node *delet_has_two_child(t_node *root, t_node *successor)
-			{
-					std::cout << "successor :\nfirst : " << successor->data.first << " second : " << successor->data.second << std::endl;
-					std::cout << "\nroot :\nfirst : " << root->data.first << " second : " << root->data.second << std::endl;
-					t_node *succ_left_child = successor->left;
-					t_node *succ_right_child = successor->right;
-					if (root->parent)
-					{
-						if (root->parent->left == root)
-							root->parent->left = successor;
-						else if (root->parent->right == root)
-							root->parent->right = successor;
+				if (to_delete->parent->right == to_delete)
+					to_delete->parent->right = to_delete->left;
+				else if (to_delete->parent->left == to_delete)
+					to_delete->parent->left = to_delete->left;
+				to_delete->left->parent = to_delete->parent;
 
-					}
-					else
-						_begin->parent = successor;
-					if (root->right != successor)
-					{
-						std::cout << "wwwwwwwwwwwwwwwwwwwwhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh ?" << std::endl;
-
-						successor->right = root->right;
-
-					}
-					else 
-					{
-						successor->right = root->right->right;
-					}
-					root->left = succ_left_child;
-					root->right = succ_right_child;
-					return (successor);
-			}
-
-			t_node *successor_is_not_adjancy(t_node *root, t_node *successor)
-			{
-				t_node *succ_left_child = successor->left;
-				t_node *succ_right_child = successor->right;
-				t_node *parentSuccessor = successor->parent;
-				t_node *parentRoot = root->parent;
-				if (!parentRoot)
-					parentRoot = root;
-				if (parentRoot->left == root)
-				{
-					parentRoot->left = successor;
-					successor->left = root->left;
-					successor->right = root->right;
-					successor->parent = parentRoot;
-					std::cout << "successor parent: first : " << successor->parent->data.first << " second : " << successor->parent->data.second << std::endl;
-
-				}
-				else if (parentRoot->right == root)
-				{
-					parentRoot->right = successor;
-					successor->left = root->left;
-					successor->right = root->right;
-					successor->parent = parentRoot;
-				}
-				if (parentSuccessor->left == successor)
-				{
-					parentSuccessor->left = root;
-					root->parent = parentSuccessor;
-					root->left = succ_left_child;
-					root->right = succ_right_child;
-
-				}
-				else if (parentSuccessor->right == successor)
-				{
-					parentSuccessor->right = root;
-					root->parent = parentSuccessor;
-					root->right = succ_right_child;
-					root->parent = parentSuccessor;
-				}
-				return (root);
+				t_node *tmp = to_delete->left;
+				t_node *ret = tmp;
+				while (tmp->right && tmp->right != _end && tmp->right != _begin)
+					tmp->right = tmp->right;
+				tmp->right = to_delete->right;
+				std::cout << "tmp->data.first = " << tmp->data.first << " tmp->data.second = " << tmp->data.second << std::endl;
+				to_delete->right->parent = tmp;
+				std::cout << "to_delete->right->data.first = " << to_delete->right->parent->data.first << " to_delete->right->data.second = " << to_delete->right->parent->data.second << std::endl;
+				delete_node(to_delete);
+				return (ret);
 			}
 
 			t_node	*delete_one_node_by_key(t_node *root, Key toFind)
 			{
-key_compare cmp;
+				key_compare cmp;
 				if (!root || root == _end || root == _begin)
 					return (root);
 				if (cmp(root->data.first, toFind))
@@ -431,36 +376,7 @@ key_compare cmp;
 						root = delete_children_is_empty(root);
 					else
 					{
-						t_node *successor = root->get_next_node();
-						std::cout << "\nbefor\nroot : first : " << root->data.first << " second : " << root->data.second << std::endl;
-						std::cout << "successor : first : " << successor->data.first << " second : " << successor->data.second << std::endl;
-						// print_tree(_root);
-						std::cout << "\n\n";
-						root = successor_is_not_adjancy(root, successor);
-						// std::cout << "after \nroot : first : " << root->data.first << " second : " << root->data.second << std::endl;
-						// std::cout << "parent \nroot : first : " << root->parent->data.first << " second : " << root->parent->data.second << std::endl;
-
-						// std::cout << "successor : first : " << successor->data.first << " second : " << successor->data.second << std::endl;
-						// std::cout << "\nafter \nroot : first : " << _root->left->data.first << " second : " << _root->left->data.second << std::endl;
-						// std::cout << "\nafter parent \nroot : first : " << _root->left->parent->data.first << " second : " << _root->left->parent->data.second << std::endl;
-
-						// std::cout << "\nafter \nroot : first : " << _root->left->right->data.first << " second : " << _root->left->right->data.second << std::endl;
-						// std::cout << "\nafter \nroot : first : " << _root->left->right->left->data.first << " second : " << _root->left->right->left->data.second << std::endl;
-						// if (_root->left->right->left->left == NULL)
-						// 	std::cout << "LEFT NUULL" << std::endl;
-						// if (_root->left->right->left->right == NULL)
-						// 	std::cout << "RIGHT NUULL" << std::endl;
-						// std::cout << "\nparent \nroot : first : " << _root->left->right->left->parent->data.first << " second : " << _root->left->right->left->parent->data.second << std::endl;
-
-
-						// print_tree(_root);
-						// this->~map();
-						// exit(0);
-						root = delete_one_node_by_key(_root, toFind);
-
-						// // std::cout << "QUUUUUIIII kel by ??????????????" << std::endl;
-						// root = delet_has_two_child(root, root->get_next_node());
-						
+						root = deleted_has_two_children(root);
 					}
 				}
 				return (root);
