@@ -74,13 +74,13 @@ int	main(void)
 	// 	std::cout << it->first << " => " << it->second << '\n';
 	// }
 	// mymap.delete_one_node_by_key(.0)
-	ft::map<int, int>::iterator it = mymap.begin(); 
+	ft::map<int, int>::iterator it = mymap.begin();
 	// 	std::cout << it->first << " => " << it->second << '\n';
-	mymap.erase(7);
-	for( ft::map<int, int>::iterator it1 = mymap.begin(); it1 != mymap.end(); it1++)
-	{
-		std::cout << it1->first << " => " << it1->second << '\n';
-	}
+	// mymap.erase(11);
+	// for( ft::map<int, int>::iterator it1 = mymap.begin(); it1 != mymap.end(); it1++)
+	// {
+	// 	std::cout << it1->first << " => " << it1->second << '\n';
+	// }
 	// ft::map<int, int>::iterator it = mymap.end();
 	// std::cout << it->first << " => " << it->second << '\n';
 	// it--;

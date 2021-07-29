@@ -186,28 +186,27 @@ namespace ft
 				(*node)->type_node = 0;
 
 			}
+
 			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()):_root(0), _end(0), _begin(0), _size(0), _parent_root(0)
 			{
 				(void)comp;
 				(void)alloc;
-				// if (_parent_root == NULL)
-				// {
-				// 	init_node(&_parent_root, 0, value_type());
-				// }
+				if (_root == NULL)
+				{
+					init_node(&_root, _root, value_type());
+				}
 			}
 
 			~map()
 			{
 				// print_tree(_root);
 				t_node *node = _root;
-
 				// std::cout << "first = " << node->data.first << " second = " <<  node->data.second << "\n" ;
 				node = _root->left;
-				// std::cout << "first = " << node->data.first << " second = " <<  node->data.second << "\n" ;
+				std::cout << "destructor : first = " << _root->right->parent->data.first << " second = " << _root->right->parent->data.second << "\n" ;
 
 				my_clear_tree(_root);
 
-				// std::cout << "\n" << std::endl;
 			}
 
 
@@ -345,7 +344,6 @@ namespace ft
 				else if (to_delete->parent->left == to_delete)
 					to_delete->parent->left = to_delete->left;
 				to_delete->left->parent = to_delete->parent;
-
 				t_node *tmp = to_delete->left;
 				t_node *ret = tmp;
 				while (tmp->right && tmp->right != _end && tmp->right != _begin)
