@@ -38,7 +38,7 @@
 // 	std::cout << it->first << " => " << it->second << '\n';
 // 	return (0);
 // }
-
+/*
 int	main(void)
 {
 	// ft::map<int, int> obj;
@@ -68,7 +68,6 @@ int	main(void)
 	mymap.insert(p10);
 	mymap.insert(p15);
 	mymap.insert(p19);
-
 	// for( ft::map<int, int>::iterator it = mymap.end(); it != mymap.begin(); it--)
 	// {
 	// 	std::cout << it->first << " => " << it->second << '\n';
@@ -76,11 +75,11 @@ int	main(void)
 	// mymap.delete_one_node_by_key(.0)
 	ft::map<int, int>::iterator it = mymap.begin();
 	// 	std::cout << it->first << " => " << it->second << '\n';
-	// mymap.erase(11);
-	// for( ft::map<int, int>::iterator it1 = mymap.begin(); it1 != mymap.end(); it1++)
-	// {
-	// 	std::cout << it1->first << " => " << it1->second << '\n';
-	// }
+	mymap.erase(12);
+	for( ft::map<int, int>::iterator it1 = mymap.begin(); it1 != mymap.end(); it1++)
+	{
+		std::cout << it1->first << " => " << it1->second << '\n';
+	}
 	// ft::map<int, int>::iterator it = mymap.end();
 	// std::cout << it->first << " => " << it->second << '\n';
 	// it--;
@@ -92,4 +91,23 @@ int	main(void)
 	// std::cout << it->first << " => " << it->second << '\n';
 
 	return (0);
+}
+*/
+
+ int main ()
+{
+  ft::map<char,std::string> mymap;
+
+  mymap['a']="an element";
+  mymap['b']="another element";
+  mymap['c']=mymap['b'];
+
+  std::cout << "mymap['a'] is " << mymap['a'] << '\n';
+  std::cout << "mymap['b'] is " << mymap['b'] << '\n';
+  std::cout << "mymap['c'] is " << mymap['c'] << '\n';
+  std::cout << "mymap['d'] is " << mymap['d'] << '\n';
+
+  std::cout << "mymap now contains " << mymap.size() << " elements.\n";
+
+  return 0;
 }
