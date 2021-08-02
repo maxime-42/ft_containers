@@ -1,12 +1,35 @@
 #ifndef MAP
 #define MAP
 #define TYPE_LEAF 1
-
 #include <iostream>
 #include <stdlib.h>
 
+namespace ft{
+    template <bool B, class T = void>
+    struct Enable_if
+    {
+    };
+
+    template <class T>
+    struct Enable_if<true, T>
+    {
+        typedef T type;
+    };
+
+	template<typename T>
+    void ft_swap(T &arg1, T &arg2)
+    {
+        T temp = arg1;
+        arg1 = arg2;
+        arg2 = temp;
+    }
+
+}	
+
 namespace ft
 {
+
+
 	template <typename T1, typename T2> 
 	class pair
 	{
@@ -26,7 +49,7 @@ namespace ft
 			{
 				if (this != &pr)
 				{
-					std::cout << " dans operator=" << std::endl;
+					// std::cout << " dans operator=" << std::endl;
 					// T1 *ptr = const_cast <T1 *> (&pr.first); 
 					this->first = pr.first;
 					// *ptr = pr.first;
@@ -130,8 +153,7 @@ namespace ft
 			t_node										*_end;
 			t_node										*_begin;
 			size_type									_size;
-			t_node 										*_parent_root;
-
+						key_compare	    _comp;
 			std::allocator<struct s_node>				_alloc_node;
 			Alloc										_myAlloc;
 
@@ -188,8 +210,10 @@ namespace ft
 				(*node)->type_node = 0;
 
 			}
+			size_type size() const {return (_size);}
 
-			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()):_root(0), _end(0), _begin(0), _size(0), _parent_root(0)
+///////////////////////constructor////////////////////////////////
+			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()):_root(0), _end(0), _begin(0), _size(0), _comp(comp)
 			{
 				(void)comp;
 				(void)alloc;
@@ -199,8 +223,25 @@ namespace ft
 				}
 			}
 
-
-
+			template <class InputIterator>
+			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()):_root(0), _end(0), _begin(0), _size(0),  _comp(comp)
+			{
+				init_node(&_root, _root, value_type());
+				while (first != last)
+				{
+					// t_node *node = first.get_ptr();
+					// value_type val = node->data;
+					// my_insert (val, &_root, _root, comp);
+					my_insert (*first, &_root->right, _root, comp);
+					(void)alloc;
+					first++;
+				}
+			}
+			map (const map& x):_root(x._root), _end(x._end), _begin(x._begin), _size(x._size), _comp(x.comp)
+			{
+				init_node(&_root, _root, value_type());
+                insert(x.begin(), x.end());
+			}
 
 			~map()
 			{
@@ -214,80 +255,8 @@ namespace ft
 
 			}
 
-			size_type size() const {return (_size);}
-			
 
-
-			void	updte_end(t_node *new_node)
-			{
-				if (!_end)
-				{
-					init_node(&_end, new_node, value_type());
-					new_node->right = _end;
-					_end->parent = new_node;
-				}
-				else if (new_node->parent->right == new_node && new_node->parent == _end->parent)
-				{
-					new_node->right = _end;
-					_end->parent = new_node;
-				}
-			}
-
-			void	updte_begin(t_node *new_node)
-			{
-				if (!_begin)
-				{
-					init_node(&_begin, new_node, value_type());
-					new_node->left = _begin;
-					_begin->parent = new_node;
-				}
-				else if (new_node->parent->left == new_node && new_node->parent == _begin->parent)
-				{
-					new_node->left = _begin;
-					_begin->parent = new_node;
-				}
-			}
-
-			void my_insert (const value_type & val, t_node **node, t_node *parent, key_compare cmp)
-			{
-				if (!*node || *node == _end || *node == _begin)
-				{
-					_size++;
-					init_node(node, parent, val);
-					updte_end(*node);
-					updte_begin(*node);
-				}
-				else if (cmp((*node)->data.first, val.first))
-				{
-					my_insert(val, &(*node)->right, *node, cmp);
-				}
-				else if (cmp((*node)->data.first, val.first) == false)
-				{
-					if (cmp(val.first, (*node)->data.first) == false)
-						return ;
-					my_insert(val, &(*node)->left, *node, cmp);
-				}
-			}
-		template <class InputIterator>
-  			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()):_root(0), _end(0), _begin(0), _size(0)
-			{
-				while (first != last)
-				{
-					t_node *node = first.get_ptr();
-					value_type val = node->data;
-					my_insert (val, &_root, _root, comp);
-					(void)alloc;
-					first++;
-				}
-			}
-
-			void insert (const value_type & val)
-			{
-				(void)val;
-				my_insert (val, &_root, _root, key_compare());
-				// if (_parent_root->right == 0)
-				// 	_parent_root->right = _root;
-			}
+//////////////////////////Modifiers////////////////////////////
 
 			void	print_tree(t_node *node)
 			{
@@ -298,8 +267,6 @@ namespace ft
 					print_tree(node->right);
 				}
 			}
-
-	
 
 			void	my_clear_tree(t_node *node)
 			{
@@ -335,7 +302,6 @@ namespace ft
 				}
 				else if (to_delete->right == NULL) 
 				{
-					std::cout << "im in the right null\n";
 					temp = to_delete->left;
 					if (temp == _begin)
 						_begin->parent = to_delete->parent;
@@ -392,7 +358,7 @@ namespace ft
 
 			void erase (iterator position)
 			{
-				std::cout << "to delete : " << position->first << " => " << position->second << '\n';
+				// std::cout << "to delete : " << position->first << " => " << position->second << '\n';
 
 				(void)delete_one_node_by_key(_root, position->first);
 	
@@ -413,31 +379,26 @@ namespace ft
 				}
 			}
 
+//////////////////////////Element access////////////////////////////
+			
 			t_node	*find_key(t_node *node, const key_type& toFind)
 			{
 				key_compare cmp;
-				if ( node == _end)
-					return (0);
-				if (node && node != _begin)
+				t_node *ret = 0;
+				if (node && node != _begin && node != _end)
 				{
-					if (cmp(node->data.first, toFind) == false && cmp(toFind, node->data.first) == false)
-					{
+					if (node && cmp(node->data.first, toFind) == false && cmp(toFind, node->data.first) == false)
 						return (node);
+					else
+					{
+						ret = find_key(node->left, toFind);
+						if (!ret)
+							ret = find_key(node->right, toFind);
 					}
-					node = find_key(node->right, toFind);
 				}
-				return (node);
+				return (ret);
 			}
-
-			// t_node	*find_key( const key_type& toFind)
-			// {
-			// 	for (iterator it = begin(); it != end(); it++)
-			// 	{
-			// 		if (cmp(node->data.first, toFind) == false && cmp(toFind, node->data.first) == false)
-
-			// 	}
-				
-			// }
+		
 			mapped_type& operator[] (const key_type& k)
 			{
 				t_node *node = find_key(_root->right, k);
@@ -446,21 +407,117 @@ namespace ft
 					value_type val(k, mapped_type());
 					my_insert (val, &_root, _root, key_compare());
 					node = find_key(_root->right, k);
-					// std::cout << "insert key == " << node->data.first << std::endl;
-
 				}
-				else
-				{
-					// std::cout << "not null key == " << k << std::endl;
-
-					// std::cout << "not null key == " << node->data.first << std::endl;
-
-				}
-				// std::cout << "first =  " << _root->right->data.first << " second = " << _root->right->data.second << std::endl;
-				// std::cout << "first =  " << node->data.first << " second = " << node->data.second << std::endl;
 				return (node->data.second);
-				// return (_root->right->data.second);
 			}
+///////////////////////////modify//////////////////////////////////////
+			void	updte_end(t_node *new_node)
+			{
+				if (!_end)
+				{
+					init_node(&_end, new_node, value_type());
+					new_node->right = _end;
+					_end->parent = new_node;
+				}
+				else if (new_node->parent->right == new_node && new_node->parent == _end->parent)
+				{
+					new_node->right = _end;
+					_end->parent = new_node;
+				}
+			}
+
+			void	updte_begin(t_node *new_node)
+			{
+				if (!_begin)
+				{
+					init_node(&_begin, new_node, value_type());
+					new_node->left = _begin;
+					_begin->parent = new_node;
+				}
+				else if (new_node->parent->left == new_node && new_node->parent == _begin->parent)
+				{
+					new_node->left = _begin;
+					_begin->parent = new_node;
+				}
+			}
+
+			void my_insert (const value_type & val, t_node **node, t_node *parent, key_compare cmp)
+			{
+				if (!*node || *node == _end || *node == _begin)
+				{
+					_size++;
+					init_node(node, parent, val);
+					updte_end(*node);
+					updte_begin(*node);
+				}
+				else if (cmp((*node)->data.first, val.first))
+				{
+					my_insert(val, &(*node)->right, *node, cmp);
+				}
+				else if (cmp((*node)->data.first, val.first) == false)
+				{
+					if (cmp(val.first, (*node)->data.first) == false)
+						return ;
+					my_insert(val, &(*node)->left, *node, cmp);
+				}
+			}
+			pair<iterator,bool> insert (const value_type& val)
+			{
+				key_compare cmp;
+				ft::pair<iterator,bool> ret;
+				ret.second = (find_key(_root->right, val.first) == NULL);
+				if (ret.second == true)
+				{
+					my_insert (val, &_root->right, _root, cmp);
+				}
+				ret.first = iterator(find_key(_root->right, val.first));
+				return (ret);
+			}
+			
+			template <class InputIterator>
+			void insert (typename ft::Enable_if<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type first, InputIterator last)
+			{
+				while (first != last)
+				{
+					value_type val = *first;
+					// std::cout << "first = " << val.first << " second "  << val.second << std::endl;
+					my_insert(*first, &_root->right, _root, key_compare());
+					first++;
+				}
+				
+			}
+
+			iterator insert (iterator position, const value_type& val)
+			{
+				t_node *node = find_key(_root->right, val.first); 
+				if (!node)
+				{
+					my_insert(val, &_root->right, _root, key_compare());
+					node = find_key(_root->right, val.first); 
+				}
+
+				(void)position;
+				(void)val;
+				return iterator(node);
+			}
+			iterator find (const key_type& k)
+			{
+				t_node *node = find_key(_root->right, k);
+				return iterator(node ? iterator (node) :iterator(_end));
+			}
+
+			// void swap (map& x)
+			// {
+            //     ft::ft_swap(_size, x._size);
+            //     ft::ft_swap(_root, x._root);
+            //     ft::ft_swap(_end, x._end);
+			// 	ft::ft_swap(_begin, x._begin);
+            //     ft::ft_swap(_comp, x._comp);
+            //     ft::ft_swap(_alloc, x._alloc);
+            //     ft::ft_swap(_alloc_node, x._alloc_node);
+			// }
+
+
 
 	};
 }
