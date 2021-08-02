@@ -153,7 +153,7 @@ namespace ft
 			t_node										*_end;
 			t_node										*_begin;
 			size_type									_size;
-						key_compare	    _comp;
+			key_compare									_comp;
 			std::allocator<struct s_node>				_alloc_node;
 			Alloc										_myAlloc;
 
@@ -314,7 +314,7 @@ namespace ft
 			{
 				if (to_delete->parent->right == to_delete)
 				{
-					to_delete->parent->right = to_delete->left;
+					to_delete->parent->right = to_delete->right;
 				}
 				else if (to_delete->parent->left == to_delete)
 					to_delete->parent->left = to_delete->left;
@@ -333,14 +333,13 @@ namespace ft
 
 			t_node	*delete_one_node_by_key(t_node *root, Key toFind)
 			{
-				key_compare cmp;
 				if (!root || root == _end || root == _begin)
 					return (root);
-				if (cmp(root->data.first, toFind))
+				if (!_comp(root->data.first, toFind))
 				{
 					root->right = delete_one_node_by_key(root->right, toFind);
 				}
-				else if (!cmp(root->data.first, toFind) && cmp(toFind, root->data.first) )
+				else if (!_comp(root->data.first, toFind) && _comp(toFind, root->data.first) )
 				{
 					root->left = delete_one_node_by_key(root->left, toFind);
 				}
@@ -383,11 +382,10 @@ namespace ft
 			
 			t_node	*find_key(t_node *node, const key_type& toFind)
 			{
-				key_compare cmp;
 				t_node *ret = 0;
 				if (node && node != _begin && node != _end)
 				{
-					if (node && cmp(node->data.first, toFind) == false && cmp(toFind, node->data.first) == false)
+					if (node && _comp(node->data.first, toFind) == false && _comp(toFind, node->data.first) == false)
 						return (node);
 					else
 					{
@@ -405,7 +403,7 @@ namespace ft
 				if (node == NULL)
 				{
 					value_type val(k, mapped_type());
-					my_insert (val, &_root, _root, key_compare());
+					my_insert (val, &_root, _root);
 					node = find_key(_root->right, k);
 				}
 				return (node->data.second);
@@ -441,7 +439,7 @@ namespace ft
 				}
 			}
 
-			void my_insert (const value_type & val, t_node **node, t_node *parent, key_compare cmp)
+			void my_insert (const value_type & val, t_node **node, t_node *parent)
 			{
 				if (!*node || *node == _end || *node == _begin)
 				{
@@ -450,25 +448,24 @@ namespace ft
 					updte_end(*node);
 					updte_begin(*node);
 				}
-				else if (cmp((*node)->data.first, val.first))
+				else if (_comp((*node)->data.first, val.first))
 				{
-					my_insert(val, &(*node)->right, *node, cmp);
+					my_insert(val, &(*node)->right, *node);
 				}
-				else if (cmp((*node)->data.first, val.first) == false)
+				else if (_comp((*node)->data.first, val.first) == false)
 				{
-					if (cmp(val.first, (*node)->data.first) == false)
+					if (_comp(val.first, (*node)->data.first) == false)
 						return ;
-					my_insert(val, &(*node)->left, *node, cmp);
+					my_insert(val, &(*node)->left, *node);
 				}
 			}
 			pair<iterator,bool> insert (const value_type& val)
 			{
-				key_compare cmp;
 				ft::pair<iterator,bool> ret;
 				ret.second = (find_key(_root->right, val.first) == NULL);
 				if (ret.second == true)
 				{
-					my_insert (val, &_root->right, _root, cmp);
+					my_insert (val, &_root->right, _root);
 				}
 				ret.first = iterator(find_key(_root->right, val.first));
 				return (ret);
@@ -481,7 +478,7 @@ namespace ft
 				{
 					value_type val = *first;
 					// std::cout << "first = " << val.first << " second "  << val.second << std::endl;
-					my_insert(*first, &_root->right, _root, key_compare());
+					my_insert(*first, &_root->right, _root);
 					first++;
 				}
 				
@@ -492,7 +489,7 @@ namespace ft
 				t_node *node = find_key(_root->right, val.first); 
 				if (!node)
 				{
-					my_insert(val, &_root->right, _root, key_compare());
+					my_insert(val, &_root->right, _root);
 					node = find_key(_root->right, val.first); 
 				}
 
@@ -506,16 +503,17 @@ namespace ft
 				return iterator(node ? iterator (node) :iterator(_end));
 			}
 
-			// void swap (map& x)
-			// {
-            //     ft::ft_swap(_size, x._size);
-            //     ft::ft_swap(_root, x._root);
-            //     ft::ft_swap(_end, x._end);
-			// 	ft::ft_swap(_begin, x._begin);
-            //     ft::ft_swap(_comp, x._comp);
-            //     ft::ft_swap(_alloc, x._alloc);
-            //     ft::ft_swap(_alloc_node, x._alloc_node);
-			// }
+			void swap (map& x)
+			{
+                ft::ft_swap(_size, x._size);
+                ft::ft_swap(_root, x._root);
+                // ft::ft_swap(_root->data, x._root->data);
+
+                ft::ft_swap(_end, x._end);
+				ft::ft_swap(_begin, x._begin);
+                ft::ft_swap(_comp, x._comp);
+                ft::ft_swap(_alloc_node, x._alloc_node);
+			}
 
 
 
