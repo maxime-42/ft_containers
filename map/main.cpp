@@ -226,16 +226,19 @@ int main ()
   ft::map<int,int> first;
 
   first[11]=111;
-  first[7]=777;
-  first[12]=50;
-//   first[]=70;
+//   first[7]=777;
+//   first[12]=1220;
+//   first[17]=1777;
+//   first[5]=55;
 
-	// std::cout << "first befor delete" << std::endl;
+	std::cout << "first befor delete" << std::endl;
 	// print_map(first);
 	// std::cout << "\nfirst after delete" << std::endl;
 
-	first.erase(7);
-	// print_map(first);
+	first.erase(11);
+  	first[9] = 99;
+
+	print_map(first);
 
 //   ft::map<char,int> second (first.begin(),first.end());
 	// std::cout << "second " << std::endl;
