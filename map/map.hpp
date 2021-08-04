@@ -383,7 +383,6 @@ namespace ft
 					{
 						std::cout << "node to delete have two children" << std::endl;
 						t_node *succesor = root->get_next_node();
-						// t_node *successorParent = succesor->parent;
 						std::cout << "\nbefor SWap :" << std::endl;
 						std::cout << "root = " << root->data->first << " second " << root->data->second << std::endl;
 						std::cout << "succesor = " << succesor->data->first << " second " << succesor->data->second << std::endl;
@@ -393,12 +392,24 @@ namespace ft
 						std::cout << "succesor = " << succesor->data->first << " second " << succesor->data->second << std::endl;
 						// succesor->parent = root->parent;
 						// root->parent = successorParent;
-						if (succesor->parent == root)
-							succesor->parent->right = succesor->right;
+						
+						if (root->right == succesor)
+						{
+							std::cout << "salluuuuuutttt" << std::endl;
+							root->right = delete_one_node_by_key(succesor, toFind);
+						}
+						else if (root->left == succesor)
+						{
+							std::cout << "wshhhh ????" << std::endl;
 
-						delete_one_node_by_key(succesor, toFind);
-						std::cout << "\nafeter delete:" << std::endl;
-						std::cout << "root = " << root->data->first << " second " << root->data->second << std::endl;
+							root->left = delete_one_node_by_key(succesor, toFind);
+						}
+						else
+							delete_one_node_by_key(succesor->parent, toFind);
+						// t_node *successorParent = succesor->parent;
+
+						// std::cout << "\nafeter delete:" << std::endl;
+						// std::cout << "root = " << root->data->first << " second " << root->data->second << std::endl;
 						// root->right = 0;
 						// exit(0);
 						// root = succesor;
