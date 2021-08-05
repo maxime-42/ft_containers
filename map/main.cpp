@@ -228,18 +228,20 @@ int main ()
   first[11]=111;
   first[6]=666;
   first[5]=55;
-
-//   first[7]=777;
+  first[7]=777;
+  first[8]=88;
+  first[9]=99;
   first[12]=1220;
 //   first[17]=1777;
 //   first[9]=999;
 //   first[10]=1000;
 
-	// std::cout << "first befor delete" << std::endl;
+	std::cout << "first befor delete 6" << std::endl;
 	// print_map(first);
 	// std::cout << "\nfirst after delete" << std::endl;
+	print_map(first);
 
-	first.erase(12);
+	first.erase(6);
 
 	print_map(first);
 
