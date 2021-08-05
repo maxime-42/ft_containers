@@ -208,53 +208,106 @@
 //   return 0;
 // }
 
-bool fncomp (char lhs, char rhs) {return lhs<rhs;}
+// bool fncomp (char lhs, char rhs) {return lhs<rhs;}
 
-struct classcomp {
-  bool operator() (const char& lhs, const char& rhs) const
-  {return lhs<rhs;}
-};
+// struct classcomp {
+//   bool operator() (const char& lhs, const char& rhs) const
+//   {return lhs<rhs;}
+// };
 
-void	print_map(ft::map<int,int> &myMap)
+void	print_map(ft::map<char,int> &myMap)
 {
-for (ft::map<int,int>::iterator it = myMap.begin(); it !=myMap.end(); ++it)
+for (ft::map<char,int>::iterator it = myMap.begin(); it !=myMap.end(); it++)
     std::cout << it->first << " => " << it->second << '\n';
 }
 
-int main ()
+// int main ()
+// {
+//   ft::map<int,int> first;
+
+//   first[11]=111;
+//   first[6]=666;
+//   first[5]=55;
+//   first[7]=777;
+//   first[8]=88;
+//   first[9]=99;
+//   first[12]=1220;
+// //   first[17]=1777;
+// //   first[9]=999;
+// //   first[10]=1000;
+
+// 	std::cout << "first befor delete 6" << std::endl;
+// 	// print_map(first);
+// 	// std::cout << "\nfirst after delete" << std::endl;
+// 	print_map(first);
+
+// 	first.erase(6);
+
+// 	print_map(first);
+
+// //   ft::map<char,int> second (first.begin(),first.end());
+// 	// std::cout << "second " << std::endl;
+
+// 	// print_map(second);
+
+// //   ft::map<char,int> third (second);
+
+// //   std::map<char,int,classcomp> fourth;                 // class as Compare
+
+// //   bool(*fn_pt)(char,char) = fncomp;
+// //   std::map<char,int,bool(*)(char,char)> fifth (fn_pt); // function pointer as Compare
+//   return 0;
+// }
+
+int test_erase ()
 {
-  ft::map<int,int> first;
+  ft::map<char,int> mymap;
+  ft::map<char,int>::iterator it;
 
-  first[11]=111;
-  first[6]=666;
-  first[5]=55;
-  first[7]=777;
-  first[8]=88;
-  first[9]=99;
-  first[12]=1220;
-//   first[17]=1777;
-//   first[9]=999;
-//   first[10]=1000;
+  // insert some values:
+//   mymap['a']=10;
+//   mymap['b']=20;
+//   mymap['c']=30;
+//   mymap['d']=40;
+//   mymap['e']=50;
+  mymap['f']=60;
+	
+	std::cout << "befor erase : " << std::endl;
+	print_map(mymap);
 
-	std::cout << "first befor delete 6" << std::endl;
-	// print_map(first);
-	// std::cout << "\nfirst after delete" << std::endl;
-	print_map(first);
+	
+	// mymap.erase ('a');                   // erasing by iterator
+	// mymap.erase ('b');                   // erasing by iterator
+// 	std::cout << "\nafter erase b:" << std::endl;
+// 	print_map(mymap);
+	
 
-	first.erase(6);
+// 	std::cout << "\nafter erase c: " << std::endl;
+// 	print_map(mymap);
 
-	print_map(first);
+//   it  = mymap.find ('b');
+    // std::cout << it->first << " => " << it->second << '\n';
+	// mymap.erase (it);                   // erasing by iterator
 
-//   ft::map<char,int> second (first.begin(),first.end());
-	// std::cout << "second " << std::endl;
+	// mymap.erase (mymap.find ('a'), mymap.end());    // erasing by range
+	// std::cout << "after delete  : " << std::endl;
+	// print_map(mymap);
+	std::cout << "after delete last element : " << std::endl;
 
-	// print_map(second);
+	mymap.erase ('f');                   // erasing by iterator
+	print_map(mymap);
 
-//   ft::map<char,int> third (second);
 
-//   std::map<char,int,classcomp> fourth;                 // class as Compare
 
-//   bool(*fn_pt)(char,char) = fncomp;
-//   std::map<char,int,bool(*)(char,char)> fifth (fn_pt); // function pointer as Compare
+// 
+//   // show content:
+//   for (it=mymap.begin(); it!=mymap.end(); ++it)
+    // std::cout << it->first << " => " << it->second << '\n';
   return 0;
+}
+
+int main()
+{
+	 test_erase();
+	return 0;
 }

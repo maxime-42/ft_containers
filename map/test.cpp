@@ -3,71 +3,67 @@
 using namespace std;
  
 
-/*
-
-			t_node	*delete_one_node_by_key(t_node *root, Key toFind)
-			{
-				if (!root )
-					return (root);
-				if (_comp(root->data->first, toFind))
-				{
-					std::cout << "RIGHT | root->data->first = " << root->data->first << std::endl;
-					root->right = delete_one_node_by_key(root->right, toFind);
-				}
-				else if (!_comp(root->data->first, toFind) && _comp(toFind, root->data->first) )
-				{
-					std::cout << "LEFT | root->data->first = " << root->data->first << std::endl;
-					root->left = delete_one_node_by_key(root->left, toFind);
-				}
-				else
-				{
-					if (root->right == NULL || root->left == NULL )/* If one of the children is empty*/
-					{
-						std::cout << "one of the children is empty" << std::endl;
-						std::cout << "root->data->first = " << root->data->first << std::endl;
-						root = delete_children_is_empty(root);
-					}
-					else
-					{
-						std::cout << "node to delete have two children" << std::endl;
-						t_node *succesor = root->get_next_node();
-						std::cout << "\nbefor SWap :" << std::endl;
-						std::cout << "root = " << root->data->first << " second " << root->data->second << std::endl;
-						std::cout << "succesor = " << succesor->data->first << " second " << succesor->data->second << std::endl;
-						ft_swap(succesor->data, root->data);
-						std::cout << "\nafter SWap:" << std::endl;
-						std::cout << "root = " << root->data->first << " second " << root->data->second << std::endl;
-						std::cout << "succesor = " << succesor->data->first << " second " << succesor->data->second << std::endl;
-						// succesor->parent = root->parent;
-						// root->parent = successorParent;
+			// t_node	*delete_one_node_by_key(t_node *root, Key toFind)
+			// {
+			// 	if (!root )
+			// 		return (root);
+			// 	if (_comp(root->data->first, toFind))
+			// 	{
+			// 		std::cout << "RIGHT | root->data->first = " << root->data->first << std::endl;
+			// 		root->right = delete_one_node_by_key(root->right, toFind);
+			// 	}
+			// 	else if (!_comp(root->data->first, toFind) && _comp(toFind, root->data->first) )
+			// 	{
+			// 		std::cout << "LEFT | root->data->first = " << root->data->first << std::endl;
+			// 		root->left = delete_one_node_by_key(root->left, toFind);
+			// 	}
+			// 	else
+			// 	{
+			// 		if (root->right == NULL || root->left == NULL )/* If one of the children is empty*/
+			// 		{
+			// 			std::cout << "one of the children is empty" << std::endl;
+			// 			std::cout << "root->data->first = " << root->data->first << std::endl;
+			// 			root = delete_children_is_empty(root);
+			// 		}
+			// 		else
+			// 		{
+			// 			std::cout << "node to delete have two children" << std::endl;
+			// 			t_node *succesor = root->get_next_node();
+			// 			std::cout << "\nbefor SWap :" << std::endl;
+			// 			std::cout << "root = " << root->data->first << " second " << root->data->second << std::endl;
+			// 			std::cout << "succesor = " << succesor->data->first << " second " << succesor->data->second << std::endl;
+			// 			ft_swap(succesor->data, root->data);
+			// 			std::cout << "\nafter SWap:" << std::endl;
+			// 			std::cout << "root = " << root->data->first << " second " << root->data->second << std::endl;
+			// 			std::cout << "succesor = " << succesor->data->first << " second " << succesor->data->second << std::endl;
+			// 			// succesor->parent = root->parent;
+			// 			// root->parent = successorParent;
 						
-						if (root->right == succesor)
-						{
-							std::cout << "salluuuuuutttt" << std::endl;
-							root->right = delete_one_node_by_key(succesor, toFind);
-						}
-						else if (root->left == succesor)
-						{
-							std::cout << "wshhhh ????" << std::endl;
+			// 			if (root->right == succesor)
+			// 			{
+			// 				std::cout << "salluuuuuutttt" << std::endl;
+			// 				root->right = delete_one_node_by_key(succesor, toFind);
+			// 			}
+			// 			else if (root->left == succesor)
+			// 			{
+			// 				std::cout << "wshhhh ????" << std::endl;
 
-							root->left = delete_one_node_by_key(succesor, toFind);
-						}
-						else
-							delete_one_node_by_key(succesor->parent, toFind);
-						// t_node *successorParent = succesor->parent;
+			// 				root->left = delete_one_node_by_key(succesor, toFind);
+			// 			}
+			// 			else
+			// 				delete_one_node_by_key(succesor->parent, toFind);
+			// 			// t_node *successorParent = succesor->parent;
 
-						// std::cout << "\nafeter delete:" << std::endl;
-						// std::cout << "root = " << root->data->first << " second " << root->data->second << std::endl;
-						// root->right = 0;
-						// exit(0);
-						// root = succesor;
-					// 	std::cout << "succesor = " << succesor->data->first << " second = " << succesor->data->second << std::endl;
-					}
-				}
-				return (root);
-			}
-*/
-
+			// 			// std::cout << "\nafeter delete:" << std::endl;
+			// 			// std::cout << "root = " << root->data->first << " second " << root->data->second << std::endl;
+			// 			// root->right = 0;
+			// 			// exit(0);
+			// 			// root = succesor;
+			// 		// 	std::cout << "succesor = " << succesor->data->first << " second = " << succesor->data->second << std::endl;
+			// 		}
+			// 	}
+			// 	return (root);
+			// }
 
 struct Node {
     int key;

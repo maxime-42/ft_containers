@@ -89,7 +89,7 @@ namespace ft
 				struct s_node							*right;
 				bool	is_leaf(struct s_node *node)
 				{
-					if (node->left == NULL && node->right == NULL)
+					if (node && node->left == NULL && node->right == NULL)
 						return (true);
 					return (false);
 				}
@@ -321,14 +321,22 @@ namespace ft
 				return (node->data->second);
 			}
 
+			iterator find (const key_type& k)
+			{
+				t_node *node = find_key(_root, k);
+				if (node)
+				{
+					// std::cout << "trouveeer" << std::endl;
+					return (iterator(node));
+				}
+				// std::cout << "pas trouveeer" << std::endl;
+				return (iterator(_end));
+			}
+
 // ///////////////////////////modify//////////////////////////////////////
 			void delete_node(t_node *node)
 			{
 				_size--;
-				// if (node == _end)
-				// 	_end = node->parent;
-				// else if (node == _end)
-				// 	_begin = node->parent;
 				_alloc_node.destroy(node);
 				_alloc_pair.destroy(node->data);
 				_alloc_pair.deallocate(node->data, 1);
@@ -340,12 +348,10 @@ namespace ft
 				t_node* temp = NULL;
 				if (to_delete->left == NULL)
 				{
-					std::cout << "GAUCH NULL" << std::endl;
 					temp = to_delete->right;
 				}
 				else if (to_delete->right == NULL)
 				{
-					std::cout << "DROIT NULL" << std::endl;
 					temp = to_delete->left;
 				}
 				if (temp)
@@ -354,9 +360,8 @@ namespace ft
 				return (temp);
 			}
 
-			void	delete_has_two_children(t_node *root)
+			void	has_two_children(t_node *root)
 			{
-				std::cout << "node to delete have two children" << std::endl;
 				t_node *succesor = root->get_next_node();
 				if (succesor->parent != root)
 				{
@@ -371,43 +376,42 @@ namespace ft
 						succesor->right->parent = succesor->parent;
 				}
 				ft_swap(succesor->data, root->data);
-					delete_node(succesor);
+				delete_node(succesor);
 			}
 
 			t_node	*delete_one_node_by_key(t_node *root, Key toFind)
 			{
 				if (!root )
 					return (root);
+				// if (_size == 1)
+				// {
+				// 	my_clear_tree(_root);
+				// 	return (0);
+				// }
 				if (_comp(root->data->first, toFind))
 				{
-					std::cout << "RIGHT | root->data->first = " << root->data->first << std::endl;
 					root->right = delete_one_node_by_key(root->right, toFind);
 				}
 				else if (!_comp(root->data->first, toFind) && _comp(toFind, root->data->first) )
 				{
-					std::cout << "LEFT | root->data->first = " << root->data->first << std::endl;
 					root->left = delete_one_node_by_key(root->left, toFind);
 				}
 				else
 				{
 					if (root->right == NULL || root->left == NULL )/* If one of the children is empty*/
-					{
-						std::cout << "one of the children is empty" << std::endl;
-						std::cout << "root->data->first = " << root->data->first << std::endl;
 						root = has_only_one_child(root);
-					}
 					else
 					{
-						delete_has_two_children(root);
+						has_two_children(root);
 					}
 				}
 				return (root);
 			}
 
+			
+
 			void erase (iterator position)
 			{
-				// std::cout << "to delete : " << position->first << " => " << position->second << '\n';
-
 				(void)delete_one_node_by_key(_root, position->first);
 
 				(void)position;
@@ -415,27 +419,27 @@ namespace ft
 
 			size_type erase (const key_type & k)
 			{
-					std::cout << "_size = " << _size << '\n';
-				if (_size == 1)
-				{
-					my_clear_tree(_root);
-				}
-				else
-					(void)delete_one_node_by_key(_root, k);
+				(void)delete_one_node_by_key(_root, k);
 				return (1);
 			}
 
 			void erase (iterator first, iterator last)
 			{
-				while (first != last)
+				int i = 0;
+				// last--;
+				t_node *node = last.get_ptr();
+				mapped_type toFind = node->data->first;
+				while (first->first != toFind)
 				{
-					if (_size == 1)
-					{
-						my_clear_tree(_root);
-					}
-					else
-						(void)delete_one_node_by_key(_root, first->first);
-					first++;
+					// toFind = *first;
+					// find_key(_root, current->data->first);
+					std::cout << "i = " << i << " first->first = " << first->first << " first->second = " << first->second  << std::endl;
+				
+					if (delete_one_node_by_key(_root, first->first) == NULL)
+						return ;
+					if (_size == 0)
+						return ;
+					i++;
 				}
 			}
 
@@ -528,11 +532,6 @@ namespace ft
 			// 	(void)position;
 			// 	(void)val;
 			// 	return iterator(node);
-			// }
-			// // iterator find (const key_type& k)
-			// {
-			// 	t_node *node = find_key(_root->right, k);
-			// 	return iterator(node ? iterator (node) :iterator(_end));
 			// }
 
 
