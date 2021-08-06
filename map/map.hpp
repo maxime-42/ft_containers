@@ -348,10 +348,13 @@ namespace ft
 				t_node* temp = NULL;
 				if (to_delete->left == NULL)
 				{
+					// std::cout << "GAUCH NULL" << std::endl;
+					// std::cout << "to_delete->data->first = " << to_delete->data->first << std::endl;
 					temp = to_delete->right;
 				}
 				else if (to_delete->right == NULL)
 				{
+					std::cout << "DROIT NULL" << std::endl;
 					temp = to_delete->left;
 				}
 				if (temp)
@@ -376,6 +379,10 @@ namespace ft
 						succesor->right->parent = succesor->parent;
 				}
 				ft_swap(succesor->data, root->data);
+				if (succesor == _end)
+					_end = root;
+				else if (succesor == _begin)
+					_begin = root;
 				delete_node(succesor);
 			}
 
@@ -383,11 +390,6 @@ namespace ft
 			{
 				if (!root )
 					return (root);
-				// if (_size == 1)
-				// {
-				// 	my_clear_tree(_root);
-				// 	return (0);
-				// }
 				if (_comp(root->data->first, toFind))
 				{
 					root->right = delete_one_node_by_key(root->right, toFind);
@@ -425,21 +427,10 @@ namespace ft
 
 			void erase (iterator first, iterator last)
 			{
-				int i = 0;
-				// last--;
-				t_node *node = last.get_ptr();
-				mapped_type toFind = node->data->first;
-				while (first->first != toFind)
+				while (first->first != last->first)
 				{
-					// toFind = *first;
-					// find_key(_root, current->data->first);
-					std::cout << "i = " << i << " first->first = " << first->first << " first->second = " << first->second  << std::endl;
-				
-					if (delete_one_node_by_key(_root, first->first) == NULL)
-						return ;
-					if (_size == 0)
-						return ;
-					i++;
+					iterator to_delete = first++;
+					(void)delete_one_node_by_key(_root, to_delete->first);
 				}
 			}
 
@@ -476,6 +467,8 @@ namespace ft
 
 			void my_insert (const value_type & val, t_node **node, t_node *parent)
 			{
+				if (_size == 0 && _root)
+					my_clear_tree(_root);
 				if (!*node || *node == _end || *node == _begin)
 				{
 					_size++;
