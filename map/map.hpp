@@ -488,44 +488,55 @@ namespace ft
 				}
 			}
 
-// 			pair<iterator,bool> insert (const value_type& val)
-// 			{
-// 				ft::pair<iterator,bool> ret;
-// 				ret.second = (find_key(_root->right, val.first) == NULL);
-// 				if (ret.second == true)
-// 				{
-// 					my_insert (val, &_root->right, _root);
-// 				}
-// 				ret.first = iterator(find_key(_root->right, val.first));
-// 				return (ret);
-// 			}
+			pair<iterator,bool> insert (const value_type& val)
+			{
+				// std::cout << "saaaaluuuuuuut\n" << std::endl;
+				ft::pair<iterator,bool> ret;
+				// std::cout << "val.first = " << val.first << std::endl;
+				t_node *test = find_key(_root, val.first);
+				if (test == NULL)
+				{
+					ret.second = true;
+				}
+				else
+				{
+					ret.second = false;
+				}
+				if (ret.second == true)
+				{
+					my_insert (val, &_root, _root);
+				}
+				ret.first = iterator(find_key(_root, val.first));
+				(void)val;
+				return (ret);
+			}
 
-// 			template <class InputIterator>
-// 			void insert (typename ft::Enable_if<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type first, InputIterator last)
-// 			{
-// 				while (first != last)
-// 				{
-// 					value_type val = *first;
-// 					// std::cout << "first = " << val.first << " second "  << val.second << std::endl;
-// 					my_insert(*first, &_root->right, _root);
-// 					first++;
-// 				}
+			template <class InputIterator>
+			void insert (typename ft::Enable_if<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type first, InputIterator last)
+			{
+				while (first != last)
+				{
+					value_type val = *first;
+					// std::cout << "first = " << val.first << " second "  << val.second << std::endl;
+					my_insert(*first, &_root, _root);
+					first++;
+				}
 
-// 			}
+			}
 
-			// iterator insert (iterator position, const value_type& val)
-			// {
-			// 	t_node *node = find_key(_root->right, val.first);
-			// 	if (!node)
-			// 	{
-			// 		my_insert(val, &_root->right, _root);
-			// 		node = find_key(_root->right, val.first);
-			// 	}
+			iterator insert (iterator position, const value_type& val)
+			{
+				t_node *node = find_key(_root, val.first);
+				if (!node)
+				{
+					my_insert(val, &_root, _root);
+					node = find_key(_root, val.first);
+				}
 
-			// 	(void)position;
-			// 	(void)val;
-			// 	return iterator(node);
-			// }
+				(void)position;
+				(void)val;
+				return iterator(node);
+			}
 
 
 
