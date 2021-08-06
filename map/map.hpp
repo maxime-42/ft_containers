@@ -188,6 +188,39 @@ namespace ft
 					friend bool 						operator!=(const iterator& a, const   iterator& b) { return a._ptr != b._ptr; };
 			};
 
+			class const_iterator
+			{
+				private:
+					t_node								*_ptr;
+				public:
+					typedef t_node						*pointeur;
+					// typedef ptrdiff_t					difference_type;
+
+
+					const_iterator(t_node *ptr = 0): _ptr(ptr){}
+					const_iterator(const_iterator const &cp){_ptr = cp.get_ptr(	);}
+					const_iterator operator=(const_iterator const &cp)
+					{
+						if (this != &cp)
+							this->_ptr = cp.get_ptr();
+						return *this;
+					}
+
+					~iterator(){}
+					value_type							&operator*()const {return (*_ptr->data);}
+					value_type							*operator->()const {return &(*_ptr->data);}
+					const_iterator							&operator++(){_ptr = _ptr->get_next_node(); return *this;}//++a
+					const_iterator							operator++(int)	{iterator it = *this; _ptr = _ptr->get_next_node(); return (it);}//a++
+					const_iterator							&operator--(){ _ptr = _ptr->get_prev_node(_ptr); return (*this);}//--a
+					const_iterator							operator--(int){iterator it = *this; _ptr = _ptr->get_prev_node(); return it;} //a--
+					pointeur        					get_ptr()const{return _ptr;}
+					bool								operator==(const const_iterator &it){ return _ptr == it.get_ptr();}
+					bool								operator!=(const const_iterator &it){ return _ptr != it.get_ptr();}
+					friend bool 						operator!=(const const_iterator& a, const   const_iterator& b) { return a._ptr != b._ptr; };
+			};
+
+
+
 			iterator begin(){return (_begin->parent);}
 
 			iterator end()	{return (_end);	}
@@ -209,7 +242,6 @@ namespace ft
 
 ///////////////////////constructor////////////////////////////////
 
-
 			explicit map (const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()):_root(0), _end(0), _begin(0), _size(0), _comp(comp), _alloc_pair(alloc)
 			{
 				(void)comp;
@@ -217,7 +249,7 @@ namespace ft
 			}
 
 			template <class InputIterator>
-			map (InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()):_root(0), _end(0), _begin(0), _size(0),  _comp(comp),  _alloc_pair(alloc)
+			map(InputIterator first, InputIterator last, const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()):_root(0), _end(0), _begin(0), _size(0),  _comp(comp),  _alloc_pair(alloc)
 			{
 				while (first != last)
 				{
@@ -226,35 +258,14 @@ namespace ft
 					first++;
 				}
 			}
-			// map (const map& x):_root(x._root), _end(x._end), _begin(x._begin), _size(x._size), _comp(x._comp), _alloc_pair(x._alloc_pair)
-			// {
-			// 	insert(x.begin(), x.end());
-			// }
+			map (const map& x):_root(x._root), _end(x._end), _begin(x._begin), _size(x._size), _comp(x._comp), _alloc_pair(x._alloc_pair)
+			{
+				insert(x.begin(), x.end());
+			}
 
 			~map()
 			{
-				// ft_swap(_root->data, _root->right->data);
-				// print_tree(_root);
-
-				// t_node *node = _root;
-				// std::cout << "first = " << node->data->first << " second = " <<  node->data->second << "\n" ;
-				// node = _root->left;
-				// std::cout << "first = " << node->data->first << " second = " <<  node->data->second << "\n" ;
-
-				// node = node->left;
-				// std::cout << "first = " << node->data->first << " second = " <<  node->data->second << "\n" ;
-				// if (node->right == NULL)
-				// {
-				// 	std::cout << "right is  nulll" << std::endl;
-				// }
-				// node = _root->right;
-				// std::cout << "first = " << node->data->first << " second = " <<  node->data->second << "\n" ;
-				// node = node->right;
-				// std::cout << "first = " << node->data->first << " second = " <<  node->data->second << "\n" ;
-
-				// std::cout << "size = " << _size << std::endl;
-				// std::cout << "destructor : first = " << _root->right->parent->data.first << " second = " << _root->right->parent->data.second << "\n" ;
-
+				
 				my_clear_tree(_root);
 
 			}
@@ -292,7 +303,7 @@ namespace ft
 
 /////////////////////////////Element access////////////////////////////
 
-			t_node	*find_key(t_node *node, const key_type& toFind)
+			t_node	*find_key(t_node *node, const key_type & toFind)const
 			{
 				t_node *ret = 0;
 				if (node && node != _begin && node != _end)
@@ -538,9 +549,48 @@ namespace ft
 				return iterator(node);
 			}
 
+			void clear()
+			{
+				my_clear_tree(_root);
+			}
 
+////////////////////////////////////?//Operations:////////////////////
+			size_type count (const key_type& k) const
+			{
+				if ( find_key(_root, k) == NULL)
+					return 0;
+				return (1);
+			}
 
+			iterator lower_bound (const key_type& k)
+			{
+				iterator it = find(k);
+				if (it != end())
+				{
+					return (it);
+				}
+				for (it = begin() ; it != end() ; it++)
+				{
+					if (!_comp(it->first, k))
+						return (it);
+				}
+				return (end());
+			}
 
+			const_iterator lower_bound (const key_type& k)
+			{
+				const_iterator it = find(k);
+				if (it != end())
+				{
+					return (it);
+				}
+				for (it = begin() ; it != end() ; it++)
+				{
+					if (!_comp(it->first, k))
+						return (it);
+				}
+				return (end());
+			}
 	};
 }
 
