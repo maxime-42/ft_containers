@@ -100,7 +100,7 @@ namespace ft
 				** interior node
 						do to : one step on the right then forward on the left
 				*/
-				struct s_node *get_next_node()
+				struct s_node *get_next_node()//get sucessor
 				{
 					key_compare cmp;
 					t_node	*node = this;
@@ -122,7 +122,7 @@ namespace ft
 					return (node);
 				}
 
-				struct s_node *get_prev_node()
+				struct s_node *get_prev_node()//get sucessor predecessor
 				{
 					key_compare cmp;
 					t_node	*node = this;
@@ -206,11 +206,11 @@ namespace ft
 						return *this;
 					}
 
-					~iterator(){}
+					~const_iterator(){}
 					value_type							&operator*()const {return (*_ptr->data);}
 					value_type							*operator->()const {return &(*_ptr->data);}
 					const_iterator							&operator++(){_ptr = _ptr->get_next_node(); return *this;}//++a
-					const_iterator							operator++(int)	{iterator it = *this; _ptr = _ptr->get_next_node(); return (it);}//a++
+					const_iterator							operator++(int)	{const_iterator it = *this; _ptr = _ptr->get_next_node(); return (it);}//a++
 					const_iterator							&operator--(){ _ptr = _ptr->get_prev_node(_ptr); return (*this);}//--a
 					const_iterator							operator--(int){iterator it = *this; _ptr = _ptr->get_prev_node(); return it;} //a--
 					pointeur        					get_ptr()const{return _ptr;}
@@ -218,7 +218,9 @@ namespace ft
 					bool								operator!=(const const_iterator &it){ return _ptr != it.get_ptr();}
 					friend bool 						operator!=(const const_iterator& a, const   const_iterator& b) { return a._ptr != b._ptr; };
 			};
+			const_iterator begin() const {return (_begin->parent);}
 
+			const_iterator end() const 	{return (_end);	}
 
 
 			iterator begin(){return (_begin->parent);}
@@ -236,9 +238,6 @@ namespace ft
 				(*node)->type_node = 0;
 
 			}
-
-			size_type size() const {return (_size);}
-
 
 ///////////////////////constructor////////////////////////////////
 
@@ -258,6 +257,7 @@ namespace ft
 					first++;
 				}
 			}
+
 			map (const map& x):_root(x._root), _end(x._end), _begin(x._begin), _size(x._size), _comp(x._comp), _alloc_pair(x._alloc_pair)
 			{
 				insert(x.begin(), x.end());
@@ -270,6 +270,22 @@ namespace ft
 
 			}
 
+////////////////////////////////capacity//////////////////////
+			bool empty() const
+			{
+				if (_size == 0)
+					return (true);
+				return (false);
+			}
+
+			size_type size() const {return (_size);}
+
+			size_type max_size() const
+			{
+				return (_alloc_node.max_size());
+			}
+
+
 
 //////////////////////////Modifiers////////////////////////////
 
@@ -278,7 +294,6 @@ namespace ft
 				if (node)
 				{
 					print_tree(node->left);
-					std::cout << "first = " << node->data->first << " second = " << node->data->second << "\n" ;
 					print_tree(node->right);
 				}
 			}
@@ -365,7 +380,6 @@ namespace ft
 				}
 				else if (to_delete->right == NULL)
 				{
-					std::cout << "DROIT NULL" << std::endl;
 					temp = to_delete->left;
 				}
 				if (temp)
@@ -501,9 +515,7 @@ namespace ft
 
 			pair<iterator,bool> insert (const value_type& val)
 			{
-				// std::cout << "saaaaluuuuuuut\n" << std::endl;
 				ft::pair<iterator,bool> ret;
-				// std::cout << "val.first = " << val.first << std::endl;
 				t_node *test = find_key(_root, val.first);
 				if (test == NULL)
 				{
@@ -528,7 +540,6 @@ namespace ft
 				while (first != last)
 				{
 					value_type val = *first;
-					// std::cout << "first = " << val.first << " second "  << val.second << std::endl;
 					my_insert(*first, &_root, _root);
 					first++;
 				}
@@ -554,7 +565,7 @@ namespace ft
 				my_clear_tree(_root);
 			}
 
-////////////////////////////////////?//Operations:////////////////////
+//////////////////////////////////////Operations:////////////////////
 			size_type count (const key_type& k) const
 			{
 				if ( find_key(_root, k) == NULL)
@@ -577,7 +588,7 @@ namespace ft
 				return (end());
 			}
 
-			const_iterator lower_bound (const key_type& k)
+			const_iterator lower_bound (const key_type& k) const
 			{
 				const_iterator it = find(k);
 				if (it != end())
@@ -591,6 +602,55 @@ namespace ft
 				}
 				return (end());
 			}
+
+			iterator upper_bound (const key_type& k)
+			{
+				iterator it = find(k);
+				if (it != end())
+				{
+					for (it = begin() ; it != end() ; it++ )
+					{
+						if (_comp(k, it->first))
+							return (it);
+					}
+				}
+				return (end());
+			}
+
+			const_iterator upper_bound (const key_type& k) const
+			{
+				const iterator it = find(k);
+				if (it != end())
+				{
+					for (it = begin() ; it != end() ; it++ )
+					{
+						if (_comp(k, it->first))
+							return (it);
+					}
+				}
+				return (end());
+			}
+
+			pair<iterator,iterator>             equal_range (const key_type& k)
+            {
+                pair<iterator,iterator> ret(lower_bound(k), upper_bound(k));
+                return ret;
+            }
+
+			pair<const_iterator,const_iterator> equal_range (const key_type& k) const
+			{
+				pair<const_iterator,const_iterator> ret(const_iterator(lower_bound(k)), const_iterator(upper_bound(k)));
+				return (ret);
+			}
+
+			map& operator=(const map& x)
+            {
+				my_clear_tree(_root);
+				if (x._size != 0)
+               		insert(x.begin(), x.end());
+                return (*this);
+            }
+
 	};
 }
 

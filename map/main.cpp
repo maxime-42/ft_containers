@@ -179,33 +179,127 @@ int test_lower_bound ()
   ft::map<char,int> mymap;
   ft::map<char,int>::iterator itlow,itup;
 
-  mymap['a']=20;
+ mymap['a']=20;
+  mymap['b']=40;
   mymap['c']=60;
   mymap['d']=80;
   mymap['e']=100;
-  // mymap['b']=40;
-  itlow=mymap.lower_bound ('d');  // itlow points to b
-  // itup=mymap.upper_bound ('d');   // itup points to e (not d!)
-  std::cout << "first = " << itlow->first << " second = " << itlow->second << std::endl;
+  itlow=mymap.lower_bound ('b');  // itlow points to b
+  itup=mymap.upper_bound ('d');   // itup points to e (not d!)
+  // if (itlow == mymap.end())
+  // {
+  //   std::cout << "THE END" << std::endl;
+  //   return 0;
+  // }
+  std::cout << "itlow : first = " << itlow->first << " second = " << itlow->second << std::endl;
+  std::cout << "itup : first = " << itup->first << " second = " << itup->second << std::endl;
   mymap.erase(itlow,itup);        // erases [itlow,itup)
   // print content:
-  for (std::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
+  for (ft::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
     std::cout << it->first << " => " << it->second << '\n';
   return 0;
 }
 
+int test_equal_range ()
+{
+  ft::map<char,int> mymap;
 
+  mymap['c']=60;
+  mymap['d']=80;
+  mymap['a']=20;
+  mymap['e']=100;
+  mymap['b']=40;
 
-int  main(int argc, const char** argv) {
+  ft::pair<ft::map<char,int>::iterator, ft::map<char,int>::iterator> ret;
+  ret = mymap.equal_range('a');
 
-	//  test_erase();
-	// test_insert();
-	// test_clear();
-	// test_find();
-  // test_count();
-  test_lower_bound();
-	// std::cout << "salut" << std::endl;
-  (void)argc;
-  (void)argv;
-	return 0;
+  std::cout << "lower bound points to: ";
+  std::cout << ret.first->first << " => " << ret.first->second << '\n';
+
+  std::cout << "upper bound points to: ";
+  std::cout << ret.second->first << " => " << ret.second->second << '\n';
+
+  return 0;
 }
+
+int test_empty ()
+{
+  ft::map<char,int> mymap;
+
+  mymap['a']=20;
+  mymap['b']=40;
+  mymap['c']=60;
+  mymap['d']=80;
+  mymap['e']=100;
+
+  while (!mymap.empty())
+  {
+    std::cout << mymap.begin()->first << " => " << mymap.begin()->second << '\n';
+    mymap.erase(mymap.begin());
+  }
+
+  return 0;
+}
+
+int test_operator ()
+{
+  ft::map<char,int> first;
+  ft::map<char,int> second;
+
+  first['x']=8;
+  first['y']=16;
+  first['z']=32;
+
+  std::cout << "first:" << std::endl;
+  print_map(first);
+  second=first;                // second now contains 3 ints
+  first=ft::map<char,int>();  // and first is now empty
+  std::cout << "second:" << std::endl;
+  // print_map(first);
+
+  std::cout << "Size of first: " << first.size() << '\n';
+  std::cout << "Size of second: " << second.size() << '\n';
+  return 0;
+}
+
+
+class A {};
+ 
+enum E : int {};
+ 
+template <class T>
+T f(T i)
+{
+  std::cout << "i = " << i << std::endl;
+    static_assert(std::is_integral<T>::value, "obliger un integral.");
+    return i;
+}
+ 
+int main() 
+{
+// float n = 2.0; 
+    std::cout << std::boolalpha;
+    std::cout << std::is_integral<A>::value << '\n';
+    std::cout << std::is_integral<E>::value << '\n';
+    std::cout << std::is_integral<float>::value << '\n';
+    std::cout << std::is_integral<int>::value << '\n';
+    std::cout << std::is_integral<bool>::value << '\n';
+    // std::cout << f(n) << '\n';
+}
+
+// int  main(int argc, const char** argv) {
+
+// 	//  test_erase();
+// 	// test_insert();
+// 	// test_clear();
+// 	// test_find();
+//   // test_count();
+//   // test_lower_bound();
+// 	// std::cout << "salut" << std::endl;
+//   // test_equal_range();
+//   // test_empty();
+//   test_operator();
+//   (void)argc;
+//   (void)argv;
+// 	return 0;
+// }
