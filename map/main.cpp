@@ -8,7 +8,6 @@ for (ft::map<char,int>::iterator it = myMap.begin(); it !=myMap.end(); it++)
     std::cout << it->first << " => " << it->second << '\n';
 }
 
-
 int test_insert ()
 {
   ft::map<char,int> mymap;
@@ -50,29 +49,29 @@ int test_insert ()
   return 0;
 }
 
-// int test_swap ()
-// {
-//   ft::map<char,int> foo,bar;
+int test_swap ()
+{
+  ft::map<char,int> foo,bar;
 
-//   foo['x']=100;
-//   foo['y']=200;
+  foo['x']=100;
+  foo['y']=200;
 
-//   bar['a']=11;
-//   bar['b']=22;
-//   bar['c']=33;
+  bar['a']=11;
+  bar['b']=22;
+  bar['c']=33;
 
-//   foo.swap(bar);
+  foo.swap(bar);
 
-//   std::cout << "foo contains:\n";
-//   for (ft::map<char,int>::iterator it=foo.begin(); it!=foo.end(); ++it)
-//     std::cout << it->first << " => " << it->second << '\n';
+  std::cout << "foo contains:\n";
+  for (ft::map<char,int>::iterator it=foo.begin(); it!=foo.end(); ++it)
+    std::cout << it->first << " => " << it->second << '\n';
 
-//   std::cout << "bar contains:\n";
-//   for (ft::map<char,int>::iterator it=bar.begin(); it!=bar.end(); ++it)
-//     std::cout << it->first << " => " << it->second << '\n';
+  std::cout << "bar contains:\n";
+  for (ft::map<char,int>::iterator it=bar.begin(); it!=bar.end(); ++it)
+    std::cout << it->first << " => " << it->second << '\n';
 
-//   return 0;
-// }
+  return 0;
+}
 
 
 int test_erase ()
@@ -263,43 +262,20 @@ int test_operator ()
 }
 
 
-class A {};
- 
-enum E : int {};
- 
-template <class T>
-T f(T i)
-{
-  std::cout << "i = " << i << std::endl;
-    static_assert(std::is_integral<T>::value, "obliger un integral.");
-    return i;
-}
- 
-int main() 
-{
-// float n = 2.0; 
-    std::cout << std::boolalpha;
-    std::cout << std::is_integral<A>::value << '\n';
-    std::cout << std::is_integral<E>::value << '\n';
-    std::cout << std::is_integral<float>::value << '\n';
-    std::cout << std::is_integral<int>::value << '\n';
-    std::cout << std::is_integral<bool>::value << '\n';
-    // std::cout << f(n) << '\n';
-}
+int  main(int argc, const char** argv) {
 
-// int  main(int argc, const char** argv) {
-
-// 	//  test_erase();
-// 	// test_insert();
-// 	// test_clear();
-// 	// test_find();
-//   // test_count();
-//   // test_lower_bound();
-// 	// std::cout << "salut" << std::endl;
-//   // test_equal_range();
-//   // test_empty();
-//   test_operator();
-//   (void)argc;
-//   (void)argv;
-// 	return 0;
-// }
+	//  test_erase();
+	// test_insert();
+	// test_clear();
+	// test_find();
+  // test_count();
+  // test_lower_bound();
+	// std::cout << "salut" << std::endl;
+  // test_equal_range();
+  // test_empty();
+  // test_operator();
+  test_swap();
+  (void)argc;
+  (void)argv;
+	return 0;
+}

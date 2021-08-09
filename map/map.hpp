@@ -23,6 +23,45 @@ namespace ft{
         arg1 = arg2;
         arg2 = temp;
     }
+	///////////////////////////////////Standard specializations//////////////////////////////
+	template <typename T>
+	struct is_integral
+	{
+		static const bool value = false;
+	};
+
+	template <>
+	struct is_integral<int> {	static const bool value = true; };
+	template <>
+	struct is_integral<char> {	static const bool value = true; };
+	template <>
+	struct is_integral<bool> {	static const bool value = true; };
+	template <>
+	struct is_integral<signed char> {	static const bool value = true; };
+	template <>
+	struct is_integral<unsigned char> {	static const bool value = true; };
+	template <>
+	struct is_integral<wchar_t> {	static const bool value = true; };
+	template <>
+	struct is_integral<char16_t> {	static const bool value = true; };
+	template <>
+	struct is_integral<char32_t> {	static const bool value = true; };
+	template <>
+	struct is_integral<short> {	static const bool value = true; };
+	template <>
+	struct is_integral<unsigned int> {	static const bool value = true; };
+	template <>
+	struct is_integral<long> {	static const bool value = true; };
+	template <>
+	struct is_integral<long long> {	static const bool value = true; };
+	template <>
+	struct is_integral<unsigned long long> {	static const bool value = true; };
+	// template <>
+	// struct is_integral<float> {	static const bool value = true; };
+	// template <>
+	// struct is_integral<double> {	static const bool value = true; };
+	// template <>
+	// struct is_integral<long double> {	static const bool value = true; };
 
 }
 
@@ -209,10 +248,10 @@ namespace ft
 					~const_iterator(){}
 					value_type							&operator*()const {return (*_ptr->data);}
 					value_type							*operator->()const {return &(*_ptr->data);}
-					const_iterator							&operator++(){_ptr = _ptr->get_next_node(); return *this;}//++a
-					const_iterator							operator++(int)	{const_iterator it = *this; _ptr = _ptr->get_next_node(); return (it);}//a++
-					const_iterator							&operator--(){ _ptr = _ptr->get_prev_node(_ptr); return (*this);}//--a
-					const_iterator							operator--(int){iterator it = *this; _ptr = _ptr->get_prev_node(); return it;} //a--
+					const_iterator						&operator++(){_ptr = _ptr->get_next_node(); return *this;}//++a
+					const_iterator						operator++(int)	{const_iterator it = *this; _ptr = _ptr->get_next_node(); return (it);}//a++
+					const_iterator						&operator--(){ _ptr = _ptr->get_prev_node(_ptr); return (*this);}//--a
+					const_iterator						operator--(int){iterator it = *this; _ptr = _ptr->get_prev_node(); return it;} //a--
 					pointeur        					get_ptr()const{return _ptr;}
 					bool								operator==(const const_iterator &it){ return _ptr == it.get_ptr();}
 					bool								operator!=(const const_iterator &it){ return _ptr != it.get_ptr();}
@@ -289,14 +328,18 @@ namespace ft
 
 //////////////////////////Modifiers////////////////////////////
 
-			void	print_tree(t_node *node)
-			{
-				if (node)
-				{
-					print_tree(node->left);
-					print_tree(node->right);
-				}
-			}
+			void swap (map& x)
+            {
+                ft::ft_swap(_size, x._size);
+                ft::ft_swap(_root, x._root);
+                ft::ft_swap(_end, x._end);
+				ft::ft_swap(_begin, x._begin);
+                ft::ft_swap(_comp, x._comp);
+                ft::ft_swap(_alloc_pair, x._alloc_pair);
+                // ft::ft_swap(_alloc, x._alloc);
+				
+                ft::ft_swap(_alloc_node, x._alloc_node);
+            }
 
 			void	my_clear_tree(t_node *node)
 			{
@@ -535,7 +578,8 @@ namespace ft
 			}
 
 			template <class InputIterator>
-			void insert (typename ft::Enable_if<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type first, InputIterator last)
+			// void insert (typename ft::Enable_if<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type first, InputIterator last)
+			void insert (typename ft::Enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type first, InputIterator last)
 			{
 				while (first != last)
 				{
