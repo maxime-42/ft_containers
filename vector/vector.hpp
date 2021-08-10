@@ -8,6 +8,51 @@
 
 namespace ft
 {
+	template <bool B, class T = void>
+	struct Enable_if{ };
+
+	template <class T>
+	struct Enable_if<true, T>
+	{
+		typedef T type;
+	};
+
+	///////////////////////////////////Standard specializations//////////////////////////////
+	template <typename T>
+	struct is_integer
+	{
+		static const bool value = false;
+	};
+template <>
+	struct is_integer<int> { static const bool value = true; };
+	template <>
+	struct is_integer<char> {	static const bool value = true; };
+	template <>
+	struct is_integer<bool> {	static const bool value = true; };
+	template <>
+	struct is_integer<signed char> {	static const bool value = true; };
+	template <>
+	struct is_integer<unsigned char> {	static const bool value = true; };
+	template <>
+	struct is_integer<wchar_t> {	static const bool value = true; };
+	template <>
+	struct is_integer<char16_t> {	static const bool value = true; };
+	template <>
+	struct is_integer<char32_t> {	static const bool value = true; };
+	template <>
+	struct is_integer<short> {	static const bool value = true; };
+	template <>
+	struct is_integer<unsigned int> {	static const bool value = true; };
+	template <>
+	struct is_integer<long> {	static const bool value = true; };
+	template <>
+	struct is_integer<long long> {	static const bool value = true; };
+	template <>
+	struct is_integer<unsigned long long> {	static const bool value = true; };
+}
+
+namespace ft
+{
 	template < class T, class Alloc = std::allocator<T> > 
 	class vector
 	{
@@ -47,7 +92,8 @@ namespace ft
 		}
 
 		template <class InputIterator>
-	    vector (typename std::enable_if<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type first, InputIterator last, const allocator_type& alloc = allocator_type()):_capacity(0),  _dataCounter(0), _data(0)
+		vector (typename ft::Enable_if<!ft::is_integer<InputIterator>::value, InputIterator>::type first, InputIterator last, const allocator_type& alloc = allocator_type()):_capacity(0),  _dataCounter(0), _data(0)
+	    // vector (typename ft::Enable_if<!ft::is_integer<InputIterator>::is_integer, InputIterator>::type first, InputIterator last, const allocator_type& alloc = allocator_type()):_capacity(0),  _dataCounter(0), _data(0)
 		{
 			(void)alloc;
 			for (; first != last ; first++)
@@ -491,7 +537,8 @@ namespace ft
 		}
 		
 		template <class InputIterator>
-        void insert (iterator position, typename std::enable_if<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type first, InputIterator last)
+        // void insert (iterator position, typename ft::Enable_if<!!ft::is_integer<InputIterator>::is_integer, InputIterator>::type first, InputIterator last)
+        void insert (iterator position, typename ft::Enable_if<!ft::is_integer<InputIterator>::value, InputIterator>::type first, InputIterator last)
 		{
 			vector tmp;
 			iterator it = this->begin();
