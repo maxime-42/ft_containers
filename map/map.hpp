@@ -4,64 +4,63 @@
 #include <iostream>
 #include <stdlib.h>
 
-namespace ft{
-    template <bool B, class T = void>
-    struct Enable_if
-    {
-    };
+namespace ft
+{
+	template <bool B, class T = void>
+	struct Enable_if {};
 
-    template <class T>
-    struct Enable_if<true, T>
-    {
-        typedef T type;
-    };
+	template <class T>
+	struct Enable_if<true, T>
+	{
+		typedef T type;
+	};
 
 	template<typename T>
-    void ft_swap(T &arg1, T &arg2)
-    {
-        T temp = arg1;
-        arg1 = arg2;
-        arg2 = temp;
+	void ft_swap(T &arg1, T &arg2)
+	{
+		T temp = arg1;
+		arg1 = arg2;
+		arg2 = temp;
     }
 	///////////////////////////////////Standard specializations//////////////////////////////
 	template <typename T>
-	struct is_integral
+	struct is_integer
 	{
 		static const bool value = false;
 	};
 
 	template <>
-	struct is_integral<int> {	static const bool value = true; };
+	struct is_integer<int> { static const bool value = true; };
 	template <>
-	struct is_integral<char> {	static const bool value = true; };
+	struct is_integer<char> {	static const bool value = true; };
 	template <>
-	struct is_integral<bool> {	static const bool value = true; };
+	struct is_integer<bool> {	static const bool value = true; };
 	template <>
-	struct is_integral<signed char> {	static const bool value = true; };
+	struct is_integer<signed char> {	static const bool value = true; };
 	template <>
-	struct is_integral<unsigned char> {	static const bool value = true; };
+	struct is_integer<unsigned char> {	static const bool value = true; };
 	template <>
-	struct is_integral<wchar_t> {	static const bool value = true; };
+	struct is_integer<wchar_t> {	static const bool value = true; };
 	template <>
-	struct is_integral<char16_t> {	static const bool value = true; };
+	struct is_integer<char16_t> {	static const bool value = true; };
 	template <>
-	struct is_integral<char32_t> {	static const bool value = true; };
+	struct is_integer<char32_t> {	static const bool value = true; };
 	template <>
-	struct is_integral<short> {	static const bool value = true; };
+	struct is_integer<short> {	static const bool value = true; };
 	template <>
-	struct is_integral<unsigned int> {	static const bool value = true; };
+	struct is_integer<unsigned int> {	static const bool value = true; };
 	template <>
-	struct is_integral<long> {	static const bool value = true; };
+	struct is_integer<long> {	static const bool value = true; };
 	template <>
-	struct is_integral<long long> {	static const bool value = true; };
+	struct is_integer<long long> {	static const bool value = true; };
 	template <>
-	struct is_integral<unsigned long long> {	static const bool value = true; };
+	struct is_integer<unsigned long long> {	static const bool value = true; };
 	// template <>
-	// struct is_integral<float> {	static const bool value = true; };
+	// struct is_integer<float> {	static const bool value = true; };
 	// template <>
-	// struct is_integral<double> {	static const bool value = true; };
+	// struct is_integer<double> {	static const bool value = true; };
 	// template <>
-	// struct is_integral<long double> {	static const bool value = true; };
+	// struct is_integer<long double> {	static const bool value = true; };
 
 }
 
@@ -579,7 +578,7 @@ namespace ft
 
 			template <class InputIterator>
 			// void insert (typename ft::Enable_if<!std::numeric_limits<InputIterator>::is_integer, InputIterator>::type first, InputIterator last)
-			void insert (typename ft::Enable_if<!ft::is_integral<InputIterator>::value, InputIterator>::type first, InputIterator last)
+			void insert (typename ft::Enable_if<!ft::is_integer<InputIterator>::value, InputIterator>::type first, InputIterator last)
 			{
 				while (first != last)
 				{
