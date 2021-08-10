@@ -305,21 +305,22 @@ namespace ft
 
 		void resize (size_type n, value_type val = value_type())
 		{
-			if (n > _dataCounter)
+			if (n < size())
 			{
-				this->_capacity *= 2 ;
-				pointer newTab = this->tubTab(_capacity);
-				this->ft_clear();
-				while (_dataCounter < n)
-				{
-					_myAlloc.construct(newTab + _dataCounter, val);
-					_dataCounter++;
-				}
-				_data = newTab;
+				size_type i = n;
+				for (; i < n; i++)
+                    _myAlloc.destroy(_data + i);
+				_dataCounter = i;
 			}
+			else if (n > size())
+        	{
+                for (size_type i = size(); i < n; i++)
+            		push_back(val);
+            }
 		}
 
-		bool empty() const{return (_capacity == 0);}
+		// bool empty() const{return (_capacity == 0);}
+		bool empty() const{return (_dataCounter == 0);}
 
 		void reserve (size_type n)
 		{
@@ -350,9 +351,10 @@ namespace ft
 
 		void pop_back()
 		{
-			if (this->empty())
-			{
-				_dataCounter -= 1;
+		    if (_dataCounter)
+            {
+            	_myAlloc.destroy(_data + (_dataCounter - 1));
+                    _dataCounter--;
 			}
 		}
 
@@ -490,8 +492,8 @@ namespace ft
 			return (_data[n]);
 		}
 
-		reference back(){return (_data[_dataCounter]);}
-		const_reference back()const {return (_data[_dataCounter]);}
+		reference back(){return (_data[_dataCounter - 1]);}
+		const_reference back()const {return (_data[_dataCounter - 1]);}
 
 		template <class M>
 		void ft_swap(M &a, M &b)
