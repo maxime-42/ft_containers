@@ -129,7 +129,7 @@ namespace ft
 			pointer operator->() { return m_ptr; }
 
 			/*********************mutable iterators********************/
-			iterator operator=(const   iterator& a){m_ptr = a.m_ptr; return (*this);}
+			iterator operator=(const iterator& a){m_ptr = a.m_ptr; return (*this);}
 
 			/*********************incrementation******************/
 			/* Prefix increment	*/
@@ -237,7 +237,7 @@ namespace ft
 			/* Postfix increment*/
 			reverse_iterator&   operator++(){--this->m_ptr;return (*this);}
 
-			reverse_iterator	operator++(int) { --(*this); std::cout << "Postfix " << std::endl; return (*this); }
+			reverse_iterator	operator++(int) { --(*this);  return (*this); }
 			reverse_iterator	operator+(const difference_type& movement)	{m_ptr-= movement; return (*this);	}
 
 			/*****************Can be decremented*************************/
@@ -351,10 +351,10 @@ namespace ft
 
 		void pop_back()
 		{
-		    if (_dataCounter)
-            {
-            	_myAlloc.destroy(_data + (_dataCounter - 1));
-                    _dataCounter--;
+			if (_dataCounter)
+			{
+				_myAlloc.destroy(_data + (_dataCounter - 1));
+				_dataCounter--;
 			}
 		}
 
@@ -418,9 +418,6 @@ namespace ft
 			_capacity -= sizeCompute(first, last);
 			pointer tmpData = _myAlloc.allocate(_capacity);
 			size_type tmpCounter = 0;
-			// std::cout << "first = " << *first << std::endl;
-			// std::cout << "last = " << *last << std::endl;
-
 			for (iterator it = this->begin(); it != first; it++)
 			{
 				// std::cout << "it = " << *it << std::endl;
@@ -438,6 +435,27 @@ namespace ft
 			ft_clear();
 			_data = tmpData;
 			return (ret);
+		}
+
+		template <class InputIterator>
+		void assign (typename ft::Enable_if<!ft::is_integer<InputIterator>::value, InputIterator>::type first, InputIterator last)
+		{
+			clear();
+			while (first != last)
+			{
+				push_back(*first);
+				first++;
+			}
+		}
+
+		void assign (size_type n, const value_type& val)
+		{
+			clear();
+			size_type i = -1;
+			while (++i < n)
+			{
+				push_back(val);
+			}
 		}
 
 /************************************************************************ OPERATOR ************************************************************************/
