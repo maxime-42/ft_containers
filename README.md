@@ -1,6 +1,47 @@
 # ft_containers
 in progress
 
+/*
+I always have:
+_root node at top of binary tree search, it is O
+most  botom left 0 it is node _begin 
+most  botom right 0 it is node _end 
+
+					 O ->_root
+					  \
+					  6 
+					/   \ 
+				   10    8 
+				  / \   / \ 
+				 1   3  7  12
+				/            \
+    _begin->   0              0 ->_end
+ 
+
+to delete  node has two child, example to delete 6:
+ 					 O ->_root
+					  \
+					  6 
+					/   \ 
+				   10    8 
+				  / \   / \ 
+				 1   3  7  12
+				/            \
+    _begin->   0              0 ->_end
+
+after delete 6, binary search tree look like :
+ 				 O ->_root
+				  \
+				   10     
+				  / \    
+				 1   3 
+				/	  \
+     _begin  ->	0      8
+					  / \
+					 7   12
+					 	  \
+ 			               0 ->_end
+
 iterator vector:
 
 	https://gist.github.com/jeetsukumaran/307264

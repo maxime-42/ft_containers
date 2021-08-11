@@ -296,16 +296,14 @@ namespace ft
 				}
 			}
 
-			map (const map& x):_root(x._root), _end(x._end), _begin(x._begin), _size(x._size), _comp(x._comp), _alloc_pair(x._alloc_pair)
+			map (const map& x):_root(0), _end(0), _begin(0), _size(0), _comp(x._comp), _alloc_pair(x._alloc_pair)
 			{
 				insert(x.begin(), x.end());
 			}
 
 			~map()
 			{
-				
 				my_clear_tree(_root);
-
 			}
 
 ////////////////////////////////capacity//////////////////////
