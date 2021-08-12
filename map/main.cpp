@@ -327,28 +327,126 @@ int test_rbegin()
   mymap['z'] = 300;
 
   // show content:
-  map<char,int>::reverse_iterator rit;
+//   map<char,int>::reverse_iterator rit = mymap.rbegin();
+  map<char,int>::reverse_iterator rit ;
   for (rit=mymap.rbegin(); rit!=mymap.rend(); ++rit)
     std::cout << rit->first << " => " << rit->second << '\n';
 
   return 0;
 }
-int  main(int argc, const char** argv) {
+
+int test_size ()
+{
+  map<char,int> mymap;
+  mymap['a']=101;
+  mymap['b']=202;
+  mymap['c']=302;
+
+  std::cout << "mymap.size() is " << mymap.size() << '\n';
+
+  return 0;
+}
+
+int test_max ()
+{
+  int i;
+  map<int,int> mymap;
+
+  if (mymap.max_size()>1000)
+  {
+    for (i=0; i<1000; i++) mymap[i]=0;
+    std::cout << "The map contains 1000 elements.\n";
+  }
+  else std::cout << "The map could not hold 1000 elements.\n";
+
+  return 0;
+}
+
+
+int test_operator_croche()
+{
+  map<char,std::string> mymap;
+
+  mymap['a']="an element";
+  mymap['b']="another element";
+  mymap['c']=mymap['b'];
+
+  std::cout << "mymap['a'] is " << mymap['a'] << '\n';
+  std::cout << "mymap['b'] is " << mymap['b'] << '\n';
+  std::cout << "mymap['c'] is " << mymap['c'] << '\n';
+  std::cout << "mymap['d'] is " << mymap['d'] << '\n';
+
+  std::cout << "mymap now contains " << mymap.size() << " elements.\n";
+
+  return 0;
+}
+
+int test_key_comp ()
+{
+  map<char,int> mymap;
+
+  map<char,int>::key_compare mycomp = mymap.key_comp();
+
+  mymap['a']=100;
+  mymap['b']=200;
+  mymap['c']=300;
+
+  std::cout << "mymap contains:\n";
+
+  char highest = mymap.rbegin()->first;     // key value of last element
+
+  map<char,int>::iterator it = mymap.begin();
+  do {
+    std::cout << it->first << " => " << it->second << '\n';
+  } while ( mycomp((*it++).first, highest) );
+
+  std::cout << '\n';
+
+  return 0;
+}
+
+int test_value ()
+{
+  map<char,int> mymap;
+
+  mymap['x']=1001;
+  mymap['y']=2002;
+  mymap['z']=3003;
+
+  std::cout << "mymap contains:\n";
+
+	pair<char,int> highest = *mymap.rbegin();          // last element
+
+  map<char,int>::iterator it = mymap.begin();
+  do {
+    std::cout << it->first << " => " << it->second << '\n';
+  } while ( mymap.value_comp()(*it++, highest) );
+
+  return 0;
+}
+
+int  main(int argc, const char** argv)
+{
 
 	//  test_erase();
 	// test_insert();
 	// test_clear();
-	// test_find();
+	test_find();
   // test_count();
   // test_lower_bound();
 	// std::cout << "salut" << std::endl;
   // test_equal_range();
-  // test_empty();
-  // test_operator();
+//   test_empty();
+//   test_operator();
 //   test_swap();
 	// test_constructeur();
 	// test_begin();
-	test_rbegin();
+	// test_rbegin();
+	// test_size ();
+	// test_max();
+	// test_operator_croche();
+	// test_key_comp();
+	// test_value();
   (void)argc;
   (void)argv;
 	return 0;

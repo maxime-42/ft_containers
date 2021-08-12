@@ -117,6 +117,19 @@ namespace ft
 			typedef std::forward_iterator_tag			iterator_category;
 
 
+			class value_compare
+			{
+				friend class map;
+				protected:
+					Compare comp;
+					value_compare (Compare c) : comp(c) {}
+				public:
+					bool operator() (const value_type& x, const value_type& y) const
+					{
+						return comp(x.first, y.first);
+					}
+			};
+
 
 			typedef struct								s_node
 			{
@@ -218,13 +231,55 @@ namespace ft
 					value_type							*operator->()const {return &(*_ptr->data);}
 					iterator							&operator++(){_ptr = _ptr->get_next_node(); return *this;}//++a
 					iterator							operator++(int)	{iterator it = *this; _ptr = _ptr->get_next_node(); return (it);}//a++
-					iterator							&operator--(){ _ptr = _ptr->get_prev_node(_ptr); return (*this);}//--a
+					iterator							&operator--(){ _ptr = _ptr->get_prev_node(); return (*this);}//--a
 					iterator							operator--(int){iterator it = *this; _ptr = _ptr->get_prev_node(); return it;} //a--
 					pointeur        					get_ptr()const{return _ptr;}
 					bool								operator==(const iterator &it){ return _ptr == it.get_ptr();}
 					bool								operator!=(const iterator &it){ return _ptr != it.get_ptr();}
 					friend bool 						operator!=(const iterator& a, const   iterator& b) { return a._ptr != b._ptr; };
 			};
+
+
+public:
+		///////////////////////iterator/////////////////////////////////
+
+ 			class reverse_iterator
+			{
+				private:
+					t_node								*_ptr;
+				public:
+					typedef t_node						*pointeur;
+					// typedef ptrdiff_t					difference_type;
+
+
+					reverse_iterator(t_node *ptr = 0): _ptr(ptr){}
+					reverse_iterator(reverse_iterator const &cp){_ptr = cp.get_ptr(	);}
+					reverse_iterator operator=(reverse_iterator const &cp)
+					{
+						if (this != &cp)
+							this->_ptr = cp.get_ptr();
+						return *this;
+					}
+
+					~reverse_iterator(){}
+					value_type							&operator*()const {return (*_ptr->data);}
+					value_type							*operator->()const {return &(*_ptr->data);}
+					// reverse_iterator							&operator++(){_ptr = _ptr->get_next_node(); return *this;}//++a
+					reverse_iterator					&operator++(){ _ptr = _ptr->get_prev_node(); return (*this);}//++a
+
+					// reverse_iterator					operator++(int)	{reverse_iterator it = *this; _ptr = _ptr->get_next_node(); return (it);}//a++
+					reverse_iterator					operator++(int)	{reverse_iterator it = *this; _ptr = _ptr->get_prev_node(); return it;}//a++
+
+					reverse_iterator					&operator--(){ _ptr = _ptr->get_next_node(); return *this;}//--a
+
+					reverse_iterator					operator--(int){reverse_iterator it = *this; _ptr = _ptr->get_next_node(); return (it);} //a--
+					pointeur        					get_ptr()const{return _ptr;}
+					bool								operator==(const reverse_iterator &it){ return _ptr == it.get_ptr();}
+					bool								operator!=(const reverse_iterator &it){ return _ptr != it.get_ptr();}
+					friend bool 						operator!=(const reverse_iterator& a, const   reverse_iterator& b) { return a._ptr != b._ptr; };
+			};
+
+
 
 			class const_iterator
 			{
@@ -256,6 +311,7 @@ namespace ft
 					bool								operator!=(const const_iterator &it){ return _ptr != it.get_ptr();}
 					friend bool 						operator!=(const const_iterator& a, const   const_iterator& b) { return a._ptr != b._ptr; };
 			};
+
 			const_iterator begin() const {return (_begin->parent);}
 
 			const_iterator end() const 	{return (_end);	}
@@ -264,6 +320,10 @@ namespace ft
 			iterator begin(){return (_begin->parent);}
 
 			iterator end()	{return (_end);	}
+
+			reverse_iterator rend()	{return (_begin);	}
+
+			reverse_iterator rbegin(){return (_end->parent);}
 
 			void	init_node(t_node **node, t_node *parent ,const value_type & val)
 			{
@@ -691,8 +751,10 @@ namespace ft
                		insert(x.begin(), x.end());
                 return (*this);
             }
+			key_compare key_comp() const{return _comp;}
+			value_compare value_comp() const{return value_compare(_comp);}
+
 
 	};
 }
-
 #endif
