@@ -2,6 +2,10 @@
 #include "map.hpp"
 #include <iostream>
 #include <string>
+typedef unsigned char           unchar;
+typedef unsigned short          ushort;
+typedef unsigned int            uint;
+typedef unsigned long           ulong;
 #ifdef STD
  using namespace std;
  #define NAMESPACE_DEFINED
@@ -425,13 +429,26 @@ int test_value ()
   return 0;
 }
 
+int test_pair () 
+{
+  pair <int,int> foo;
+  pair <int,int> bar;
+  foo = make_pair(10,20);
+  bar = make_pair (10.5,'A'); // ok: implicit conversion from pair<double,char>
+
+  std::cout << "foo: " << foo.first << ", " << foo.second << '\n';
+  std::cout << "bar: " << bar.first << ", " << bar.second << '\n';
+
+  return 0;
+}
+
 int  main(int argc, const char** argv)
 {
 
 	//  test_erase();
 	// test_insert();
 	// test_clear();
-	test_find();
+	// test_find();
   // test_count();
   // test_lower_bound();
 	// std::cout << "salut" << std::endl;
@@ -447,6 +464,7 @@ int  main(int argc, const char** argv)
 	// test_operator_croche();
 	// test_key_comp();
 	// test_value();
+	test_pair();
   (void)argc;
   (void)argv;
 	return 0;

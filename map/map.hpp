@@ -41,10 +41,10 @@ namespace ft
 	struct is_integer<unsigned char> {	static const bool value = true; };
 	template <>
 	struct is_integer<wchar_t> {	static const bool value = true; };
-	template <>
-	struct is_integer<char16_t> {	static const bool value = true; };
-	template <>
-	struct is_integer<char32_t> {	static const bool value = true; };
+	// template <>
+	// struct is_integer<char16_t> {	static const bool value = true; };
+	// template <>
+	// struct is_integer<char32_t> {	static const bool value = true; };
 	template <>
 	struct is_integer<short> {	static const bool value = true; };
 	template <>
@@ -83,6 +83,7 @@ namespace ft
 			pair (T1& a, T2& b) : first(a), second(b) { };
 
 			~pair() {};
+
 			pair& operator=(const pair & pr)
 			{
 				if (this != &pr)
@@ -92,8 +93,13 @@ namespace ft
 				}
 				return (*this);
 			}
+	
 	};
-
+		template <class T1,class T2>
+			pair<T1,T2> make_pair (T1 x, T2 y)
+			{
+				return ( pair<T1,T2>(x,y) );
+			}
 	template <	class Key,                                        // map::key_type
 			class T,                                             // map::mapped_type
 			class Compare = std::less<Key>,                     // map::key_compare
