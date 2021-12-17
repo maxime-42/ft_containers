@@ -33,8 +33,11 @@ Template Specialization in C++:
 		https://www.geeksforgeeks.org/template-specialization-c/
 
 rvalue and lvalue:
-		https://www.youtube.com/watch?v=EElsUaoWxIo
-
+		https://www.youtube.com/watch?v=EElsUaoWxIo<br>
+		
+good playlist on  binary tree theory, clique on "Data Structures" scroll  to the first part of "Heaps 1 Introduction and Tree levels":<br>
+	https://www.youtube.com/c/RobEdwardsVideos/playlists<br>
+	
 Binary Search Tree (BST) with Example(insert , Search, delete):
 	https://www.guru99.com/binary-search-tree-data-structure.html
 
@@ -47,6 +50,6 @@ Inorder predecessor and successor for a given key in BST:
 Tree Traversals (Inorder, Preorder and Postorder):
 	https://www.geeksforgeeks.org/tree-traversals-inorder-preorder-and-postorder/
 
-AVL Tree With Example And All Rotations Explained:
+AVL Tree With Example And All Rotations Explained:<br>
 	https://www.youtube.com/watch?v=20cnaIwJY9I&t=401s
 	https://www.tutorialspoint.com/data_structures_algorithms/avl_tree_algorithm.htm
